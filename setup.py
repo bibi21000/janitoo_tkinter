@@ -68,6 +68,9 @@ setup(
         'gevent-socketio >= 0.3.6',
         'Flask-SocketIO >= 0.6.0',
     ],
+    dependency_links = [
+      'https://github.com/bibi21000/janitoo_db/archive/master.zip#egg=janitoo_db',
+    ],
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
