@@ -69,7 +69,7 @@ setup(
         'Flask-SocketIO >= 0.6.0',
     ],
     dependency_links = [
-      'https://github.com/bibi21000/janitoo_db/archive/master.zip#egg=janitoo_db',
+      'https://github.com/bibi21000/janitoo_db/archive/master.zip#egg=janitoo_db-%s'%"0.0.7",
     ],
     classifiers=[
         'Environment :: Web Environment',
