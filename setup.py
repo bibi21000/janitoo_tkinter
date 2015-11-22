@@ -32,7 +32,7 @@ data_files.extend(data_files_config('docs','src/docs','*.gif'))
 
 setup(
     name='janitoo_flask',
-    version='0.0.6',
+    version=janitoo_version,
     url='http://github.com/bibi21000/janitoo_flask/',
     author='Sébastien GALLET aka bibi2100 <bibi21000@gmail.com>',
     author_email='bibi21000@gmail.com',
