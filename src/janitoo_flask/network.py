@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The Node
-
-about the pollinh mechanism :
- - simplest way to do it : define a poll_thread_timer for every value that needed to publish its data
- - Add a kind of polling queue that will launch the method to get and publish the value
-
+"""The Network
 """
 
 __license__ = """
@@ -33,7 +28,7 @@ monkey.patch_all()
 
 # Set default logging handler to avoid "No handler found" warnings.
 import logging
-tlogger = logging.getLogger( "janitoo.flask" )
+logger = logging.getLogger( "janitoo.flask" )
 import threading
 import datetime
 from flask import request

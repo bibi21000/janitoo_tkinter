@@ -1,17 +1,39 @@
 # -*- coding: utf-8 -*-
 """
-    flaskbb.configs.default
-    ~~~~~~~~~~~~~~~~~~~~~~~
+    The options
 
-    This is the default configuration for FlaskBB that every site should have.
-    You can override these configuration variables in another class.
-
-    :copyright: (c) 2014 by the FlaskBB Team.
-    :license: BSD, see LICENSE for more details.
 """
+__license__ = """
+    This file is part of Janitoo.
+
+    Janitoo is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Janitoo is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Janitoo. If not, see <http://www.gnu.org/licenses/>.
+
+"""
+__author__ = 'Sébastien GALLET aka bibi21000'
+__email__ = 'bibi21000@gmail.com'
+__copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
+
+from gevent import monkey
+monkey.patch_all()
+
+import logging
+logger = logging.getLogger("janitoo.flask")
+
 import os
 import ConfigParser
 import socket
+
 from janitoo.options import JNTOptions
 
 class Config(object):
@@ -113,3 +135,5 @@ class OptionsConfig(Config):
             self.SERVER_NAME = "%s:%s"%(webapp['host'], webapp['port'])
         if 'cache_dir' in system:
             self.CACHE_DIR = so.path.join(system['cache_dir'], 'flask_cache_store')
+
+        print self.options.data

@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""janitoo webapp.
-
-Use factories : http://flask.pocoo.org/docs/0.10/patterns/appfactories/
-Use templates : https://pythonhosted.org/Flask-Themes/
-Use Flask-SocketIO : https://github.com/miguelgrinberg/Flask-SocketIO/blob/master/example/app.py
-Use socket-IO : https://github.com/abourget/gevent-socketio/blob/master/examples/flask_chat/chat.py
-
-Help : http://www.scratchinginfo.net/useful-jquery-datatables-examples-tutorials-and-plugins/
+"""janitoo flask extension.
 
 """
 
@@ -52,11 +45,16 @@ monkey.patch_all()
 
 import logging
 logger = logging.getLogger("janitoo.flask")
+
 from logging.config import fileConfig as logging_fileConfig
 from flask import appcontext_pushed
 from flask import current_app
+from jinja2 import Markup
 import signal, sys
 import os, tempfile, errno
+
+from pkg_resources import iter_entry_points
+
 from janitoo_flask.listener import ListenerThread
 
 #~ print "================================================================================================= I'ts import !!!"
@@ -84,7 +82,7 @@ class FlaskJanitoo(object):
             logging_fileConfig(self.options['conf_file'])
         self._listener = None
         self._sleep = 1
-
+        self.menu_left = []
         if app is not None and socketio is not None and options is not None:
             self.init_app(app, socketio, options, db)
         #~ print "================================================================================================= I'ts init !!!"
@@ -129,16 +127,43 @@ class FlaskJanitoo(object):
     def listener(self):
         """Start the listener on first call
         """
-        if not self._listener.is_alive():
-            self._listener.start()
+        #~ print "============================================================> get listener"
+        self.start_listener()
         return self._listener
 
-    @property
-    def network(self):
+    def start_listener(self):
         """Start the listener on first call
         """
-        if self._listener is not None:
-            return self.listener.network
+        if not self._listener.is_alive():
+            self._listener.start()
+
+    def extend_blueprints(self, group):
+        """
+        """
+        for entrypoint in iter_entry_points(group = '%s.blueprint'%'janitoo_manager'):
+            logger.info('Add blueprint from %s', entrypoint.module_name )
+            bprint, url = entrypoint.load()()
+            self._app.register_blueprint(bprint, url_prefix=url)
+        for entrypoint in iter_entry_points(group = '%s.menu_left'%group):
+            logger.info('Extend menu_left with %s', entrypoint.module_name )
+            self.menu_left.append(entrypoint.load()())
+        self._app.template_context_processors[None].append(lambda : dict(jnt_menu_left=self.menu_left))
+
+    def extend_network(self, group):
+        """"Extend the network with methods found in entrypoints
+        """
+        if self._listener and self._listener.network:
+            self._listener.network.extend_from_entry_points(group)
+        else:
+            raise RuntimeError("Can't extend an uninitialized network")
+
+    def extend_listener(self, group):
+        """"Extend the network with methods found in entrypoints
+        """
+        if self._listener:
+            self._listener.extend_from_entry_points(group)
+        else:
+            raise RuntimeError("Can't extend an uninitialized listener")
 
     def signal_term_handler(self, signal, frame):
         """
@@ -146,7 +171,10 @@ class FlaskJanitoo(object):
         logger.info("[ %s ] - Received signal %s", self.__class__.__name__, signal)
         if self._listener.is_alive():
             self._listener.stop()
-            self._listener.join()
+            try:
+                self._listener.join()
+            except AssertionError:
+                logger.exception("Catched exception : ")
         sys.exit(0)
 
     def connect(self):

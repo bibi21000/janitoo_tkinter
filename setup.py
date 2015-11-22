@@ -11,6 +11,7 @@ from platform import system as platform_system
 import glob
 import os
 import sys
+from _version import janitoo_version
 
 def data_files_config(target, source, pattern):
     ret = list()
@@ -31,7 +32,7 @@ data_files.extend(data_files_config('docs','src/docs','*.gif'))
 
 setup(
     name='janitoo_flask',
-    version='0.6',
+    version='0.0.6',
     url='http://github.com/bibi21000/janitoo_flask/',
     author='Sébastien GALLET aka bibi2100 <bibi21000@gmail.com>',
     author_email='bibi21000@gmail.com',
@@ -51,22 +52,22 @@ setup(
         You should have received a copy of the GNU General Public License
         along with Janitoo. If not, see <http://www.gnu.org/licenses/>.
     """,
-    description=(''),
+    description="The flask extension to build web apps for janitoo",
     long_description=__doc__,
     packages = find_packages('src', exclude=["scripts", "docs", "config"]),
     zip_safe=False,
-    keywords = "hostsensor",
+    keywords = "flask,web",
     include_package_data=True,
     package_dir = { '': 'src' },
     platforms='any',
     install_requires=[
+        'janitoo_db>=%s'%janitoo_version,
         'Flask>=0.9',
         'Flask-SQLAlchemy>=1.0',
-        'alembic>=0.6',
         'Flask-Script>=0.6',
-        'janitoo_db>=%s'%'0.0.6',
+        'gevent-socketio >= 0.3.6',
+        'Flask-SocketIO >= 0.6.0',
     ],
-    test_suite="tests",
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
@@ -76,5 +77,5 @@ setup(
         'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules'
-    ]
+    ],
 )

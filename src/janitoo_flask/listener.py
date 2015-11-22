@@ -67,6 +67,7 @@ class ListenerThread(threading.Thread, JNTControllerManager):
 
     def __init__(self, _socketio, _app, options):
         """The constructor"""
+        #~ print "*"*25, "init the listener"
         threading.Thread.__init__(self)
         self._stopevent = threading.Event( )
         self.socketio = _socketio
@@ -88,16 +89,19 @@ class ListenerThread(threading.Thread, JNTControllerManager):
     def boot(self):
         """configure the HADD address
         """
+        print "*"*25, "boot the listener"
         default_hadd = HADD%(9998,0)
         hadd = self.options.get_option('webapp','hadd', default_hadd)
         if default_hadd is None:
             logger.debug("[%s] - Can't retrieve value of hadd. Use default value instead (%s)", self.__class__.__name__, default_hadd)
         self.hadds = { 0 : hadd,
                      }
+        #~ print "*"*25, "booting"
 
     def run(self):
         """The running method
         """
+        #~ print "*"*25, "start the listener"
         logger.info("Start listener")
         self.boot()
         self.network.boot(self.hadds)
@@ -125,19 +129,3 @@ class ListenerThread(threading.Thread, JNTControllerManager):
             extend = entrypoint.load()
             extend( self )
 
-def start_listener(app_, socketio_, options):
-    """Start the listener
-    """
-    global listener
-    if listener is None:
-        listener = ListenerThread(socketio_, app_, options)
-        listener.start()
-    return listener
-
-def stop_listener():
-    """Stop the listener
-    """
-    global listener
-    if listener is not None:
-        listener.stop()
-        listener = None
