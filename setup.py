@@ -61,12 +61,12 @@ setup(
     package_dir = { '': 'src' },
     platforms='any',
     install_requires=[
-        'janitoo_db>=%s'%janitoo_version,
-        'Flask>=0.9',
-        'Flask-SQLAlchemy>=1.0',
-        'Flask-Script>=0.6',
+        'janitoo_db >= %s'%janitoo_version,
+        'Flask >= 0.9',
+        'Flask-SQLAlchemy >= 1.0',
+        'Flask-Script >= 0.6',
+        'gevent == 1.0.1',
         'gevent-socketio >= 0.3.6',
-        'gevent',
         'Flask-SocketIO >= 0.6.0',
     ],
     dependency_links = [
