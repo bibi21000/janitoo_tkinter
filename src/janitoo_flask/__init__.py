@@ -175,6 +175,8 @@ class FlaskJanitoo(object):
                 self._listener.join()
             except AssertionError:
                 logger.exception("Catched exception : ")
+            except RuntimeError:
+                logger.exception("Catched exception : ")
         sys.exit(0)
 
     def connect(self):
