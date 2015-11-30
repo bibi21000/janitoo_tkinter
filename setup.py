@@ -65,8 +65,8 @@ setup(
         'Flask >= 0.9',
         'Flask-SQLAlchemy >= 1.0',
         'Flask-Script >= 0.6',
-        'gevent == 1.0.1',
-        'gevent-socketio >= 0.3.6',
+        'gevent == 1.0.2',
+        'gevent-socketio == 0.3.6',
         'Flask-SocketIO >= 0.6.0',
     ],
     dependency_links = [
