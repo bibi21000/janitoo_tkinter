@@ -109,6 +109,7 @@ class Config(object):
     USER_URL_PREFIX = "/user"
     AUTH_URL_PREFIX = "/auth"
     ADMIN_URL_PREFIX = "/admin"
+    PORTAL_URL_PREFIX = "/"
 
 class OptionsConfig(Config):
     """Load options from a common config file
