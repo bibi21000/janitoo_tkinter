@@ -29,10 +29,12 @@ monkey.patch_all()
 # Set default logging handler to avoid "No handler found" warnings.
 import logging
 logger = logging.getLogger( "janitoo.flask" )
+
 import threading
 import datetime
 from flask import request
 from pkg_resources import iter_entry_points
+
 from janitoo.value import JNTValue
 from janitoo.node import JNTNode
 from janitoo.utils import HADD, HADD_SEP, json_dumps, json_loads, hadd_split

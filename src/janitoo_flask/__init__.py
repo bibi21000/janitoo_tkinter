@@ -172,6 +172,7 @@ class FlaskJanitoo(object):
         if self._listener.is_alive():
             self._listener.stop()
             try:
+                print self._listener
                 self._listener.join()
             except AssertionError:
                 logger.exception("Catched exception : ")

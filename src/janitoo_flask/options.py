@@ -120,6 +120,7 @@ class OptionsConfig(Config):
         Config.__init__(self)
         if not os.path.isfile(conf_file):
             raise RuntimeError("Can't find %s" %conf_file )
+        self.CONF_FILE = conf_file
         self.options = JNTOptions({"conf_file":conf_file})
         self.options.load()
         if 'hostname' not in self.options.data or self.options.data['hostname'] is None:
