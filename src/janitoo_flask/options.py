@@ -49,6 +49,8 @@ class Config(object):
     DEBUG = False
     TESTING = False
 
+    CONF_FILE = None
+
     # Logs
     # If SEND_LOGS is set to True, the admins (see the mail configuration) will
     # recieve the error logs per email.
