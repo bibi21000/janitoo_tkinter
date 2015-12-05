@@ -66,10 +66,11 @@ setup(
         'Flask-SQLAlchemy >= 1.0',
         'Flask-Script >= 0.6',
         'gevent == 1.0.2',
-        'gevent-socketio == 0.3.6',
+        'gevent-socketio == 0.3.7',
         'Flask-SocketIO >= 0.6.0',
     ],
     dependency_links = [
+      'https://github.com/bibi21000/gevent-socketio/archive/master.zip#egg=gevent-socketio-%s'%"0.3.7",
       'https://github.com/bibi21000/janitoo_db/archive/master.zip#egg=janitoo_db-%s'%"0.0.7",
     ],
     classifiers=[

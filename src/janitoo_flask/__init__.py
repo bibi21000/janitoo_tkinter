@@ -52,6 +52,7 @@ from flask import current_app
 from jinja2 import Markup
 import signal, sys
 import os, tempfile, errno
+import threading
 
 from pkg_resources import iter_entry_points
 
@@ -81,6 +82,7 @@ class FlaskJanitoo(object):
         if self.options is not None and 'conf_file' in self.options and self.options['conf_file'] is not None:
             logging_fileConfig(self.options['conf_file'])
         self._listener = None
+        self._listener_lock = None
         self._sleep = 1
         self.menu_left = []
         if app is not None and socketio is not None and options is not None:
@@ -121,6 +123,7 @@ class FlaskJanitoo(object):
             self._app.teardown_request(self.teardown)
         signal.signal(signal.SIGTERM, self.signal_term_handler)
         signal.signal(signal.SIGINT, self.signal_term_handler)
+        self._listener_lock = threading.Lock()
         self._listener = ListenerThread(self._socketio, self._app, self.options)
 
     @property
@@ -134,8 +137,12 @@ class FlaskJanitoo(object):
     def start_listener(self):
         """Start the listener on first call
         """
-        if not self._listener.is_alive():
-            self._listener.start()
+        try:
+            self._listener_lock.acquire()
+            if not self._listener.is_alive():
+                self._listener.start()
+        finally:
+            self._listener_lock.release()
 
     def extend_blueprints(self, group):
         """

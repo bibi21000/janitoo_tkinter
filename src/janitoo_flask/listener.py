@@ -44,6 +44,7 @@ from janitoo.server import JNTControllerManager
 from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
 from janitoo.dhcp import HeartbeatMessage, check_heartbeats, CacheManager
 from janitoo_flask.network import NetworkFlask
+from janitoo_flask.controller import Controller
 
 ##############################################################
 #Check that we are in sync with the official command classes
@@ -61,7 +62,7 @@ assert(COMMAND_DESC[COMMAND_DHCPD] == 'COMMAND_DHCPD')
 
 listener = None
 
-class ListenerThread(threading.Thread, JNTControllerManager):
+class ListenerThread(threading.Thread, Controller):
     """ The listener Tread
     """
 
@@ -75,9 +76,9 @@ class ListenerThread(threading.Thread, JNTControllerManager):
         self.section="webapp"
         self.mqttc = None
         self.options = JNTOptions(options)
-        JNTControllerManager.__init__(self)
         self.hadds = {}
         self.network = NetworkFlask(self.socketio, self.app, self._stopevent, self.options, is_primary=False, is_secondary=True, do_heartbeat_dispatch=False)
+        Controller.__init__(self, self.network)
         self.loop_sleep = 0.25
         loop_sleep = self.options.get_option('system','loop_sleep', self.loop_sleep)
         if loop_sleep is not None:
@@ -105,10 +106,10 @@ class ListenerThread(threading.Thread, JNTControllerManager):
         logger.info("Start listener")
         self.boot()
         self.network.boot(self.hadds)
-        JNTControllerManager.start_controller(self, self.section, self.options, cmd_classes=[COMMAND_DHCPD], hadd=self.hadds[0], name="Webapp Server",
+        Controller.start_controller(self, self.section, self.options, cmd_classes=[COMMAND_DHCPD], hadd=self.hadds[0], name="Webapp Server",
             product_name="Webapp Server", product_type="Webapp Server")
         self._stopevent.wait(1.0)
-        JNTControllerManager.start_controller_timer(self)
+        Controller.start_controller_timer(self)
         while not self._stopevent.isSet():
             self._stopevent.wait(self.loop_sleep)
         self.network.stop()
@@ -116,10 +117,10 @@ class ListenerThread(threading.Thread, JNTControllerManager):
     def stop(self):
         """Stop the tread
         """
-        JNTControllerManager.stop_controller_timer(self)
+        Controller.stop_controller_timer(self)
         self._stopevent.set( )
         logger.info("Stop listener")
-        JNTControllerManager.stop_controller(self)
+        Controller.stop_controller(self)
 
     def extend_from_entry_points(self, group):
         """"Extend the listener with methods found in entrypoints
