@@ -44,7 +44,7 @@ from gevent import monkey
 monkey.patch_all()
 
 import logging
-logger = logging.getLogger("janitoo.flask")
+logger = logging.getLogger(__name__)
 
 from logging.config import fileConfig as logging_fileConfig
 from flask import appcontext_pushed

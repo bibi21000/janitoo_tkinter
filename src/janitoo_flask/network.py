@@ -28,7 +28,7 @@ monkey.patch_all()
 
 # Set default logging handler to avoid "No handler found" warnings.
 import logging
-logger = logging.getLogger( "janitoo.flask" )
+logger = logging.getLogger(__name__)
 
 import threading
 import datetime

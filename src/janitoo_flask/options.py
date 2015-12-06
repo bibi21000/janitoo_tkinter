@@ -28,7 +28,7 @@ from gevent import monkey
 monkey.patch_all()
 
 import logging
-logger = logging.getLogger("janitoo.flask")
+logger = logging.getLogger(__name__)
 
 import os
 import ConfigParser
