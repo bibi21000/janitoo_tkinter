@@ -76,7 +76,7 @@ class ListenerThread(threading.Thread, Controller):
         self.mqttc = None
         self.options = JNTOptions(options)
         self.hadds = {}
-        self.network = self.create_network()
+        self.create_network()
         Controller.__init__(self, self.network)
         self.loop_sleep = 0.25
         loop_sleep = self.options.get_option('system','loop_sleep', self.loop_sleep)
