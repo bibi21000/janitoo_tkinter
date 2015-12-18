@@ -103,11 +103,19 @@ class FlaskJanitoo(object):
             self._db = db
         if self.options is not None and 'conf_file' in self.options and self.options['conf_file'] is not None:
             logging_fileConfig(self.options['conf_file'])
+
+        # Flask-Cache
+        self.cache.init_app(self._app)
+        # Flask-Bower
+        self.bower.init_app(self._app)
+
         self._event_manager = EventManager(self._app)
         self._app.jinja_env.globals["emit_event"] = self._event_manager.template_emit
         if not hasattr(self._app, 'extensions'):
             self._app.extensions = {}
         self._app.extensions['options'] = self.options
+        self._app.extensions['bower'] = self.bower
+        self._app.extensions['cache'] = self.cache
         try:
             self._sleep = int(self._app.config['FLASKJANITOO_SLEEP'])
             if self._sleep <= 0 :
@@ -125,10 +133,6 @@ class FlaskJanitoo(object):
         signal.signal(signal.SIGTERM, self.signal_term_handler)
         signal.signal(signal.SIGINT, self.signal_term_handler)
         self._listener_lock = threading.Lock()
-        # Flask-Bower
-        self.bower.init_app(self._app)
-        # Flask-Cache
-        self.cache.init_app(app)
 
         self.create_listener()
 
