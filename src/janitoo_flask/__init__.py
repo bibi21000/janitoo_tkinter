@@ -47,6 +47,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from flask_bower import Bower
+from flask_cache import Cache
 
 from logging.config import fileConfig as logging_fileConfig
 from flask import appcontext_pushed
@@ -88,6 +89,8 @@ class FlaskJanitoo(object):
         self.menu_left = []
         # Bower
         self.bower = Bower()
+        # Caching
+        self.cache = Cache()
 
     def init_app(self, app, options, db=None):
         """
@@ -124,6 +127,8 @@ class FlaskJanitoo(object):
         self._listener_lock = threading.Lock()
         # Flask-Bower
         self.bower.init_app(self._app)
+        # Flask-Cache
+        self.cache.init_app(app)
 
         self.create_listener()
 
