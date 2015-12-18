@@ -34,7 +34,6 @@ import threading
 import datetime
 from flask import request
 from pkg_resources import iter_entry_points
-from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, disconnect
 
 from janitoo.value import JNTValue
 from janitoo.node import JNTNode
@@ -47,29 +46,12 @@ class NetworkFlask(JNTNetwork):
     """The network manager for the flask application
     """
 
-    def __init__(self, socketio, app, stop_event, options, **kwargs):
+    def __init__(self, app, stop_event, options, **kwargs):
         """
         """
         JNTNetwork.__init__(self, stop_event, options, **kwargs)
-        self.socketio = socketio
         self.app = app
         self.extend_from_entry_points('janitoo_flask')
-
-    def emit_network(self):
-        """Emit a network state event
-        """
-        ret = {}
-        ret['state'] = self.state,
-        ret['state_str'] = self.state_str,
-        ret['nodes_count'] = self.nodes_count,
-        ret['home_id'] = self.home_id,
-        ret['is_failed'] = self.is_failed,
-        ret['is_secondary'] = self.is_secondary,
-        ret['is_primary'] = self.is_primary,
-        self.socketio.emit('my network response',
-            {'data':ret},
-            namespace='/janitoo')
-        logger.debug('Network event : homeid %s (state:%s) - %d nodes were found.' % (self.home_id, self.state, self.nodes_count))
 
     def extend_from_entry_points(self, group):
         """"Extend the network with methods found in entrypoints

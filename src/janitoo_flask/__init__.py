@@ -74,9 +74,8 @@ except ImportError:
 
 class FlaskJanitoo(object):
 
-    def __init__(self, app=None, socketio=None, options=None, db=None):
+    def __init__(self, app=None, options=None, db=None):
         self._app = app
-        self._socketio = socketio
         self._db = db
         self.options = options
         if self.options is not None and 'conf_file' in self.options and self.options['conf_file'] is not None:
@@ -85,17 +84,12 @@ class FlaskJanitoo(object):
         self._listener_lock = None
         self._sleep = 1
         self.menu_left = []
-        if app is not None and socketio is not None and options is not None:
-            self.init_app(app, socketio, options, db)
-        #~ print "================================================================================================= I'ts init !!!"
 
-    def init_app(self, app, socketio, options, db=None):
+    def init_app(self, app, options, db=None):
         """
         """
         if app is not None:
             self._app = app
-        if socketio is not None:
-            self._socketio = socketio
         if options is not None:
             self.options = options
         if db is not None:
@@ -124,7 +118,12 @@ class FlaskJanitoo(object):
         signal.signal(signal.SIGTERM, self.signal_term_handler)
         signal.signal(signal.SIGINT, self.signal_term_handler)
         self._listener_lock = threading.Lock()
-        self._listener = ListenerThread(self._socketio, self._app, self.options)
+        self.create_listener()
+
+    def create_listener(self):
+        """Create the listener on first call
+        """
+        self._listener = ListenerThread(self._app, self.options)
 
     @property
     def listener(self):

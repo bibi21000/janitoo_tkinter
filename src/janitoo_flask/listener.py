@@ -66,18 +66,17 @@ class ListenerThread(threading.Thread, Controller):
     """ The listener Tread
     """
 
-    def __init__(self, _socketio, _app, options):
+    def __init__(self, _app, options):
         """The constructor"""
         #~ print "*"*25, "init the listener"
         threading.Thread.__init__(self)
         self._stopevent = threading.Event( )
-        self.socketio = _socketio
         self.app = _app
         self.section="webapp"
         self.mqttc = None
         self.options = JNTOptions(options)
         self.hadds = {}
-        self.network = NetworkFlask(self.socketio, self.app, self._stopevent, self.options, is_primary=False, is_secondary=True, do_heartbeat_dispatch=False)
+        self.network = self.create_network()
         Controller.__init__(self, self.network)
         self.loop_sleep = 0.25
         loop_sleep = self.options.get_option('system','loop_sleep', self.loop_sleep)
@@ -86,6 +85,11 @@ class ListenerThread(threading.Thread, Controller):
         else:
             logger.debug("[%s] - Can't retrieve value of loop_sleep. Use default value instead (%s)", self.__class__.__name__, self.loop_sleep)
         self.extend_from_entry_points('janitoo_flask')
+
+    def create_network(self):
+        """Create the listener on first call
+        """
+        self.network = NetworkFlask(self.app, self._stopevent, self.options, is_primary=False, is_secondary=True, do_heartbeat_dispatch=False)
 
     def boot(self):
         """configure the HADD address
