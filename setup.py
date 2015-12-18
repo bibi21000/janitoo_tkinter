@@ -65,6 +65,7 @@ setup(
         'Flask >= 0.9',
         'Flask-SQLAlchemy >= 1.0',
         'Flask-Script >= 0.6',
+        'Flask-Bower',
         'gevent == 1.0.2',
         'gevent-websocket',
     ],

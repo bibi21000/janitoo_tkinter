@@ -46,6 +46,8 @@ monkey.patch_all()
 import logging
 logger = logging.getLogger(__name__)
 
+from flask_bower import Bower
+
 from logging.config import fileConfig as logging_fileConfig
 from flask import appcontext_pushed
 from flask import current_app
@@ -84,6 +86,8 @@ class FlaskJanitoo(object):
         self._listener_lock = None
         self._sleep = 1
         self.menu_left = []
+        # Bower
+        self.bower = Bower()
 
     def init_app(self, app, options, db=None):
         """
@@ -118,6 +122,9 @@ class FlaskJanitoo(object):
         signal.signal(signal.SIGTERM, self.signal_term_handler)
         signal.signal(signal.SIGINT, self.signal_term_handler)
         self._listener_lock = threading.Lock()
+        # Flask-Bower
+        self.bower.init_app(self._app)
+
         self.create_listener()
 
     def create_listener(self):
