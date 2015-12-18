@@ -116,6 +116,7 @@ class FlaskJanitoo(object):
         self._app.extensions['options'] = self.options
         self._app.extensions['bower'] = self.bower
         self._app.extensions['cache'] = self.cache
+        self._app.extensions['janitoo'] = self
         try:
             self._sleep = int(self._app.config['FLASKJANITOO_SLEEP'])
             if self._sleep <= 0 :
