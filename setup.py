@@ -68,7 +68,6 @@ setup(
         'Flask-Cache',
         'Flask-Bower',
         'gevent == 1.0.2',
-        'gevent-websocket',
     ],
     dependency_links = [
       'https://github.com/bibi21000/gevent-socketio/archive/master.zip#egg=gevent-socketio-%s'%"0.3.7",
