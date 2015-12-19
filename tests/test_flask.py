@@ -64,14 +64,6 @@ class TestFlask(JNTTFlask, JNTTFlaskCommon):
         janitoo.init_app(app, {})
         return app
 
-    def test_001_server_is_up(self):
-        self.assertEqual(type(self.app.extensions['cache']), type(Cache()))
-        self.assertEqual(type(self.app.extensions['bower']), type(Bower()))
-        routes = self.get_routes()
-        print routes
-        self.assertTrue('bower.serve' in routes)
-        self.assertTrue('static' in routes)
-
     def test_051_extend_blueprints(self):
         self.app.extensions['janitoo'].extend_blueprints('janitoo_test')
 
