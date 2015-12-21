@@ -37,8 +37,8 @@ from flask import Flask, request
 from flask_bower import Bower
 from flask_cache import Cache
 
-from janitoo_nosetests.flask import JNTTFlask, JNTTFlaskCommon
-from janitoo_nosetests.flask import JNTTFlaskLive, JNTTFlaskLiveCommon
+from janitoo_nosetests_flask.flask import JNTTFlask, JNTTFlaskCommon
+from janitoo_nosetests_flask.flask import JNTTFlaskLive, JNTTFlaskLiveCommon
 
 from janitoo.utils import json_dumps, json_loads
 from janitoo.utils import HADD_SEP, HADD
