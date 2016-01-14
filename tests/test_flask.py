@@ -49,7 +49,7 @@ from janitoo_db.migrate import Config as alConfig, collect_configs, janitoo_conf
 
 from janitoo_flask import FlaskJanitoo
 
-class TestFlask(JNTTFlask, JNTTFlaskCommon):
+class TestFlask(JNTTFlask):
     """Test flask
     """
     flask_conf = None
@@ -59,6 +59,13 @@ class TestFlask(JNTTFlask, JNTTFlaskCommon):
         janitoo = FlaskJanitoo(app)
         janitoo.init_app(app, {})
         return app
+
+    def test_001_app_is_loaded(self):
+        self.assertEqual(type(self.app.extensions['cache']), type(Cache()))
+        self.assertEqual(type(self.app.extensions['bower']), type(Bower()))
+        print self.get_routes()
+        self.assertEndpoint('bower.serve')
+        self.assertEndpoint('static')
 
     def test_051_extend_blueprints(self):
         self.app.extensions['janitoo'].extend_blueprints('janitoo_test')
