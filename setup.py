@@ -58,17 +58,17 @@ setup(
     platforms='any',
     install_requires=[
         'janitoo_db >= %s'%janitoo_version,
-        'gevent == 1.0.2',
         'Flask >= 0.9',
         'Flask-SQLAlchemy >= 1.0',
         'Flask-Script >= 0.6',
         'Flask-Cache',
         'Flask-Bower',
     ],
+        #~ 'gevent == 1.0.2',
     dependency_links = [
-      'https://github.com/bibi21000/gevent-socketio/archive/master.zip#egg=gevent-socketio-%s'%"0.3.7",
       'https://github.com/bibi21000/janitoo_db/archive/master.zip#egg=janitoo_db-%s'%"0.0.7",
     ],
+      #~ 'https://github.com/bibi21000/gevent-socketio/archive/master.zip#egg=gevent-socketio-%s'%"0.3.7",
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
