@@ -73,6 +73,7 @@ class ListenerThread(threading.Thread, Controller):
         self.mqttc = None
         self.options = JNTOptions(options)
         self.hadds = {}
+        self.network = None
         self.create_network()
         Controller.__init__(self, self.network)
         self.loop_sleep = 0.25
@@ -83,6 +84,14 @@ class ListenerThread(threading.Thread, Controller):
             logger.debug("[%s] - Can't retrieve value of loop_sleep. Use default value instead (%s)", self.__class__.__name__, self.loop_sleep)
         self.extend_from_entry_points('janitoo_flask')
 
+    def __del__(self):
+        """
+        """
+        try:
+            self.stop()
+        except:
+            pass
+
     def create_network(self):
         """Create the listener on first call
         """
@@ -91,7 +100,7 @@ class ListenerThread(threading.Thread, Controller):
     def boot(self):
         """configure the HADD address
         """
-        print "*"*25, "boot the listener"
+        print("*"*25, "boot the listener")
         default_hadd = HADD%(9998,0)
         hadd = self.options.get_option('webapp','hadd', default_hadd)
         if default_hadd is None:
@@ -113,15 +122,27 @@ class ListenerThread(threading.Thread, Controller):
         Controller.start_controller_timer(self)
         while not self._stopevent.isSet():
             self._stopevent.wait(self.loop_sleep)
-        self.network.stop()
+        if self.network is not None:
+            self.network.stop()
 
     def stop(self):
         """Stop the tread
         """
+        print("*"*25, "stop the listener")
         Controller.stop_controller_timer(self)
-        self._stopevent.set( )
-        logger.info("Stop listener")
         Controller.stop_controller(self)
+        logger.info("Stop listener")
+        self._stopevent.set()
+        if self.network is not None:
+            print("*"*25, "stop the network")
+            self.network.stop()
+        for i in range(100):
+            if self.network.is_stopped:
+                break
+            else:
+                self._stopevent.wait(0.1)
+        self.network = None
+        print("*"*25, "network is stopped")
 
     def extend_from_entry_points(self, group):
         """"Extend the listener with methods found in entrypoints

@@ -82,12 +82,20 @@ class FlaskJanitoo(object):
             logging_fileConfig(self.options['conf_file'])
         self._listener = None
         self._listener_lock = None
-        self._sleep = 1
+        self._sleep = 0.25
         self.menu_left = []
         # Bower
         self.bower = Bower()
         # Caching
         self.cache = Cache()
+
+    def __del__(self):
+        """
+        """
+        try:
+            self.stop_listener()
+        except:
+            pass
 
     def init_app(self, app, options, db=None):
         """
@@ -117,11 +125,11 @@ class FlaskJanitoo(object):
         try:
             self._sleep = int(self._app.config['FLASKJANITOO_SLEEP'])
             if self._sleep <= 0 :
-                self._sleep = 1
+                self._sleep = 0.25
         except KeyError:
-            self._sleep = 1
+            self._sleep = 0.25
         except ValueError:
-            self._sleep = 1
+            self._sleep = 0.25
         # Use the newstyle teardown_appcontext if it's available,
         # otherwise fall back to the request context
         if hasattr(self._app, 'teardown_appcontext'):
@@ -156,6 +164,22 @@ class FlaskJanitoo(object):
                 self._listener.start()
         finally:
             self._listener_lock.release()
+
+    def stop_listener(self):
+        """Stop the listener
+        """
+        try:
+            self._listener_lock.acquire()
+            self._listener.stop()
+            print "Im' here"
+            try:
+                self._listener.join()
+            except RuntimeError:
+                pass
+            print "Im' here"
+        finally:
+            self._listener_lock.release()
+        self._listener = None
 
     def extend_blueprints(self, group):
         """
@@ -192,7 +216,7 @@ class FlaskJanitoo(object):
         if self._listener.is_alive():
             self._listener.stop()
             try:
-                print self._listener
+                print "Stop listener", self._listener
                 self._listener.join()
             except AssertionError:
                 logger.exception("Catched exception : ")
@@ -200,8 +224,8 @@ class FlaskJanitoo(object):
                 logger.exception("Catched exception : ")
         sys.exit(0)
 
-    def connect(self):
-        return sqlite3.connect(current_app.config['SQLITE3_DATABASE'])
+    #~ def connect(self):
+        #~ return sqlite3.connect(current_app.config['SQLITE3_DATABASE'])
 
     #~ @property
     #~ def backend(self):
