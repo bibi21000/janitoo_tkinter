@@ -90,7 +90,7 @@ class ListenerThread(threading.Thread, Controller):
         try:
             self.stop()
         except:
-            pass
+            logger.debug("[%s] - Catched exception", self.__class__.__name__)
 
     def create_network(self):
         """Create the listener on first call
