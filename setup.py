@@ -67,6 +67,7 @@ setup(
         #~ 'gevent == 1.0.2',
     dependency_links = [
       'https://github.com/bibi21000/janitoo_db/archive/master.zip#egg=janitoo_db',
+      'https://github.com/bibi21000/janitoo_nosetests_flask/archive/master.zip#egg=janitoo_nosetests_flask',
     ],
       #~ 'https://github.com/bibi21000/gevent-socketio/archive/master.zip#egg=gevent-socketio-%s'%"0.3.7",
     classifiers=[
@@ -79,4 +80,5 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
+    tests_require=['janitoo_nosetests_flask'],
 )
