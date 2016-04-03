@@ -58,6 +58,7 @@ setup(
     platforms='any',
     install_requires=[
         'janitoo_db',
+        'janitoo_factory',
         'Flask >= 0.9',
         'Flask-SQLAlchemy >= 1.0',
         'Flask-Script >= 0.6',
@@ -67,6 +68,7 @@ setup(
         #~ 'gevent == 1.0.2',
     dependency_links = [
       'https://github.com/bibi21000/janitoo_db/archive/master.zip#egg=janitoo_db',
+      'https://github.com/bibi21000/janitoo_factory/archive/master.zip#egg=janitoo_factory',
       'https://github.com/bibi21000/janitoo_nosetests_flask/archive/master.zip#egg=janitoo_nosetests_flask',
     ],
       #~ 'https://github.com/bibi21000/gevent-socketio/archive/master.zip#egg=gevent-socketio-%s'%"0.3.7",
