@@ -171,12 +171,10 @@ class FlaskJanitoo(object):
         try:
             self._listener_lock.acquire()
             self._listener.stop()
-            print "Im' here"
             try:
                 self._listener.join()
             except RuntimeError:
                 pass
-            print "Im' here"
         finally:
             self._listener_lock.release()
         self._listener = None

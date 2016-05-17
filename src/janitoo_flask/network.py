@@ -27,17 +27,10 @@ __copyright__ = "Copyright © 2013-2014-2015-2016 Sébastien GALLET aka bibi2100
 import logging
 logger = logging.getLogger(__name__)
 
-import threading
-import datetime
-from flask import request
 from pkg_resources import iter_entry_points
 
-from janitoo.value import JNTValue
-from janitoo.node import JNTNode
-from janitoo.utils import HADD, HADD_SEP, json_dumps, json_loads, hadd_split
-from janitoo.dhcp import HeartbeatMessage, check_heartbeats, CacheManager, JNTNetwork
-from janitoo.mqtt import MQTTClient
-from janitoo.options import JNTOptions
+from janitoo.utils import HADD, HADD_SEP, json_loads, hadd_split
+from janitoo.dhcp import HeartbeatMessage, CacheManager, JNTNetwork
 
 class NetworkFlask(JNTNetwork):
     """The network manager for the flask application

@@ -136,5 +136,3 @@ class OptionsConfig(Config):
             self.SERVER_NAME = "%s:%s"%(webapp['host'], webapp['port'])
         if 'cache_dir' in system:
             self.CACHE_DIR = so.path.join(system['cache_dir'], 'flask_cache_store')
-
-        print self.options.data

@@ -28,18 +28,14 @@ __copyright__ = "Copyright © 2013-2014-2015-2016 Sébastien GALLET aka bibi2100
 import logging
 logger = logging.getLogger(__name__)
 
-import os, sys
-import time
-import threading
+import os
 from pkg_resources import iter_entry_points
 
-from flask import Flask, render_template, session, request, current_app
+from flask import Flask,  session, request, current_app
 
-from janitoo.mqtt import MQTTClient
-from janitoo.options import JNTOptions
 from janitoo.server import JNTControllerManager
-from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
-from janitoo.dhcp import HeartbeatMessage, check_heartbeats, CacheManager
+from janitoo.utils import HADD, HADD_SEP, json_dumps, json_loads
+from janitoo.dhcp import HeartbeatMessage, CacheManager
 
 
 class Controller(JNTControllerManager):
