@@ -6,6 +6,14 @@
     :target: https://coveralls.io/github/bibi21000/janitoo_flask?branch=master
     :alt: Coveralls results
 
+.. image:: https://landscape.io/github/bibi21000/janitoo_flask/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/bibi21000/janitoo_flask/master
+   :alt: Code Health
+
+.. image:: https://img.shields.io/badge/Documenation-ok-brightgreen.svg?style=flat
+   :target: https://bibi21000.github.io/janitoo_flask/index.html
+   :alt: Documentation
+
 ===============
 The README file
 ===============
