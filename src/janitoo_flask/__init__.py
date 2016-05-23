@@ -94,7 +94,7 @@ class FlaskJanitoo(object):
         """
         try:
             self.stop_listener()
-        except:
+        except Exception:
             pass
 
     def init_app(self, app, options, db=None):
