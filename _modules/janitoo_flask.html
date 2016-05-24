@@ -260,7 +260,6 @@
 <div class="viewcode-block" id="FlaskJanitoo.listener"><a class="viewcode-back" href="../api/index.html#janitoo_flask.FlaskJanitoo.listener">[docs]</a>    <span class="k">def</span> <span class="nf">listener</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Start the listener on first call</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c">#~ print &quot;============================================================&gt; get listener&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_listener</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span>
 </div>
@@ -323,12 +322,11 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">print</span> <span class="s">&quot;Stop listener&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s">&quot;Catched exception : &quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s">&quot;Catched exception in signal_term_handler: &quot;</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s">&quot;Catched exception : &quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s">&quot;Catched exception in signal_term_handler: &quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="c">#~ def connect(self):</span>

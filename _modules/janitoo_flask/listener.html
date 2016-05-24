@@ -137,16 +137,13 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">iter_entry_points</span>
 
 <span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">current_app</span>
 
-<span class="kn">from</span> <span class="nn">janitoo.mqtt</span> <span class="kn">import</span> <span class="n">MQTTClient</span>
 <span class="kn">from</span> <span class="nn">janitoo.options</span> <span class="kn">import</span> <span class="n">JNTOptions</span>
-<span class="kn">from</span> <span class="nn">janitoo.server</span> <span class="kn">import</span> <span class="n">JNTControllerManager</span>
 <span class="kn">from</span> <span class="nn">janitoo.utils</span> <span class="kn">import</span> <span class="n">HADD</span><span class="p">,</span> <span class="n">HADD_SEP</span><span class="p">,</span> <span class="n">CADD</span><span class="p">,</span> <span class="n">json_dumps</span><span class="p">,</span> <span class="n">json_loads</span>
 <span class="kn">from</span> <span class="nn">janitoo.dhcp</span> <span class="kn">import</span> <span class="n">HeartbeatMessage</span><span class="p">,</span> <span class="n">check_heartbeats</span><span class="p">,</span> <span class="n">CacheManager</span>
 <span class="kn">from</span> <span class="nn">janitoo_flask.network</span> <span class="kn">import</span> <span class="n">NetworkFlask</span>
@@ -209,7 +206,7 @@
 <div class="viewcode-block" id="ListenerThread.boot"><a class="viewcode-back" href="../../api/index.html#janitoo_flask.listener.ListenerThread.boot">[docs]</a>    <span class="k">def</span> <span class="nf">boot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;configure the HADD address</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="o">*</span><span class="mi">25</span><span class="p">,</span> <span class="s">&quot;boot the listener&quot;</span><span class="p">)</span>
+        <span class="c">#~ print(&quot;*&quot;*25, &quot;boot the listener&quot;)</span>
         <span class="n">default_hadd</span> <span class="o">=</span> <span class="n">HADD</span><span class="o">%</span><span class="p">(</span><span class="mi">9998</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">hadd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="s">&#39;webapp&#39;</span><span class="p">,</span><span class="s">&#39;hadd&#39;</span><span class="p">,</span> <span class="n">default_hadd</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">default_hadd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -237,13 +234,13 @@
 <div class="viewcode-block" id="ListenerThread.stop"><a class="viewcode-back" href="../../api/index.html#janitoo_flask.listener.ListenerThread.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Stop the tread</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="o">*</span><span class="mi">25</span><span class="p">,</span> <span class="s">&quot;stop the listener&quot;</span><span class="p">)</span>
+        <span class="c">#~ print(&quot;*&quot;*25, &quot;stop the listener&quot;)</span>
         <span class="n">Controller</span><span class="o">.</span><span class="n">stop_controller_timer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">Controller</span><span class="o">.</span><span class="n">stop_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Stop listener&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stopevent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="o">*</span><span class="mi">25</span><span class="p">,</span> <span class="s">&quot;stop the network&quot;</span><span class="p">)</span>
+            <span class="c">#~ print(&quot;*&quot;*25, &quot;stop the network&quot;)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">is_stopped</span><span class="p">:</span>
@@ -251,7 +248,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_stopevent</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="o">*</span><span class="mi">25</span><span class="p">,</span> <span class="s">&quot;network is stopped&quot;</span><span class="p">)</span>
+        <span class="c">#~ print(&quot;*&quot;*25, &quot;network is stopped&quot;)</span>
 </div>
 <div class="viewcode-block" id="ListenerThread.extend_from_entry_points"><a class="viewcode-back" href="../../api/index.html#janitoo_flask.listener.ListenerThread.extend_from_entry_points">[docs]</a>    <span class="k">def</span> <span class="nf">extend_from_entry_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;&quot;Extend the listener with methods found in entrypoints</span>

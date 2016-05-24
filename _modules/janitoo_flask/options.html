@@ -236,15 +236,15 @@
         <span class="n">system</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span>
         <span class="n">webapp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get_options</span><span class="p">(</span><span class="s">&#39;webapp&#39;</span><span class="p">)</span>
         <span class="n">database</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get_options</span><span class="p">(</span><span class="s">&#39;database&#39;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">flask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get_options</span><span class="p">(</span><span class="s">&#39;flask&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">ConfigParser</span><span class="o">.</span><span class="n">NoSectionError</span><span class="p">:</span>
-            <span class="n">flask</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c">#~ try:</span>
+            <span class="c">#~ flask = self.options.get_options(&#39;flask&#39;)</span>
+        <span class="c">#~ except ConfigParser.NoSectionError:</span>
+            <span class="c">#~ flask = {}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SQLALCHEMY_DATABASE_URI</span> <span class="o">=</span> <span class="n">database</span><span class="p">[</span><span class="s">&#39;sqlalchemy.url&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="s">&#39;host&#39;</span> <span class="ow">in</span> <span class="n">webapp</span> <span class="ow">and</span> <span class="s">&#39;port&#39;</span> <span class="ow">in</span> <span class="n">webapp</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">SERVER_NAME</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">webapp</span><span class="p">[</span><span class="s">&#39;host&#39;</span><span class="p">],</span> <span class="n">webapp</span><span class="p">[</span><span class="s">&#39;port&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="s">&#39;cache_dir&#39;</span> <span class="ow">in</span> <span class="n">system</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">CACHE_DIR</span> <span class="o">=</span> <span class="n">so</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">system</span><span class="p">[</span><span class="s">&#39;cache_dir&#39;</span><span class="p">],</span> <span class="s">&#39;flask_cache_store&#39;</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CACHE_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">system</span><span class="p">[</span><span class="s">&#39;cache_dir&#39;</span><span class="p">],</span> <span class="s">&#39;flask_cache_store&#39;</span><span class="p">)</span></div>
 </pre></div>
 
     </div>
