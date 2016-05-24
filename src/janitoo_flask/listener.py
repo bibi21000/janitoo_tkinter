@@ -28,16 +28,13 @@ __copyright__ = "Copyright © 2013-2014-2015-2016 Sébastien GALLET aka bibi2100
 import logging
 logger = logging.getLogger(__name__)
 
-import os, sys
-import time
+import sys
 import threading
 from pkg_resources import iter_entry_points
 
 from flask import Flask, render_template, session, request, current_app
 
-from janitoo.mqtt import MQTTClient
 from janitoo.options import JNTOptions
-from janitoo.server import JNTControllerManager
 from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
 from janitoo.dhcp import HeartbeatMessage, check_heartbeats, CacheManager
 from janitoo_flask.network import NetworkFlask
@@ -100,7 +97,7 @@ class ListenerThread(threading.Thread, Controller):
     def boot(self):
         """configure the HADD address
         """
-        print("*"*25, "boot the listener")
+        #~ print("*"*25, "boot the listener")
         default_hadd = HADD%(9998,0)
         hadd = self.options.get_option('webapp','hadd', default_hadd)
         if default_hadd is None:
@@ -128,13 +125,13 @@ class ListenerThread(threading.Thread, Controller):
     def stop(self):
         """Stop the tread
         """
-        print("*"*25, "stop the listener")
+        #~ print("*"*25, "stop the listener")
         Controller.stop_controller_timer(self)
         Controller.stop_controller(self)
         logger.info("Stop listener")
         self._stopevent.set()
         if self.network is not None:
-            print("*"*25, "stop the network")
+            #~ print("*"*25, "stop the network")
             self.network.stop()
         for i in range(100):
             if self.network.is_stopped:
@@ -142,7 +139,7 @@ class ListenerThread(threading.Thread, Controller):
             else:
                 self._stopevent.wait(0.1)
         self.network = None
-        print("*"*25, "network is stopped")
+        #~ print("*"*25, "network is stopped")
 
     def extend_from_entry_points(self, group):
         """"Extend the listener with methods found in entrypoints

@@ -127,12 +127,12 @@ class OptionsConfig(Config):
         system = self.options.data
         webapp = self.options.get_options('webapp')
         database = self.options.get_options('database')
-        try:
-            flask = self.options.get_options('flask')
-        except ConfigParser.NoSectionError:
-            flask = {}
+        #~ try:
+            #~ flask = self.options.get_options('flask')
+        #~ except ConfigParser.NoSectionError:
+            #~ flask = {}
         self.SQLALCHEMY_DATABASE_URI = database['sqlalchemy.url']
         if 'host' in webapp and 'port' in webapp:
             self.SERVER_NAME = "%s:%s"%(webapp['host'], webapp['port'])
         if 'cache_dir' in system:
-            self.CACHE_DIR = so.path.join(system['cache_dir'], 'flask_cache_store')
+            self.CACHE_DIR = os.path.join(system['cache_dir'], 'flask_cache_store')

@@ -151,7 +151,6 @@ class FlaskJanitoo(object):
     def listener(self):
         """Start the listener on first call
         """
-        #~ print "============================================================> get listener"
         self.start_listener()
         return self._listener
 
@@ -214,12 +213,11 @@ class FlaskJanitoo(object):
         if self._listener.is_alive():
             self._listener.stop()
             try:
-                print "Stop listener", self._listener
                 self._listener.join()
             except AssertionError:
-                logger.exception("Catched exception : ")
+                logger.exception("Catched exception in signal_term_handler: ")
             except RuntimeError:
-                logger.exception("Catched exception : ")
+                logger.exception("Catched exception in signal_term_handler: ")
         sys.exit(0)
 
     #~ def connect(self):
