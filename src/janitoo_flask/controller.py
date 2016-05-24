@@ -31,8 +31,7 @@ logger = logging.getLogger(__name__)
 from pkg_resources import iter_entry_points
 
 from janitoo.server import JNTControllerManager
-from janitoo.utils import HADD, HADD_SEP, json_dumps
-from janitoo.dhcp import CacheManager
+from janitoo.utils import HADD, HADD_SEP
 
 
 class Controller(JNTControllerManager):
@@ -94,17 +93,17 @@ class Controller(JNTControllerManager):
         self.add_poll(value, timeout=10)
 
     def get_count_user_values(self, node_uuid, index):
-        """Return the
+        """Return the number of user values
         """
         return "%s:%s:%s"%self.network.users_count
 
     def get_count_config_values(self, node_uuid, index):
-        """Return the
+        """Return the number of onfig values
         """
         return "%s:%s:%s"%self.network.configs_count
 
     def get_count_basic_values(self, node_uuid, index):
-        """Return the
+        """Return the number of basic values
         """
         return "%s:%s:%s"%self.network.basics_count
 

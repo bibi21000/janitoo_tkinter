@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""janitoo flask extension.
+"""A Flask extension to build a webapp for Janitoo.
 
 """
 
@@ -47,22 +47,15 @@ from flask_bower import Bower
 from flask_cache import Cache
 
 from logging.config import fileConfig as logging_fileConfig
-from flask import appcontext_pushed
 from flask import current_app
 from jinja2 import Markup
 import signal, sys
-import os, tempfile, errno
+import os, errno
 import threading
 
 from pkg_resources import iter_entry_points
 
 from janitoo_flask.listener import ListenerThread
-
-#~ print "================================================================================================= I'ts import !!!"
-
-"""
-A Flask extension to build a webapp for janitoo
-"""
 
 # Find the stack on which we want to store the database connection.
 # Starting with Flask 0.9, the _app_ctx_stack is the correct one,
@@ -239,8 +232,8 @@ class FlaskJanitoo(object):
                 #~ ctx.tinyflow_server = self._server
             #~ return ctx.tinyflow_server
 #~
-    def teardown(self, exception):
-        ctx = stack.top
+    #~ def teardown(self, exception):
+        #~ ctx = stack.top
         #~ if hasattr(ctx, 'tinyflow_backend'):
             #~ ctx.tinyflow_backend.teardown(exception)
             #~ ctx.tinyflow_backend = None
