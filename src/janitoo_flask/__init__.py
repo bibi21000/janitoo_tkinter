@@ -232,7 +232,8 @@ class FlaskJanitoo(object):
                 #~ ctx.tinyflow_server = self._server
             #~ return ctx.tinyflow_server
 #~
-    #~ def teardown(self, exception):
+    def teardown(self, exception):
+        pass
         #~ ctx = stack.top
         #~ if hasattr(ctx, 'tinyflow_backend'):
             #~ ctx.tinyflow_backend.teardown(exception)
