@@ -109,7 +109,7 @@
   <h1>Source code for janitoo_flask</h1><div class="highlight"><pre>
 <span class="c"># -*- coding: utf-8 -*-</span>
 
-<span class="sd">&quot;&quot;&quot;janitoo flask extension.</span>
+<span class="sd">&quot;&quot;&quot;A Flask extension to build a webapp for Janitoo.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -156,22 +156,15 @@
 <span class="kn">from</span> <span class="nn">flask_cache</span> <span class="kn">import</span> <span class="n">Cache</span>
 
 <span class="kn">from</span> <span class="nn">logging.config</span> <span class="kn">import</span> <span class="n">fileConfig</span> <span class="k">as</span> <span class="n">logging_fileConfig</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">appcontext_pushed</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span>
 <span class="kn">from</span> <span class="nn">jinja2</span> <span class="kn">import</span> <span class="n">Markup</span>
 <span class="kn">import</span> <span class="nn">signal</span><span class="o">,</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">tempfile</span><span class="o">,</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 
 <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">iter_entry_points</span>
 
 <span class="kn">from</span> <span class="nn">janitoo_flask.listener</span> <span class="kn">import</span> <span class="n">ListenerThread</span>
-
-<span class="c">#~ print &quot;================================================================================================= I&#39;ts import !!!&quot;</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">A Flask extension to build a webapp for janitoo</span>
-<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c"># Find the stack on which we want to store the database connection.</span>
 <span class="c"># Starting with Flask 0.9, the _app_ctx_stack is the correct one,</span>
@@ -349,7 +342,8 @@
             <span class="c">#~ return ctx.tinyflow_server</span>
 <span class="c">#~</span></div>
 <div class="viewcode-block" id="FlaskJanitoo.teardown"><a class="viewcode-back" href="../api/index.html#janitoo_flask.FlaskJanitoo.teardown">[docs]</a>    <span class="k">def</span> <span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception</span><span class="p">):</span>
-        <span class="n">ctx</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">top</span>
+        <span class="k">pass</span>
+        <span class="c">#~ ctx = stack.top</span>
         <span class="c">#~ if hasattr(ctx, &#39;tinyflow_backend&#39;):</span>
             <span class="c">#~ ctx.tinyflow_backend.teardown(exception)</span>
             <span class="c">#~ ctx.tinyflow_backend = None</span>
