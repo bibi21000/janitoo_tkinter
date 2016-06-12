@@ -55,10 +55,12 @@ class JanitooTk(Tk):
 
         self._listener_lock = threading.Lock()
         self.listener = ListenerThread(self.options)
+        self.network = None
 
     def __del__(self):
         """
         """
+        self.network = None
         try:
             self.stop_listener()
         except Exception:
@@ -71,6 +73,7 @@ class JanitooTk(Tk):
         try:
             if not self.listener.is_alive():
                 self.listener.start()
+                self.network = self.listener.network
         finally:
             self._listener_lock.release()
 
@@ -79,6 +82,7 @@ class JanitooTk(Tk):
         """
         self._listener_lock.acquire()
         try:
+            self.network = None
             self.listener.stop()
             try:
                 self.listener.join()
