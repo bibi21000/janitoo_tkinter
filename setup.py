@@ -60,14 +60,12 @@ setup(
     install_requires=[
         'janitoo',
         'janitoo_factory',
-        'janitoo_factory_exts',
         'pyttk',
-        'pil',
+        'Pillow',
     ],
     dependency_links = [
       'https://github.com/bibi21000/janitoo/archive/master.zip#egg=janitoo',
       'https://github.com/bibi21000/janitoo_factory/archive/master.zip#egg=janitoo_factory',
-      'https://github.com/bibi21000/janitoo_factory_exts/archive/master.zip#egg=janitoo_factory_exts',
     ],
     classifiers=[
         'Environment :: Web Environment',
