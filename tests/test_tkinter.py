@@ -27,15 +27,6 @@ import sys, os
 import time, datetime
 import unittest
 
-from alembic import command as alcommand
-from sqlalchemy import create_engine
-from alembic import command as alcommand
-from flask import Flask, request
-from flask_bower import Bower
-from flask_cache import Cache
-
-from janitoo_nosetests_flask.flask import JNTTFlask, JNTTFlaskCommon
-
 from janitoo.utils import json_dumps, json_loads
 from janitoo.utils import HADD_SEP, HADD
 from janitoo.utils import TOPIC_HEARTBEAT
@@ -44,34 +35,29 @@ from janitoo.utils import TOPIC_BROADCAST_REPLY, TOPIC_BROADCAST_REQUEST
 from janitoo.utils import TOPIC_VALUES_USER, TOPIC_VALUES_CONFIG, TOPIC_VALUES_SYSTEM, TOPIC_VALUES_BASIC
 
 from janitoo.options import JNTOptions
-from janitoo_db.base import Base, create_db_engine
-from janitoo_db.migrate import Config as alConfig, collect_configs, janitoo_config
 
-from janitoo_flask import FlaskJanitoo
+from janitoo_tkinter import JanitooTk
 
-class TestFlask(JNTTFlask):
-    """Test flask
+from janitoo_nosetests.tkinter import JNTTTkinter
+
+class TestTkinter(JNTTTkinter):
+    """Test tkinter
     """
-    flask_conf = None
 
-    def create_app(self):
-        app = Flask("janitoo_flask")
-        janitoo = FlaskJanitoo(app)
-        janitoo.init_app(app, {})
-        return app
+    def create_root(self):
+        root = JanitooTk()
+        return root
 
-    def test_001_app_is_loaded(self):
-        self.assertEqual(type(self.app.extensions['cache']), type(Cache()))
-        self.assertEqual(type(self.app.extensions['bower']), type(Bower()))
-        print self.get_routes()
-        self.assertEndpoint('bower.serve')
-        self.assertEndpoint('static')
+    def test_001_create_root(self):
+        self.assertNotEqual(None, self.root)
 
-    def test_051_extend_blueprints(self):
-        self.app.extensions['janitoo'].extend_blueprints('janitoo_test')
+    def test_021_extend_network(self):
+        self.root.extend_network('janitoo_test')
 
-    def test_052_extend_network(self):
-        self.app.extensions['janitoo'].extend_network('janitoo_test')
+    def test_022_extend_listener(self):
+        self.root.extend_listener('janitoo_test')
 
-    def test_053_extend_listener(self):
-        self.app.extensions['janitoo'].extend_listener('janitoo_test')
+    def test_051_start_stop_listener(self):
+        self.root.start_listener()
+        time.sleep(5.0)
+        self.root.stop_listener()

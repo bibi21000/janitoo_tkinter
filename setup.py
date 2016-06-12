@@ -27,9 +27,9 @@ data_files = []
 data_files_config(data_files, 'docs','src/docs/','*')
 
 setup(
-    name='janitoo_flask',
+    name='janitoo_tkinter',
     version=janitoo_version,
-    url='http://github.com/bibi21000/janitoo_flask/',
+    url='http://github.com/bibi21000/janitoo_tkinter/',
     author='Sébastien GALLET aka bibi2100 <bibi21000@gmail.com>',
     author_email='bibi21000@gmail.com',
     license = """
@@ -48,30 +48,27 @@ setup(
         You should have received a copy of the GNU General Public License
         along with Janitoo. If not, see <http://www.gnu.org/licenses/>.
     """,
-    description="The flask extension to build web apps for janitoo",
+    description="The tkinter extension to build apps for janitoo",
     long_description=__doc__,
     packages = find_packages('src', exclude=["scripts", "docs", "config"]),
+    scripts=['src/scripts/jnt_tkui'],
     zip_safe=False,
-    keywords = "flask,web",
+    keywords = "core,ui",
     include_package_data=True,
     package_dir = { '': 'src' },
     platforms='any',
     install_requires=[
-        'janitoo_db',
+        'janitoo',
         'janitoo_factory',
-        'Flask >= 0.9',
-        'Flask-SQLAlchemy >= 1.0',
-        'Flask-Script >= 0.6',
-        'Flask-Cache',
-        'Flask-Bower',
+        'janitoo_factory_exts',
+        'pyttk',
+        'pil',
     ],
-        #~ 'gevent == 1.0.2',
     dependency_links = [
-      'https://github.com/bibi21000/janitoo_db/archive/master.zip#egg=janitoo_db',
+      'https://github.com/bibi21000/janitoo/archive/master.zip#egg=janitoo',
       'https://github.com/bibi21000/janitoo_factory/archive/master.zip#egg=janitoo_factory',
-      'https://github.com/bibi21000/janitoo_nosetests_flask/archive/master.zip#egg=janitoo_nosetests_flask',
+      'https://github.com/bibi21000/janitoo_factory_exts/archive/master.zip#egg=janitoo_factory_exts',
     ],
-      #~ 'https://github.com/bibi21000/gevent-socketio/archive/master.zip#egg=gevent-socketio-%s'%"0.3.7",
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
@@ -82,5 +79,5 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
-    tests_require=['janitoo_nosetests_flask'],
+    tests_require=['janitoo_nosetests'],
 )

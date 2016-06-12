@@ -32,13 +32,11 @@ import sys
 import threading
 from pkg_resources import iter_entry_points
 
-from flask import Flask, render_template, session, request, current_app
-
 from janitoo.options import JNTOptions
 from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
 from janitoo.dhcp import HeartbeatMessage, check_heartbeats, CacheManager
-from janitoo_flask.network import NetworkFlask
-from janitoo_flask.controller import Controller
+from janitoo_tkinter.network import Network
+from janitoo_tkinter.controller import Controller
 
 ##############################################################
 #Check that we are in sync with the official command classes
@@ -60,13 +58,12 @@ class ListenerThread(threading.Thread, Controller):
     """ The listener Tread
     """
 
-    def __init__(self, _app, options):
+    def __init__(self, options):
         """The constructor"""
         #~ print "*"*25, "init the listener"
         threading.Thread.__init__(self)
         self._stopevent = threading.Event( )
-        self.app = _app
-        self.section="webapp"
+        self.section="tkinter"
         self.mqttc = None
         self.options = JNTOptions(options)
         self.hadds = {}
@@ -92,7 +89,7 @@ class ListenerThread(threading.Thread, Controller):
     def create_network(self):
         """Create the listener on first call
         """
-        self.network = NetworkFlask(self.app, self._stopevent, self.options, is_primary=False, is_secondary=True, do_heartbeat_dispatch=False)
+        self.network = Network(self._stopevent, self.options, is_primary=False, is_secondary=True, do_heartbeat_dispatch=False)
 
     def boot(self):
         """configure the HADD address
@@ -134,7 +131,7 @@ class ListenerThread(threading.Thread, Controller):
             #~ print("*"*25, "stop the network")
             self.network.stop()
         for i in range(100):
-            if self.network.is_stopped:
+            if self.network is None or self.network.is_stopped:
                 break
             else:
                 self._stopevent.wait(0.1)
