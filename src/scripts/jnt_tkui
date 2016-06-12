@@ -27,6 +27,7 @@ logger = logging.getLogger(__name__)
 import sys, os, re, shutil, datetime
 from janitoo.runner import Runner, jnt_parse_args
 from janitoo_tkinter import JanitooTk
+from janitoo_tkinter.frame import FrameRoot
 
 class MyTkUi(Runner):
 
@@ -40,9 +41,14 @@ class MyTkUi(Runner):
         self.root.geometry("800x500")
         main = FrameRoot(self.root)
         main.pack(fill='both', expand=1)
+        self.root.start_listener()
         self.root.mainloop()
+        self.root.stop_listener()
+        #~ self.root.destroy()
+        #~ self.root = None
 
     def app_shutdown(self):
+        #~ self.root.stop_listener()
         #~ self.root.destroy()
         self.root = None
 

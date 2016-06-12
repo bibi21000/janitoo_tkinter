@@ -58,7 +58,7 @@ class ListenerThread(threading.Thread, Controller):
     """ The listener Tread
     """
 
-    def __init__(self, options):
+    def __init__(self, options, tkroot=None):
         """The constructor"""
         #~ print "*"*25, "init the listener"
         threading.Thread.__init__(self)
@@ -68,7 +68,7 @@ class ListenerThread(threading.Thread, Controller):
         self.options = JNTOptions(options)
         self.hadds = {}
         self.network = None
-        self.create_network()
+        self.create_network(tkroot=tkroot)
         Controller.__init__(self, self.network)
         self.loop_sleep = 0.25
         loop_sleep = self.options.get_option('system','loop_sleep', self.loop_sleep)
@@ -76,7 +76,7 @@ class ListenerThread(threading.Thread, Controller):
             self.loop_sleep = loop_sleep
         else:
             logger.debug("[%s] - Can't retrieve value of loop_sleep. Use default value instead (%s)", self.__class__.__name__, self.loop_sleep)
-        self.extend_from_entry_points('janitoo_flask')
+        self.extend_from_entry_points('janitoo_tkinter')
 
     def __del__(self):
         """
@@ -86,17 +86,17 @@ class ListenerThread(threading.Thread, Controller):
         except Exception:
             logger.debug("[%s] - Catched exception", self.__class__.__name__)
 
-    def create_network(self):
+    def create_network(self, **kwargs):
         """Create the listener on first call
         """
-        self.network = Network(self._stopevent, self.options, is_primary=False, is_secondary=True, do_heartbeat_dispatch=False)
+        self.network = Network(self._stopevent, self.options, is_primary=False, is_secondary=True, do_heartbeat_dispatch=False, **kwargs)
 
     def boot(self):
         """configure the HADD address
         """
         #~ print("*"*25, "boot the listener")
         default_hadd = HADD%(9998,0)
-        hadd = self.options.get_option('webapp','hadd', default_hadd)
+        hadd = self.options.get_option(self.section,'hadd', default_hadd)
         if default_hadd is None:
             logger.debug("[%s] - Can't retrieve value of hadd. Use default value instead (%s)", self.__class__.__name__, default_hadd)
         self.hadds = { 0 : hadd,
@@ -110,8 +110,8 @@ class ListenerThread(threading.Thread, Controller):
         logger.info("Start listener")
         self.boot()
         self.network.boot(self.hadds)
-        Controller.start_controller(self, self.section, self.options, cmd_classes=[COMMAND_DHCPD], hadd=self.hadds[0], name="Webapp Server",
-            product_name="Webapp Server", product_type="Webapp Server")
+        Controller.start_controller(self, self.section, self.options, cmd_classes=[COMMAND_DHCPD], hadd=self.hadds[0], name="Tkinter client",
+            product_name="Tkinter client")
         self._stopevent.wait(1.0)
         Controller.start_controller_timer(self)
         while not self._stopevent.isSet():

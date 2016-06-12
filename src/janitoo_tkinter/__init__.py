@@ -2,6 +2,49 @@
 
 """A TKinter extension to build an UI for Janitoo.
 
+Communication between the network and tkinter :
+
+Define Vars in network :
+
+.. code:: python
+
+    import Tkinter as tk
+
+    class Network(JNTNetwork):
+        def __init__(self, stop_event, options, **kwargs):
+            JNTNetwork.__init__(self, stop_event, options, **kwargs)
+            self.extend_from_entry_points('janitoo_tkinter')
+            self.var_state = tk.StringVar()
+            self.var_state_str = tk.StringVar()
+            self.var_nodes_count = tk.IntVar()
+            self.var_home_id = tk.StringVar()
+            self.var_is_failed = tk.BooleanVar()
+            self.var_is_secondary = tk.BooleanVar()
+            self.var_is_primary = tk.BooleanVar()
+
+finished in :
+
+.. code:: bash
+
+    Exception RuntimeError: 'main thread is not in main loop' in <bound method StringVar.__del__ of <Tkinter.StringVar instance at 0x7f7b9233ea70>> ignored
+    Exception RuntimeError: 'main thread is not in main loop' in <bound method StringVar.__del__ of <Tkinter.StringVar instance at 0x7f7b9233eb90>> ignored
+    Exception RuntimeError: 'main thread is not in main loop' in <bound method IntVar.__del__ of <Tkinter.IntVar instance at 0x7f7b9233ebd8>> ignored
+    Exception RuntimeError: 'main thread is not in main loop' in <bound method StringVar.__del__ of <Tkinter.StringVar instance at 0x7f7b9233ec20>> ignored
+    Exception RuntimeError: 'main thread is not in main loop' in <bound method BooleanVar.__del__ of <Tkinter.BooleanVar instance at 0x7f7b9233ec68>> ignored
+    Exception RuntimeError: 'main thread is not in main loop' in <bound method BooleanVar.__del__ of <Tkinter.BooleanVar instance at 0x7f7b9233ecb0>> ignored
+    Exception RuntimeError: 'main thread is not in main loop' in <bound method BooleanVar.__del__ of <Tkinter.BooleanVar instance at 0x7f7b9233ecf8>> ignored
+
+==> we must define Vars in the main thread.
+
+But it fails too if we do update from the network thread
+
+We can do a tk recurrent function which update the networks parameters every x ms. And the same for nodes ? for values ?
+Using this method, we will 1000s updates on the ui every x ms.
+
+
+Using queues :
+
+ - a queue for network updates
 """
 
 ___license__ = """
@@ -28,12 +71,10 @@ __copyright__ = "Copyright © 2013-2014-2015-2016 Sébastien GALLET aka bibi2100
 import logging
 logger = logging.getLogger(__name__)
 from logging.config import fileConfig as logging_fileConfig
-import signal, sys
-import os, errno
+import signal
 import threading
 
-import Tkinter as tkinter
-from tkinter import Tk
+import Tkinter as tk
 from ttk import Frame
 
 from pkg_resources import iter_entry_points
@@ -41,11 +82,11 @@ from pkg_resources import iter_entry_points
 from janitoo_tkinter.listener import ListenerThread
 from janitoo_tkinter.frame import FrameNetwork, FrameRoot
 
-class JanitooTk(Tk):
+class JanitooTk(tk.Tk):
 
     def __init__(self, **kwargs):
         self.options = kwargs.pop('options', {})
-        Tk.__init__(self, **kwargs)
+        tk.Tk.__init__(self, **kwargs)
         if self.options is not None and 'conf_file' in self.options and self.options['conf_file'] is not None:
             logging_fileConfig(self.options['conf_file'])
         self._sleep = 0.25
@@ -54,8 +95,15 @@ class JanitooTk(Tk):
         signal.signal(signal.SIGINT, self.signal_term_handler)
 
         self._listener_lock = threading.Lock()
-        self.listener = ListenerThread(self.options)
-        self.network = None
+        self.listener = ListenerThread(self.options, tkroot=self)
+        self.network = self.listener.network
+        #~ self.var_state = tk.StringVar()
+        #~ self.var_state_str = tk.StringVar()
+        #~ self.var_nodes_count = tk.IntVar()
+        #~ self.var_home_id = tk.StringVar()
+        #~ self.var_is_failed = tk.BooleanVar()
+        #~ self.var_is_secondary = tk.BooleanVar()
+        #~ self.var_is_primary = tk.BooleanVar()
 
     def __del__(self):
         """
@@ -73,7 +121,6 @@ class JanitooTk(Tk):
         try:
             if not self.listener.is_alive():
                 self.listener.start()
-                self.network = self.listener.network
         finally:
             self._listener_lock.release()
 

@@ -70,12 +70,21 @@ from ttk import Label, Entry
 
 from janitoo_tkinter.tree import TreeListBox
 
-class FrameNetwork(ttk.Frame):
+
+class JntFrame(ttk.Frame):
     '''
     '''
     def __init__(self, parent, columns=['topic','value'], displaycolumns = ['value'], *args, **kw):
         name = kw.pop('name', 'Network')
+        self.network = kw.pop('network', None)
         ttk.Frame.__init__(self, parent, name=name, *args, **kw)
+
+class FrameNetwork(JntFrame):
+    '''
+    '''
+    def __init__(self, parent, columns=['topic','value'], displaycolumns = ['value'], *args, **kw):
+        name = kw.pop('name', 'Network')
+        JntFrame.__init__(self, parent, name=name, *args, **kw)
 
         helv24 = tkFont.Font(family='Helvetica', size=24, weight='bold')
         helv14 = tkFont.Font(family='Helvetica', size=14, weight='bold', slant='italic')
@@ -85,9 +94,8 @@ class FrameNetwork(ttk.Frame):
         network_state_label.grid(row=0, column=0, sticky='new', pady=2, padx=2, \
             in_=self)
 
-        self.network_state_var = tk.StringVar()
         network_state = Label(self, justify="left", anchor="w", \
-            textvariable=self.network_state_var, font=helv14)
+            textvariable=self.network.var_state, font=helv14)
         network_state.grid(row=0, column=1, sticky='new', pady=2, padx=2, \
             in_=self)
 
@@ -96,19 +104,18 @@ class FrameNetwork(ttk.Frame):
         network_nodes_label.grid(row=1, column=0, sticky='new', pady=2, padx=2, \
             in_=self)
 
-        self.network_nodes_var = tk.IntVar()
         network_nodes = Label(self, justify="left", anchor="w", \
-            textvariable=self.network_nodes_var, font=helv14)
+            textvariable=self.network.var_nodes_count, font=helv14)
         network_nodes.grid(row=1, column=1, sticky='new', pady=2, padx=2, \
             in_=self)
 
 
-class FrameNodes(ttk.Frame):
+class FrameNodes(JntFrame):
     '''
     '''
     def __init__(self, notebook, columns=['topic','value'], displaycolumns = ['value'], *args, **kw):
         name = kw.get('name', 'Nodes')
-        ttk.Frame.__init__(self, notebook, name=Name, *args, **kw)
+        JntFrame.__init__(self, notebook, name=Name, *args, **kw)
         self.tree_view = TreeListBox(self, columns=['topic', 'value'], displaycolumns=['value'])
         self.tree_view.grid(row=0, column=0, columnspan=3, sticky='nsew', pady=5, padx=5, in_=self)
         self.frame_trace.rowconfigure(0, weight=1)
@@ -253,9 +260,11 @@ class FrameRoot(Frame):
     def __init__(self, parent):
         Frame.__init__(self)
 
+        self.network = parent.network
+
         self.notebook = Notebook(self, name='notebook')
 
-        self.frame_network = FrameNetwork(self, name='main')
+        self.frame_network = FrameNetwork(self, name='main', network=self.network)
         self.frame_network.grid(row=1, column=0, columnspan=3, sticky='nsew', pady=5, padx=5, in_=self)
 
         #~ self.notebook.add(self.frame_main, text='Main', underline=0, padding=2)
