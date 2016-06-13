@@ -32,8 +32,6 @@ from pkg_resources import iter_entry_points
 from janitoo.utils import HADD, HADD_SEP, json_loads, hadd_split
 from janitoo.dhcp import HeartbeatMessage, CacheManager, JNTNetwork
 
-import Tkinter as tk
-
 class Network(JNTNetwork):
     """The network manager for the TKinter application
     """
@@ -41,31 +39,19 @@ class Network(JNTNetwork):
     def __init__(self, stop_event, options, **kwargs):
         """
         """
+        self.tkroot = kwargs.pop('tkroot', None)
+        if self.tkroot is None:
+            raise RuntimeError("tkroot must be instancied")
         JNTNetwork.__init__(self, stop_event, options, **kwargs)
         self.extend_from_entry_points('janitoo_tkinter')
-        self.var_state = tk.StringVar()
-        self.var_state_str = tk.StringVar()
-        self.var_nodes_count = tk.IntVar()
-        self.var_home_id = tk.StringVar()
-        self.var_is_failed = tk.BooleanVar()
-        self.var_is_secondary = tk.BooleanVar()
-        self.var_is_primary = tk.BooleanVar()
 
     def emit_network(self):
         """Emit a network state event
         """
-        logger.debug('Network event : homeid %s (state:%s) - %d nodes were found.' % (self.home_id, self.state, self.nodes_count))
-        #~ print "event received"
-        self.var_state = self.state
-        self.var_state_str = self.state_str
-        self.var_nodes_count = self.nodes_count
-        self.var_home_id = self.home_id
-        self.var_is_failed = self.is_failed
-        self.var_is_secondary = self.is_secondary
-        self.var_is_primary = self.is_primary
-
-        logger.debug('Network event : homeid %s (state:%s) - %d nodes were found.' % (self.home_id, self.state, self.nodes_count))
-        #~ print "response sent %s" % ret
+        ret = self.state_to_dict()
+        self.tkroot.queue_network.put(ret)
+        logger.debug('Network event : %s', ret)
+        #~ print('Network event : %s'%ret)
 
     def emit_nodes(self):
         """Emit a nodes state event

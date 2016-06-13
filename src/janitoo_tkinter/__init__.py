@@ -73,6 +73,7 @@ logger = logging.getLogger(__name__)
 from logging.config import fileConfig as logging_fileConfig
 import signal
 import threading
+import Queue
 
 import Tkinter as tk
 from ttk import Frame
@@ -97,13 +98,15 @@ class JanitooTk(tk.Tk):
         self._listener_lock = threading.Lock()
         self.listener = ListenerThread(self.options, tkroot=self)
         self.network = self.listener.network
-        #~ self.var_state = tk.StringVar()
-        #~ self.var_state_str = tk.StringVar()
-        #~ self.var_nodes_count = tk.IntVar()
-        #~ self.var_home_id = tk.StringVar()
-        #~ self.var_is_failed = tk.BooleanVar()
-        #~ self.var_is_secondary = tk.BooleanVar()
-        #~ self.var_is_primary = tk.BooleanVar()
+        self.queue_network = Queue.Queue()
+
+        self.var_state = tk.StringVar()
+        self.var_state_str = tk.StringVar()
+        self.var_nodes_count = tk.IntVar()
+        self.var_home_id = tk.StringVar()
+        self.var_is_failed = tk.BooleanVar()
+        self.var_is_secondary = tk.BooleanVar()
+        self.var_is_primary = tk.BooleanVar()
 
     def __del__(self):
         """
@@ -123,6 +126,7 @@ class JanitooTk(tk.Tk):
                 self.listener.start()
         finally:
             self._listener_lock.release()
+        self.after(int(self._sleep*1000), self.read_queues)
 
     def stop_listener(self):
         """Stop the listener
@@ -159,3 +163,26 @@ class JanitooTk(tk.Tk):
         """
         logger.info("[ %s ] - Received signal %s", self.__class__.__name__, signal)
         self.stop_listener()
+
+    def read_queues(self):
+        """ Check for updates in queues"""
+        try:
+            network = self.queue_network.get_nowait()
+            #~ print('read_queues : %s' % network)
+            self.var_state.set(network['state'])
+            self.var_state_str.set(network['state_str'])
+            self.var_nodes_count.set(network['nodes_count'])
+            self.var_home_id.set(network['home_id'])
+            self.var_is_failed.set(network['is_failed'])
+            self.var_is_secondary.set(network['is_secondary'])
+            self.var_is_primary.set(network['is_primary'])
+        except Queue.Empty:
+            pass
+        # Schedule read_queue again in one second.
+        self.after(int(self._sleep*1000), self.read_queues)
+
+    def emit_network(self):
+        """Emit a network state event
+        """
+        logger.debug('Network event : homeid %s (state:%s) - %d nodes were found.' % (self.home_id, self.state, self.nodes_count))
+        #~ print "event received"

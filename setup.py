@@ -13,7 +13,7 @@ import os
 import sys
 from _version import janitoo_version
 
-def data_files_config(res, rsrc, src, pattern):
+def get_data_files(res, rsrc, src, pattern):
     for root, dirs, fils in os.walk(src):
         if src == root:
             sub = []
@@ -21,10 +21,26 @@ def data_files_config(res, rsrc, src, pattern):
                 sub.append(os.path.join(root,fil))
             res.append((rsrc, sub))
             for dire in dirs:
-                    data_files_config(res, os.path.join(rsrc, dire), os.path.join(root, dire), pattern)
+                get_data_files(res, os.path.join(rsrc, dire), os.path.join(root, dire), pattern)
+    return res
 
 data_files = []
-data_files_config(data_files, 'docs','src/docs/','*')
+get_data_files(data_files, 'docs','src/docs/','*')
+
+def get_package_data(res, pkgdir, src, pattern):
+    for root, dirs, fils in os.walk(os.path.join(pkgdir, src)):
+        #~ print os.path.join(pkgdir, src), root, dirs, fils
+        if os.path.join(pkgdir, src) == root:
+            sub = []
+            for fil in fils:
+                sub.append(os.path.join(src,fil))
+            res.extend(sub)
+            for dire in dirs:
+                get_package_data(res, pkgdir, os.path.join(src, dire), pattern)
+    return res
+
+package_data = []
+get_package_data(package_data, 'src', 'images','*')
 
 setup(
     name='janitoo_tkinter',
@@ -54,9 +70,13 @@ setup(
     scripts=['src/scripts/jnt_tkui'],
     zip_safe=False,
     keywords = "core,ui",
-    include_package_data=True,
     package_dir = { '': 'src' },
     platforms='any',
+    include_package_data=True,
+    data_files = data_files,
+    package_data={
+            'janitoo_tkinter': package_data,
+        },
     install_requires=[
         'janitoo',
         'janitoo_factory',

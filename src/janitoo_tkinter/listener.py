@@ -89,7 +89,7 @@ class ListenerThread(threading.Thread, Controller):
     def create_network(self, **kwargs):
         """Create the listener on first call
         """
-        self.network = Network(self._stopevent, self.options, is_primary=False, is_secondary=True, do_heartbeat_dispatch=False, **kwargs)
+        self.network = Network(self._stopevent, self.options, **kwargs)
 
     def boot(self):
         """configure the HADD address
