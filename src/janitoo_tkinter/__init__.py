@@ -99,6 +99,7 @@ class JanitooTk(tk.Tk):
         self.listener = ListenerThread(self.options, tkroot=self)
         self.network = self.listener.network
         self.queue_network = Queue.Queue()
+        self.queue_nodes = Queue.Queue()
 
         self.var_state = tk.StringVar()
         self.var_state_str = tk.StringVar()
@@ -176,6 +177,18 @@ class JanitooTk(tk.Tk):
             self.var_is_failed.set(network['is_failed'])
             self.var_is_secondary.set(network['is_secondary'])
             self.var_is_primary.set(network['is_primary'])
+        except Queue.Empty:
+            pass
+        try:
+            nodes = self.queue_nodes.get_nowait()
+            #~ print('read_queues : %s' % network)
+            #~ self.var_state.set(network['state'])
+            #~ self.var_state_str.set(network['state_str'])
+            #~ self.var_nodes_count.set(network['nodes_count'])
+            #~ self.var_home_id.set(network['home_id'])
+            #~ self.var_is_failed.set(network['is_failed'])
+            #~ self.var_is_secondary.set(network['is_secondary'])
+            #~ self.var_is_primary.set(network['is_primary'])
         except Queue.Empty:
             pass
         # Schedule read_queue again in one second.

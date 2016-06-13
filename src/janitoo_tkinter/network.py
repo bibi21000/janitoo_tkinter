@@ -48,7 +48,7 @@ class Network(JNTNetwork):
     def emit_network(self):
         """Emit a network state event
         """
-        ret = self.state_to_dict()
+        ret = self.to_dict('state')
         self.tkroot.queue_network.put(ret)
         logger.debug('Network event : %s', ret)
         #~ print('Network event : %s'%ret)
@@ -56,17 +56,8 @@ class Network(JNTNetwork):
     def emit_nodes(self):
         """Emit a nodes state event
         """
-        res = {}
-        res.update(self.nodes)
-        for key in res:
-            add_ctrl, add_node = hadd_split(key)
-            if add_ctrl in self.heartbeat_cache.entries and add_node in self.heartbeat_cache.entries[add_ctrl]:
-                res[key]['state'] = self.heartbeat_cache.entries[add_ctrl][add_node]['state']
-            else:
-                res[key]['state'] = 'UNKNOWN'
-        #~ self.socketio.emit('my nodes response',
-            #~ {'data':res},
-            #~ namespace='/janitoo')
+        ret = self.to_dict('nodes')
+        self.tkroot.queue_nodes.put(ret)
         logger.debug(u'Nodes event :%s', self.nodes)
 
     def emit_node(self, nodes):

@@ -395,6 +395,15 @@ class FrameMap(JntFrame):
         """
         """
         return self.nodes.search_by_canvas(x,y)
+    def _delete_node(self, node):
+        """
+        """
+        self.nodes.delete(node)
+
+    def _draw_node(self, node):
+        """
+        """
+        self.nodes.draw(node)
 
     def _move_network(self, event):
         """
@@ -458,6 +467,31 @@ class FrameMap(JntFrame):
             self.menu_network.add_command(label="Update neighbors", command=lambda n=node : self._action_controller_node_neigbhor_update(n))
             self.menu_network.add_command(label="Delete routes", command=lambda n=node : self._action_controller_delete_all_return_routes(n))
             self.menu_network.add_command(label="Request informations", command=lambda n=node : self._action_controller_send_node_information(n))
+
+    def subscriber_nodes_cb(self, topic, value):
+        """
+        """
+        try :
+            print "subscriber_nodes_cb %s:%s" % (topic,value)
+            self.nodes_tree_view.set_item(topic, "value", value)
+            self.nodes_count['text'] = self.nodes_message % (self.nodes_tree_view.item_count)
+            node = topic.replace(NODES+'.','')
+            node = int(node)
+            if value[0] == '':
+                self.nodes.delete(node)
+            else :
+                data = json.loads(value[0], object_hook=as_python_object)
+                print "data : %s" % data
+                if node not in self.nodes.data :
+                    self.nodes.add(node,data)
+                else :
+                    self.nodes.update(node,data)
+                    #Update the node picture
+                print "subscriber_nodes_cb self.nodes.data[node]=%s" % (self.nodes.data[node])
+        except :
+            print 'subscriber_last_cb : topic / value : %s /%s' % (topic, value)
+            print traceback.format_exc()
+            print "continue"
 
 class tkNodes(object):
 
