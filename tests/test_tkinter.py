@@ -59,5 +59,5 @@ class TestTkinter(JNTTTkinter):
 
     def test_051_start_stop_listener(self):
         self.root.start_listener()
-        time.sleep(5.0)
+        time.sleep(30.0)
         self.root.stop_listener()
