@@ -78,6 +78,8 @@ import ttk
 
 from PIL import Image, ImageTk
 
+from janitoo.options import JNTOptions
+
 from janitoo_tkinter.tree import TreeListBox
 
 class JntFrame(ttk.Frame):
@@ -86,6 +88,8 @@ class JntFrame(ttk.Frame):
     def __init__(self, parent, columns=['topic','value'], displaycolumns = ['value'], *args, **kw):
         name = kw.pop('name', 'network')
         self.tkroot = kw.pop('tkroot', None)
+        self.options = kw.pop('options', {})
+        self.section = kw.pop('section', 'tkinter')
         ttk.Frame.__init__(self, parent, name=name, *args, **kw)
 
 class FrameNetwork(JntFrame):
@@ -161,7 +165,6 @@ class FrameNodes(JntFrame):
         #~ self.frame_trace.rowconfigure(2, weight=0)
         #~ self.frame_trace.columnconfigure((0), weight=1, uniform=1)
         #~ self.notebook.add(self.frame_trace, text='Trace', underline=0, padding=2)
-
 
     def clear(self):
         """
@@ -291,53 +294,69 @@ class FrameMap(JntFrame):
 
         toolbar_frame = ttk.Frame(self, relief='ridge')
         self.zoom = 1
+
         stream = pkg_resources.resource_stream(
             __name__,
             'images/16/arrow_refresh.png',
         )
         image = Image.open(io.BytesIO(stream.read()))
-        network_refresh_image = ImageTk.PhotoImage(image)
-        network_refresh = ttk.Button(toolbar_frame, image=network_refresh_image, \
+        self.network_refresh_image = ImageTk.PhotoImage(image)
+        network_refresh = ttk.Button(toolbar_frame, image=self.network_refresh_image, \
             compound='image')
+
         stream = pkg_resources.resource_stream(
             __name__,
             'images/16/magnifier_zoom_out.png',
         )
         image = Image.open(io.BytesIO(stream.read()))
-        network_zoom_out_image = ImageTk.PhotoImage(image)
-        network_zoom_out = ttk.Button(toolbar_frame, image=network_zoom_out_image, \
+        self.network_zoom_out_image = ImageTk.PhotoImage(image)
+        network_zoom_out = ttk.Button(toolbar_frame, image=self.network_zoom_out_image, \
             compound='image', command=self.action_zoom_out)
+
         stream = pkg_resources.resource_stream(
             __name__,
             'images/16/magnifier_zoom_in.png',
         )
         image = Image.open(io.BytesIO(stream.read()))
-        network_zoom_in_image = ImageTk.PhotoImage(image)
-        network_zoom_in = ttk.Button(toolbar_frame, image=network_zoom_in_image, \
+        self.network_zoom_in_image = ImageTk.PhotoImage(image)
+        network_zoom_in = ttk.Button(toolbar_frame, image=self.network_zoom_in_image, \
             compound='image', command=self.action_zoom_in)
+
         stream = pkg_resources.resource_stream(
             __name__,
             'images/16/magnifier.png',
         )
         image = Image.open(io.BytesIO(stream.read()))
-        network_zoom_none_image = ImageTk.PhotoImage(image)
-        network_zoom_none = ttk.Button(toolbar_frame, image=network_zoom_none_image, \
+        self.network_zoom_none_image = ImageTk.PhotoImage(image)
+        network_zoom_none = ttk.Button(toolbar_frame, image=self.network_zoom_none_image, \
             compound='image', command=self.action_zoom_none)
 
-        network_refresh.grid(row=0, column=0, sticky='ne', \
+        stream = pkg_resources.resource_stream(
+            __name__,
+            'images/16/disk.png',
+        )
+        image = Image.open(io.BytesIO(stream.read()))
+        self.save_map_image = ImageTk.PhotoImage(image)
+        save_map = ttk.Button(toolbar_frame, image=self.save_map_image, \
+            compound='image', command=self.action_save_map)
+
+        network_refresh.grid(row=0, column=0, sticky='nw', \
             in_=toolbar_frame)
-        network_zoom_out.grid(row=0, column=1, sticky='ne', \
+        network_zoom_out.grid(row=0, column=1, sticky='nw', \
             in_=toolbar_frame)
-        network_zoom_none.grid(row=0, column=2, sticky='ne', \
+        network_zoom_none.grid(row=0, column=2, sticky='nw', \
             in_=toolbar_frame)
-        network_zoom_in.grid(row=0, column=3, sticky='ne', \
+        network_zoom_in.grid(row=0, column=3, sticky='nw', \
+            in_=toolbar_frame)
+        save_map.grid(row=0, column=4, sticky='nw', \
             in_=toolbar_frame)
         toolbar_frame.rowconfigure((0), weight=0)
         toolbar_frame.pack(side='top', fill='x', padx=2, pady=2)
 
         inner_frame = ttk.Frame(self, relief='ridge')
+
         network_canevas = tk.Canvas(inner_frame, bg="LightSteelBlue", width=2000, height=2000)
-        self.nodes = tkNodes(network_canevas, self.zoom)
+
         network_vsb = ttk.Scrollbar(orient="vertical", command=network_canevas.yview)
         network_hsb = ttk.Scrollbar(orient="horizontal", command=network_canevas.xview)
         network_canevas.configure(yscrollcommand=lambda f, l: self.network_autoscroll(network_vsb, f, l),
@@ -361,12 +380,23 @@ class FrameMap(JntFrame):
         inner_frame.columnconfigure((1), weight=0)
         inner_frame.pack(side="top", fill="both", expand=True, padx=2, pady=2)
 
+        self.nodes = tkNodes(network_canevas, self.zoom, options=self.options, section=self.section)
+        self.nodes.load_map()
+
+        self.menu_network = None
+        self.tkroot.register_queue_cb('nodes', self.queue_nodes_cb)
+
     def action_zoom_none(self):
         """
         """
         self.zoom = 1
         self.nodes.change_scale(self.zoom)
         self.nodes.redraw_all()
+
+    def action_save_map(self):
+        """
+        """
+        self.nodes.save_map(self.tkroot)
 
     def action_zoom_in(self):
         """
@@ -395,6 +425,7 @@ class FrameMap(JntFrame):
         """
         """
         return self.nodes.search_by_canvas(x,y)
+
     def _delete_node(self, node):
         """
         """
@@ -436,13 +467,13 @@ class FrameMap(JntFrame):
         found = self._find_node_near(event.x, event.y)
         self._create_popup_network(found)
         self.menu_network.post(event.x_root, event.y_root)
-        print "_network_popup node %s" % found
+        logger.debug("[ %s ] - _network_popup for node %s", self.__class__.__name__, found)
 
     def _create_popup_network(self, node):
         """
         """
         self.menu_network = None
-        self.menu_network = Menu(self.master, tearoff=0)
+        self.menu_network = ttk.Menu(self.master, tearoff=0)
         if node == None:
             self.menu_network.add_command(label="Add device", command=self.action_controller_add_device)
             self.menu_network.add_command(label="Remove device", command=self.action_controller_remove_device)
@@ -468,38 +499,45 @@ class FrameMap(JntFrame):
             self.menu_network.add_command(label="Delete routes", command=lambda n=node : self._action_controller_delete_all_return_routes(n))
             self.menu_network.add_command(label="Request informations", command=lambda n=node : self._action_controller_send_node_information(n))
 
-    def subscriber_nodes_cb(self, topic, value):
+    def queue_nodes_cb(self, nodes):
         """
         """
         try :
-            print "subscriber_nodes_cb %s:%s" % (topic,value)
-            self.nodes_tree_view.set_item(topic, "value", value)
-            self.nodes_count['text'] = self.nodes_message % (self.nodes_tree_view.item_count)
-            node = topic.replace(NODES+'.','')
-            node = int(node)
-            if value[0] == '':
-                self.nodes.delete(node)
-            else :
-                data = json.loads(value[0], object_hook=as_python_object)
-                print "data : %s" % data
-                if node not in self.nodes.data :
-                    self.nodes.add(node,data)
-                else :
-                    self.nodes.update(node,data)
-                    #Update the node picture
-                print "subscriber_nodes_cb self.nodes.data[node]=%s" % (self.nodes.data[node])
+            logger.debug("[ %s ] - queue_nodes_cb for nodes %s", self.__class__.__name__, nodes)
+            for node in nodes:
+                self.nodes.add(node, nodes[node])
+                #~ print("[ %s ] - node %s : %s"%(self.__class__.__name__, node, nodes[node]) )
+            #~ print "subscriber_nodes_cb %s:%s" % (topic,value)
+            #~ self.nodes_tree_view.set_item(topic, "value", value)
+            #~ self.nodes_count['text'] = self.nodes_message % (self.nodes_tree_view.item_count)
+            #~ node = topic.replace(NODES+'.','')
+            #~ node = int(node)
+            #~ if value[0] == '':
+                #~ self.nodes.delete(node)
+            #~ else :
+                #~ data = json.loads(value[0], object_hook=as_python_object)
+                #~ print "data : %s" % data
+                #~ if node not in self.nodes.data :
+                    #~ self.nodes.add(node,data)
+                #~ else :
+                    #~ self.nodes.update(node,data)
+                    #~ #Update the node picture
+                #~ print "subscriber_nodes_cb self.nodes.data[node]=%s" % (self.nodes.data[node])
         except :
-            print 'subscriber_last_cb : topic / value : %s /%s' % (topic, value)
-            print traceback.format_exc()
-            print "continue"
+            logger.exception("[ %s ] - queue_nodes_cb for nodes %s", self.__class__.__name__, nodes)
+            #~ print 'subscriber_last_cb : topic / value : %s /%s' % (topic, value)
+            #~ print traceback.format_exc()
+            #~ print "continue"
 
 class tkNodes(object):
 
-    def __init__(self, canvas, scale):
+    def __init__(self, canvas, scale, options=None, section='tkinter'):
         """
         """
         self.canvas = canvas
         self.scale=scale
+        self.options=options
+        self.section=section
         self.data = {}
         stream = pkg_resources.resource_stream(
             __name__,
@@ -573,6 +611,27 @@ class tkNodes(object):
         self.sleep_dx = 35
         self.sleep_dy = -50
         self.label_size = 20
+
+    def save_map(self, tkroot):
+        """
+        """
+        self.options.set_option(self.section, 'geometry', '%sx%s'%(tkroot.winfo_width(),tkroot.winfo_height()))
+        self.options.set_option('map', 'scale', self.scale, create=True)
+        for key in self.data.keys():
+            self.options.set_option('map__%s'%key, 'posx', self.data[key]['posx'], create=True)
+            self.options.set_option('map__%s'%key, 'posy', self.data[key]['posy'], create=True)
+
+    def load_map(self):
+        """
+        """
+        self.scale = float(self.options.get_option('map', 'scale', 1))
+        for key in self.options.get_sections():
+            if key.startswith('map__'):
+                hadd = key[5:]
+                if hadd not in self.data:
+                    self.data[hadd] = {}
+                self.data[hadd]['posx'] = int(self.options.get_option(key, 'posx', 100))
+                self.data[hadd]['posy'] = int(self.options.get_option(key, 'posy', 100))
         self.change_scale(self.scale)
 
     def change_scale(self, scale):
@@ -669,9 +728,11 @@ class tkNodes(object):
     def add(self, node, data):
         """
         """
-        self.data[node] = data
-        self.data[node]['posx'] = 100
-        self.data[node]['posy'] = 100
+        if node not in self.data:
+            self.data[node] = {}
+            self.data[node]['posx'] = 100
+            self.data[node]['posy'] = 100
+        self.data[node].update(data)
         self.data[node]['links'] = {}
         self.draw(node)
 
@@ -696,48 +757,52 @@ class tkNodes(object):
     def redraw_all(self):
         """
         """
-        print "redraw_all"
+        #~ print "redraw_all"
         imgs = self.canvas.find_all()
         for img in imgs:
             self.canvas.delete(img)
         for node in self.data:
-            for link in self.data[node]['links'] :
-                self.data[node]['links'][link] = None
-                if link in self.data :
-                    self.data[link]['links'][node] = None
+            if 'links' in self.data[node]:
+                for link in self.data[node]['links']:
+                    self.data[node]['links'][link] = None
+                    if link in self.data :
+                        self.data[link]['links'][node] = None
         for node in self.data:
             self.draw(node)
 
     def draw(self, node):
         """
         """
-        print "draw links for node %s" % node
-        for neighbor in self.data[node]['neighbors']:
-            print "neighbor %s" % neighbor
-            print "self.data[node]['links'] = %s" % self.data[node]['links']
-            if neighbor in self.data[node]['links'] and \
-                    self.data[node]['links'][neighbor] != None :
-                print "link to %s already exist" % neighbor
-            else:
-                print "link to %s does not exist" % neighbor
-                if neighbor in self.data:
-                    print "The neighbor %s exist" % neighbor
-                    if node in self.data[neighbor]['links'] and \
-                            self.data[neighbor]['links'][node] != None:
-                        print "the neighbor %s has already draw the line" % neighbor
-                        self.data[node]['links'][neighbor] = self.data[neighbor]['links'][node]
-                    else :
-                        print "we draw the line to %s" % neighbor
-                        x1,y1 = self.get_coord(neighbor)
-                        x0 = self.data[node]['posx']
-                        y0 = self.data[node]['posy']
-                        lnkid = self.canvas.create_line(x0, y0, x1, y1, fill='gray14')
-                        self.canvas.tag_lower(lnkid)
-                        self.data[node]['links'][neighbor] = lnkid
-                        self.data[neighbor]['links'][node] = lnkid
-                else :
-                    print "The neighbor %s does not exist" % neighbor
-                    self.data[node]['links'][neighbor] = None
+        if 'name' not in self.data[node]:
+            #Not configured
+            return
+        #~ print "draw links for node %s" % node
+        #~ for neighbor in self.data[node]['neighbors']:
+            #~ print "neighbor %s" % neighbor
+            #~ print "self.data[node]['links'] = %s" % self.data[node]['links']
+            #~ if neighbor in self.data[node]['links'] and \
+                    #~ self.data[node]['links'][neighbor] != None :
+                #~ print "link to %s already exist" % neighbor
+            #~ else:
+                #~ print "link to %s does not exist" % neighbor
+                #~ if neighbor in self.data:
+                    #~ print "The neighbor %s exist" % neighbor
+                    #~ if node in self.data[neighbor]['links'] and \
+                            #~ self.data[neighbor]['links'][node] != None:
+                        #~ print "the neighbor %s has already draw the line" % neighbor
+                        #~ self.data[node]['links'][neighbor] = self.data[neighbor]['links'][node]
+                    #~ else :
+                        #~ print "we draw the line to %s" % neighbor
+                        #~ x1,y1 = self.get_coord(neighbor)
+                        #~ x0 = self.data[node]['posx']
+                        #~ y0 = self.data[node]['posy']
+                        #~ lnkid = self.canvas.create_line(x0, y0, x1, y1, fill='gray14')
+                        #~ self.canvas.tag_lower(lnkid)
+                        #~ self.data[node]['links'][neighbor] = lnkid
+                        #~ self.data[neighbor]['links'][node] = lnkid
+                #~ else :
+                    #~ print "The neighbor %s does not exist" % neighbor
+                    #~ self.data[node]['links'][neighbor] = None
         imgid = self.canvas.create_image(self.data[node]['posx'], self.data[node]['posy'], \
                 image=self.imagetk_node)
         self.data[node]['image_id'] = imgid
@@ -749,72 +814,72 @@ class tkNodes(object):
                 self.data[node]['posy'], text = self.data[node]['name'],\
                 anchor="w", justify='center', font=helv)
         self.data[node]['label_id'] = lblid
-        print "draw %s" % self.data[node]['capabilities']
-        if 'primaryController' in self.data[node]['capabilities'] or \
-                'staticUpdateController' in self.data[node]['capabilities'] or \
-                'bridgeController' in self.data[node]['capabilities'] :
-            print "controller"
-            ctrlid = self.canvas.create_image( \
-                    self.data[node]['posx'] + self.controler_dx*self.scale, \
-                    self.data[node]['posy'] + self.controler_dy*self.scale, \
-                    image=self.imagetk_controler)
-            self.data[node]['ctrl_id'] = ctrlid
-        if 'sleeping' not in self.data[node] or self.data[node]['sleeping'] == None :
-            if 'sleep_id' in self.data[node]:
-                del(self.data[node]['sleep_id'])
-        elif self.data[node]['sleeping'] == False:
-            sleepid = self.canvas.create_image( \
-                    self.data[node]['posx'] + self.sleep_dx*self.scale, \
-                    self.data[node]['posy'] + self.sleep_dy*self.scale, \
-                    image=self.imagetk_sleeps[0])
-            self.data[node]['sleep_id'] = sleepid
-        elif self.data[node]['sleeping'] == True:
-            sleepid = self.canvas.create_image( \
-                    self.data[node]['posx'] + self.sleep_dx*self.scale, \
-                    self.data[node]['posy'] + self.sleep_dy*self.scale, \
-                    image=self.imagetk_sleeps[1])
-            self.data[node]['sleep_id'] = sleepid
-        if 'battery' not in self.data[node] or self.data[node]['battery'] == None :
-            ctrlid = self.canvas.create_image( \
-                    self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    image=self.imagetk_batteries[7])
-        elif self.data[node]['battery'] < 5:
-            ctrlid = self.canvas.create_image( \
-                    self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    image=self.imagetk_batteries[0])
-        elif self.data[node]['battery'] < 15:
-            ctrlid = self.canvas.create_image( \
-                    self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    image=self.imagetk_batteries[1])
-        elif self.data[node]['battery'] < 25:
-            ctrlid = self.canvas.create_image( \
-                    self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    image=self.imagetk_batteries[2])
-        elif self.data[node]['battery'] < 50:
-            ctrlid = self.canvas.create_image( \
-                    self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    image=self.imagetk_batteries[3])
-        elif self.data[node]['battery'] < 70:
-            ctrlid = self.canvas.create_image( \
-                    self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    image=self.imagetk_batteries[4])
-        elif self.data[node]['battery'] < 85:
-            ctrlid = self.canvas.create_image( \
-                    self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    image=self.imagetk_batteries[5])
-        else:
-            ctrlid = self.canvas.create_image( \
-                    self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    image=self.imagetk_batteries[6])
-        self.data[node]['battery_id'] = ctrlid
+        #~ print "draw %s" % self.data[node]['capabilities']
+        #~ if 'primaryController' in self.data[node]['capabilities'] or \
+                #~ 'staticUpdateController' in self.data[node]['capabilities'] or \
+                #~ 'bridgeController' in self.data[node]['capabilities'] :
+            #~ print "controller"
+            #~ ctrlid = self.canvas.create_image( \
+                    #~ self.data[node]['posx'] + self.controler_dx*self.scale, \
+                    #~ self.data[node]['posy'] + self.controler_dy*self.scale, \
+                    #~ image=self.imagetk_controler)
+            #~ self.data[node]['ctrl_id'] = ctrlid
+        #~ if 'sleeping' not in self.data[node] or self.data[node]['sleeping'] == None :
+            #~ if 'sleep_id' in self.data[node]:
+                #~ del(self.data[node]['sleep_id'])
+        #~ elif self.data[node]['sleeping'] == False:
+            #~ sleepid = self.canvas.create_image( \
+                    #~ self.data[node]['posx'] + self.sleep_dx*self.scale, \
+                    #~ self.data[node]['posy'] + self.sleep_dy*self.scale, \
+                    #~ image=self.imagetk_sleeps[0])
+            #~ self.data[node]['sleep_id'] = sleepid
+        #~ elif self.data[node]['sleeping'] == True:
+            #~ sleepid = self.canvas.create_image( \
+                    #~ self.data[node]['posx'] + self.sleep_dx*self.scale, \
+                    #~ self.data[node]['posy'] + self.sleep_dy*self.scale, \
+                    #~ image=self.imagetk_sleeps[1])
+            #~ self.data[node]['sleep_id'] = sleepid
+        #~ if 'battery' not in self.data[node] or self.data[node]['battery'] == None :
+            #~ ctrlid = self.canvas.create_image( \
+                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
+                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
+                    #~ image=self.imagetk_batteries[7])
+        #~ elif self.data[node]['battery'] < 5:
+            #~ ctrlid = self.canvas.create_image( \
+                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
+                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
+                    #~ image=self.imagetk_batteries[0])
+        #~ elif self.data[node]['battery'] < 15:
+            #~ ctrlid = self.canvas.create_image( \
+                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
+                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
+                    #~ image=self.imagetk_batteries[1])
+        #~ elif self.data[node]['battery'] < 25:
+            #~ ctrlid = self.canvas.create_image( \
+                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
+                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
+                    #~ image=self.imagetk_batteries[2])
+        #~ elif self.data[node]['battery'] < 50:
+            #~ ctrlid = self.canvas.create_image( \
+                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
+                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
+                    #~ image=self.imagetk_batteries[3])
+        #~ elif self.data[node]['battery'] < 70:
+            #~ ctrlid = self.canvas.create_image( \
+                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
+                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
+                    #~ image=self.imagetk_batteries[4])
+        #~ elif self.data[node]['battery'] < 85:
+            #~ ctrlid = self.canvas.create_image( \
+                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
+                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
+                    #~ image=self.imagetk_batteries[5])
+        #~ else:
+            #~ ctrlid = self.canvas.create_image( \
+                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
+                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
+                    #~ image=self.imagetk_batteries[6])
+        #~ self.data[node]['battery_id'] = ctrlid
 
     def search_by_canvas(self, x, y):
         """
@@ -826,28 +891,31 @@ class tkNodes(object):
         if len(objets) > 0:     # s’il y en a...
             for imgid in objets :
                 for node in self.data:
-                    if imgid in (self.data[node]['image_id'], self.data[node]['label_id']):
+                    if 'image_id' in self.data[node] and \
+                       'label_id' in self.data[node] and \
+                        imgid in (self.data[node]['image_id'], self.data[node]['label_id']):
                         return node
         return None
 
-
 class FrameRoot(ttk.Frame):
 
-    def __init__(self, parent):
+    def __init__(self, parent, options, section='tkinter'):
         ttk.Frame.__init__(self)
 
         self.tkroot = parent
+        self.options = options
+        self.section = section
 
-        self.frame_network = FrameNetwork(self, name='state', tkroot=self.tkroot)
+        self.frame_network = FrameNetwork(self, name='state', tkroot=self.tkroot, options=self.options, section=self.section)
         self.frame_network.grid(row=0, column=0, sticky='new', pady=5, padx=5, in_=self)
 
         self.notebook = ttk.Notebook(self, name='notebook')
         self.notebook.grid(row=1, column=0, columnspan=3, sticky='nsew', pady=5, padx=5, in_=self)
 
-        self.frame_map = FrameMap(self.notebook, name='map', tkroot=self.tkroot)
+        self.frame_map = FrameMap(self.notebook, name='map', tkroot=self.tkroot, options=self.options, section=self.section)
         self.notebook.add(self.frame_map, text='Map', underline=0, padding=2)
 
-        self.frame_nodes = FrameNodes(self.notebook, name='nodes', tkroot=self.tkroot)
+        self.frame_nodes = FrameNodes(self.notebook, name='nodes', tkroot=self.tkroot, options=self.options, section=self.section)
         self.notebook.add(self.frame_nodes, text='Nodes', underline=0, padding=2)
 
         self.rowconfigure((0), weight=0)

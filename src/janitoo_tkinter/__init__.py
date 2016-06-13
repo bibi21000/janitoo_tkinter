@@ -86,20 +86,23 @@ from janitoo_tkinter.frame import FrameNetwork, FrameRoot
 class JanitooTk(tk.Tk):
 
     def __init__(self, **kwargs):
-        self.options = kwargs.pop('options', {})
+        self.options = kwargs.pop('options', None)
+        self.section = kwargs.pop('section', 'tkinter')
         tk.Tk.__init__(self, **kwargs)
-        if self.options is not None and 'conf_file' in self.options and self.options['conf_file'] is not None:
-            logging_fileConfig(self.options['conf_file'])
+        if self.options is not None:
+            logging_fileConfig(self.options.data['conf_file'])
         self._sleep = 0.25
 
         signal.signal(signal.SIGTERM, self.signal_term_handler)
         signal.signal(signal.SIGINT, self.signal_term_handler)
 
         self._listener_lock = threading.Lock()
-        self.listener = ListenerThread(self.options, tkroot=self)
+        self.listener = ListenerThread(self.options, section=self.section, tkroot=self)
         self.network = self.listener.network
         self.queue_network = Queue.Queue()
+        self.queue_network_cb = []
         self.queue_nodes = Queue.Queue()
+        self.queue_nodes_cb = []
 
         self.var_state = tk.StringVar()
         self.var_state_str = tk.StringVar()
@@ -117,6 +120,12 @@ class JanitooTk(tk.Tk):
             self.stop_listener()
         except Exception:
             pass
+
+    def set_geometry(self):
+        """Start the listener on first call
+        """
+        geometry=self.options.get_option(self.section, 'geometry', "800x500")
+        self.geometry(geometry)
 
     def start_listener(self):
         """Start the listener on first call
@@ -177,25 +186,40 @@ class JanitooTk(tk.Tk):
             self.var_is_failed.set(network['is_failed'])
             self.var_is_secondary.set(network['is_secondary'])
             self.var_is_primary.set(network['is_primary'])
+            for callback in self.queue_network_cb:
+                try:
+                    callback(network)
+                except Exception:
+                    logger.exception("[ %s ] - Exception in calback for network %s", self.__class__.__name__, network)
+
         except Queue.Empty:
             pass
         try:
             nodes = self.queue_nodes.get_nowait()
-            #~ print('read_queues : %s' % network)
-            #~ self.var_state.set(network['state'])
-            #~ self.var_state_str.set(network['state_str'])
-            #~ self.var_nodes_count.set(network['nodes_count'])
-            #~ self.var_home_id.set(network['home_id'])
-            #~ self.var_is_failed.set(network['is_failed'])
-            #~ self.var_is_secondary.set(network['is_secondary'])
-            #~ self.var_is_primary.set(network['is_primary'])
+            for callback in self.queue_nodes_cb:
+                try:
+                    callback(nodes)
+                except Exception:
+                    logger.exception("[ %s ] - Exception in calback for nodes %s", self.__class__.__name__, nodes)
         except Queue.Empty:
             pass
         # Schedule read_queue again in one second.
         self.after(int(self._sleep*1000), self.read_queues)
 
-    def emit_network(self):
-        """Emit a network state event
-        """
-        logger.debug('Network event : homeid %s (state:%s) - %d nodes were found.' % (self.home_id, self.state, self.nodes_count))
-        #~ print "event received"
+    def register_queue_cb(self, queue, cb):
+        """ Register a callback for a queue"""
+        if queue == 'network':
+            if cb not in self.queue_network_cb:
+                self.queue_network_cb.append(cb)
+        elif queue == 'nodes':
+            if cb not in self.queue_nodes_cb:
+                self.queue_nodes_cb.append(cb)
+
+    def unregister_queue_cb(self, queue, cb):
+        """ Unregister a callback for a queue"""
+        if queue == 'network':
+            if cb in self.queue_network_cb:
+                self.queue_network_cb.remove(cb)
+        elif queue == 'nodes':
+            if cb in self.queue_nodes_cb:
+                self.queue_nodes_cb.remove(cb)

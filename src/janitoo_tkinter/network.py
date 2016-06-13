@@ -57,23 +57,17 @@ class Network(JNTNetwork):
         """Emit a nodes state event
         """
         ret = self.to_dict('nodes')
+        #~ print(u'Nodes event : %s'%ret)
         self.tkroot.queue_nodes.put(ret)
-        logger.debug(u'Nodes event :%s', self.nodes)
+        logger.debug(u'Nodes event :%s', ret)
 
     def emit_node(self, nodes):
         """Emit a node state event
-        nodes : a single node or a dict of nodes
         """
-        #~ pass
-        #~ # print " emit_node %s" %nodes
-        #~ # if 'hadd' not in nodes:
-            #~ # print " emit_node hadd not in nodes"
-            #~ # for key in nodes:
-                #~ # nodes[key]['state'] = 'online'
-        #~ self.socketio.emit('my node response',
-            #~ {'data':nodes},
-            #~ namespace='/janitoo')
-        logger.debug(u'Node event :%s', nodes)
+        ret = self.nodes_to_dict(nodes)
+        #~ print(u'Nodes event : %s'%ret)
+        self.tkroot.queue_nodes.put(ret)
+        logger.debug(u'Nodes event :%s', ret)
 
     def extend_from_entry_points(self, group):
         """"Extend the network with methods found in entrypoints

@@ -58,14 +58,14 @@ class ListenerThread(threading.Thread, Controller):
     """ The listener Tread
     """
 
-    def __init__(self, options, tkroot=None):
+    def __init__(self, options, section="tkinter", tkroot=None):
         """The constructor"""
         #~ print "*"*25, "init the listener"
         threading.Thread.__init__(self)
         self._stopevent = threading.Event( )
-        self.section="tkinter"
+        self.section=section
         self.mqttc = None
-        self.options = JNTOptions(options)
+        self.options = options
         self.hadds = {}
         self.network = None
         self.create_network(tkroot=tkroot)
