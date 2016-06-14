@@ -44,9 +44,7 @@ class TestTkinter(JNTTTkinter):
     """Test tkinter
     """
 
-    def create_root(self):
-        root = JanitooTk()
-        return root
+    client_conf = "tests/data/janitoo_tkui.conf"
 
     def test_001_create_root(self):
         self.assertNotEqual(None, self.root)

@@ -43,11 +43,12 @@ from janitoo_tkinter.frame import tkNodes
 from janitoo_nosetests import JNTTBase
 from janitoo_nosetests.tkinter import JNTTTkinter
 
-class TestMap(JNTTBase):
+class TestMap(JNTTTkinter):
     """Test map
     """
+    client_conf = "tests/data/janitoo_tkui.conf"
 
     def test_nodes_save_map(self):
-        nodes=tkNodes(None, 1)
+        nodes=tkNodes(None, 1, options=self.options, section=self.section)
         self.assertNotEqual(None, nodes)
-        nodes.save_map('/tmp/jnt_map.conf')
+        nodes.save_map(self.root)
