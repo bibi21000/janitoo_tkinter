@@ -92,6 +92,16 @@ class JntFrame(ttk.Frame):
         self.section = kw.pop('section', 'tkinter')
         ttk.Frame.__init__(self, parent, name=name, *args, **kw)
 
+    def __del__(self):
+        """
+        """
+        try:
+            self.tkroot = None
+            self.options = None
+            self.section = None
+        except Exception:
+            pass
+
 class FrameNetwork(JntFrame):
     '''
     '''
@@ -302,7 +312,7 @@ class FrameMap(JntFrame):
         image = Image.open(io.BytesIO(stream.read()))
         self.network_refresh_image = ImageTk.PhotoImage(image)
         network_refresh = ttk.Button(toolbar_frame, image=self.network_refresh_image, \
-            compound='image')
+            compound='image', command=self.action_refresh)
 
         stream = pkg_resources.resource_stream(
             __name__,
@@ -386,11 +396,25 @@ class FrameMap(JntFrame):
         self.menu_network = None
         self.tkroot.register_queue_cb('nodes', self.queue_nodes_cb)
 
+    def __del__(self):
+        """
+        """
+        try:
+            self.tkroot.unregister_queue_cb('nodes', self.queue_nodes_cb)
+            JntFrame.__del__(self)
+        except Exception:
+            pass
+
     def action_zoom_none(self):
         """
         """
         self.zoom = 1
         self.nodes.change_scale(self.zoom)
+        self.nodes.redraw_all()
+
+    def action_refresh(self):
+        """
+        """
         self.nodes.redraw_all()
 
     def action_save_map(self):
@@ -473,7 +497,7 @@ class FrameMap(JntFrame):
         """
         """
         self.menu_network = None
-        self.menu_network = ttk.Menu(self.master, tearoff=0)
+        self.menu_network = tk.Menu(self.master, tearoff=0)
         if node == None:
             self.menu_network.add_command(label="Add device", command=self.action_controller_add_device)
             self.menu_network.add_command(label="Remove device", command=self.action_controller_remove_device)
@@ -505,7 +529,8 @@ class FrameMap(JntFrame):
         try :
             logger.debug("[ %s ] - queue_nodes_cb for nodes %s", self.__class__.__name__, nodes)
             for node in nodes:
-                self.nodes.add(node, nodes[node])
+                #~ print 'nodes[node]["hadd"]', nodes[node]["hadd"]
+                self.nodes.add(nodes[node]["hadd"], nodes[node])
                 #~ print("[ %s ] - node %s : %s"%(self.__class__.__name__, node, nodes[node]) )
             #~ print "subscriber_nodes_cb %s:%s" % (topic,value)
             #~ self.nodes_tree_view.set_item(topic, "value", value)

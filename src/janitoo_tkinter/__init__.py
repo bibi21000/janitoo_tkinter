@@ -115,7 +115,6 @@ class JanitooTk(tk.Tk):
     def __del__(self):
         """
         """
-        self.network = None
         try:
             self.stop_listener()
         except Exception:
@@ -124,6 +123,7 @@ class JanitooTk(tk.Tk):
     def set_geometry(self):
         """Start the listener on first call
         """
+        #Bug here
         geometry=self.options.get_option(self.section, 'geometry', "800x500")
         self.geometry(geometry)
 
@@ -134,6 +134,7 @@ class JanitooTk(tk.Tk):
         try:
             if not self.listener.is_alive():
                 self.listener.start()
+            self.network = self.listener.network
         finally:
             self._listener_lock.release()
         self.after(int(self._sleep*1000), self.read_queues)
@@ -191,7 +192,6 @@ class JanitooTk(tk.Tk):
                     callback(network)
                 except Exception:
                     logger.exception("[ %s ] - Exception in calback for network %s", self.__class__.__name__, network)
-
         except Queue.Empty:
             pass
         try:
@@ -203,7 +203,7 @@ class JanitooTk(tk.Tk):
                     logger.exception("[ %s ] - Exception in calback for nodes %s", self.__class__.__name__, nodes)
         except Queue.Empty:
             pass
-        # Schedule read_queue again in one second.
+        # Schedule read_queue again in x second.
         self.after(int(self._sleep*1000), self.read_queues)
 
     def register_queue_cb(self, queue, cb):

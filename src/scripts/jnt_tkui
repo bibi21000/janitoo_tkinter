@@ -41,11 +41,10 @@ class MyTkUi(Runner):
         #print self.options
 
     def app_run(self):
-        print self.options
         options = JNTOptions(self.options)
-        print options.data
         self.root = JanitooTk(options=options, section=self.section)
-        self.root.set_geometry()
+        #Buggy
+        #~ self.root.set_geometry()
         main = FrameRoot(self.root, options=options, section=self.section)
         main.pack(fill='both', expand=1)
         self.root.start_listener()

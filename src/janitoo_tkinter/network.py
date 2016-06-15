@@ -53,18 +53,18 @@ class Network(JNTNetwork):
         logger.debug('Network event : %s', ret)
         #~ print('Network event : %s'%ret)
 
-    def emit_nodes(self):
-        """Emit a nodes state event
-        """
-        ret = self.to_dict('nodes')
-        #~ print(u'Nodes event : %s'%ret)
-        self.tkroot.queue_nodes.put(ret)
-        logger.debug(u'Nodes event :%s', ret)
+    #~ def emit_nodes(self):
+        #~ """Emit a nodes state event
+        #~ """
+        #~ ret = self.to_dict('nodes')
+        #~ self.tkroot.queue_nodes.put(ret)
+        #~ logger.debug(u'Nodes event :%s', ret)
 
     def emit_node(self, nodes):
         """Emit a node state event
         """
         ret = self.nodes_to_dict(nodes)
+        #~ print "ret", ret
         #~ print(u'Nodes event : %s'%ret)
         self.tkroot.queue_nodes.put(ret)
         logger.debug(u'Nodes event :%s', ret)
