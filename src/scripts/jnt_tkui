@@ -46,6 +46,7 @@ class MyTkUi(Runner):
         #Buggy
         #~ self.root.set_geometry()
         main = FrameRoot(self.root, options=options, section=self.section)
+        main.master.title("Janitoo tkui")
         main.pack(fill='both', expand=1)
         self.root.start_listener()
         self.root.mainloop()

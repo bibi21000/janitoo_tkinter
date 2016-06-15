@@ -530,7 +530,12 @@ class FrameMap(JntFrame):
             logger.debug("[ %s ] - queue_nodes_cb for nodes %s", self.__class__.__name__, nodes)
             for node in nodes:
                 #~ print 'nodes[node]["hadd"]', nodes[node]["hadd"]
-                self.nodes.add(nodes[node]["hadd"], nodes[node])
+                hadd = nodes[node]["hadd"]
+                nodes[node]['neighbors'] = self.tkroot.network.find_neighbors(hadd)
+                if 'links' not in nodes[node]:
+                    nodes[node]['links'] = []
+                self.nodes.add(hadd, nodes[node])
+                #~ self.nodes.add(nodes[node]["hadd"], nodes[node])
                 #~ print("[ %s ] - node %s : %s"%(self.__class__.__name__, node, nodes[node]) )
             #~ print "subscriber_nodes_cb %s:%s" % (topic,value)
             #~ self.nodes_tree_view.set_item(topic, "value", value)
