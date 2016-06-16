@@ -82,6 +82,18 @@ from janitoo.options import JNTOptions
 
 from janitoo_tkinter.tree import TreeListBox
 
+##############################################################
+#Check that we are in sync with the official command classes
+#Must be implemented for non-regression
+from janitoo.classes import CAPABILITY_DESC
+
+CAPABILITY_DYNAMIC_CONTROLLER = 0x04
+CAPABILITY_TINY_CONTROLLER = 0x05
+
+assert(CAPABILITY_DESC[CAPABILITY_DYNAMIC_CONTROLLER] == 'CAPABILITY_DYNAMIC_CONTROLLER')
+assert(CAPABILITY_DESC[CAPABILITY_TINY_CONTROLLER] == 'CAPABILITY_TINY_CONTROLLER')
+##############################################################
+
 class JntFrame(ttk.Frame):
     '''
     '''
@@ -234,15 +246,15 @@ class FrameNodes(JntFrame):
         current_item = ''
         found = False
         for item in self.tree.get_children(''):
-            print "current_item = %s" % item
+            #~ print "current_item = %s" % item
             value = self.tree.item(item, 'values')
-            print value
-            print key
+            #~ print value
+            #~ print key
             if value[0] == key :
                 current_item = item
                 found = True
                 #break
-        print "Found %s" % found
+        #~ print "Found %s" % found
         if found == False :
             self.add_item(key, items)
         else :
@@ -261,7 +273,7 @@ class FrameNodes(JntFrame):
             ('Toyota', 'brake pedal') ,
             ('BMW', 'seat')
             ]
-        print "init tree"
+        #~ print "init tree"
         for item in car_list:
             self.tree.insert('', 'end', values=item)
             # adjust column's width if necessary to fit each value
@@ -499,11 +511,7 @@ class FrameMap(JntFrame):
         self.menu_network = None
         self.menu_network = tk.Menu(self.master, tearoff=0)
         if node == None:
-            self.menu_network.add_command(label="Add device", command=self.action_controller_add_device)
-            self.menu_network.add_command(label="Remove device", command=self.action_controller_remove_device)
-            self.menu_network.add_separator()
-            self.menu_network.add_command(label="Replication", command=self.action_controller_replication_send)
-            self.menu_network.add_command(label="Network update", command=self.action_controller_request_network_update)
+            self.menu_network.add_command(label="Refresh", command=self.action_refresh)
         elif node == 1 :
             self.menu_network.add_command(label="Rename", command=lambda n=node : self.action_node_name(n))
             self.menu_network.add_command(label="Change location", command=lambda n=node : self.action_node_location(n))
@@ -528,17 +536,20 @@ class FrameMap(JntFrame):
         """
         try :
             logger.debug("[ %s ] - queue_nodes_cb for nodes %s", self.__class__.__name__, nodes)
-            print nodes
+            #~ print nodes
             for node in nodes:
-                print node
+                #~ print node
                 #~ print 'nodes[node]["hadd"]', nodes[node]["hadd"]
                 hadd = nodes[node]["hadd"]
-                print hadd
-                nodes[node]['neighbors'] = self.tkroot.network.find_neighbors(hadd)
+                #~ print hadd
+                if 'neighbors' not in nodes[node]:
+                    nodes[node]['neighbors'] = {}
+                for had in self.tkroot.network.find_neighbors(hadd):
+                    nodes[node]['neighbors'][had] = had
                 if 'links' not in nodes[node]:
-                    nodes[node]['links'] = []
+                    nodes[node]['links'] = {}
                 self.nodes.add(hadd, nodes[node])
-                print nodes[node]
+                #~ print nodes[node]
                 #~ self.nodes.add(nodes[node]["hadd"], nodes[node])
                 #~ print("[ %s ] - node %s : %s"%(self.__class__.__name__, node, nodes[node]) )
             #~ print "subscriber_nodes_cb %s:%s" % (topic,value)
@@ -664,6 +675,10 @@ class tkNodes(object):
                 hadd = key[5:]
                 if hadd not in self.data:
                     self.data[hadd] = {}
+                if 'links' not in self.data:
+                    self.data[hadd]['links'] = {}
+                if 'neighbors' not in self.data:
+                    self.data[hadd]['neighbors'] = {}
                 self.data[hadd]['posx'] = int(self.options.get_option(key, 'posx', 100))
                 self.data[hadd]['posy'] = int(self.options.get_option(key, 'posy', 100))
         self.change_scale(self.scale)
@@ -766,8 +781,9 @@ class tkNodes(object):
             self.data[node] = {}
             self.data[node]['posx'] = 100
             self.data[node]['posy'] = 100
+            self.data[node]['links'] = {}
+            self.data[node]['neighbors'] = {}
         self.data[node].update(data)
-        self.data[node]['links'] = {}
         self.draw(node)
 
     def update(self, node, data):
@@ -811,32 +827,33 @@ class tkNodes(object):
             #Not configured
             return
         #~ print "draw links for node %s" % node
-        #~ for neighbor in self.data[node]['neighbors']:
+        for neighbor in self.data[node]['neighbors']:
             #~ print "neighbor %s" % neighbor
             #~ print "self.data[node]['links'] = %s" % self.data[node]['links']
-            #~ if neighbor in self.data[node]['links'] and \
-                    #~ self.data[node]['links'][neighbor] != None :
+            if neighbor in self.data[node]['links'] and \
+                    self.data[node]['links'][neighbor] is not None :
                 #~ print "link to %s already exist" % neighbor
-            #~ else:
+                pass
+            else:
                 #~ print "link to %s does not exist" % neighbor
-                #~ if neighbor in self.data:
+                if neighbor in self.data:
                     #~ print "The neighbor %s exist" % neighbor
-                    #~ if node in self.data[neighbor]['links'] and \
-                            #~ self.data[neighbor]['links'][node] != None:
+                    if node in self.data[neighbor]['links'] and \
+                            self.data[neighbor]['links'][node] is not None:
                         #~ print "the neighbor %s has already draw the line" % neighbor
-                        #~ self.data[node]['links'][neighbor] = self.data[neighbor]['links'][node]
-                    #~ else :
+                        self.data[node]['links'][neighbor] = self.data[neighbor]['links'][node]
+                    else :
                         #~ print "we draw the line to %s" % neighbor
-                        #~ x1,y1 = self.get_coord(neighbor)
-                        #~ x0 = self.data[node]['posx']
-                        #~ y0 = self.data[node]['posy']
-                        #~ lnkid = self.canvas.create_line(x0, y0, x1, y1, fill='gray14')
-                        #~ self.canvas.tag_lower(lnkid)
-                        #~ self.data[node]['links'][neighbor] = lnkid
-                        #~ self.data[neighbor]['links'][node] = lnkid
-                #~ else :
+                        x1,y1 = self.get_coord(neighbor)
+                        x0 = self.data[node]['posx']
+                        y0 = self.data[node]['posy']
+                        lnkid = self.canvas.create_line(x0, y0, x1, y1, fill='gray14')
+                        self.canvas.tag_lower(lnkid)
+                        self.data[node]['links'][neighbor] = lnkid
+                        self.data[neighbor]['links'][node] = lnkid
+                else :
                     #~ print "The neighbor %s does not exist" % neighbor
-                    #~ self.data[node]['links'][neighbor] = None
+                    self.data[node]['links'][neighbor] is None
         imgid = self.canvas.create_image(self.data[node]['posx'], self.data[node]['posy'], \
                 image=self.imagetk_node)
         self.data[node]['image_id'] = imgid
@@ -849,15 +866,14 @@ class tkNodes(object):
                 anchor="w", justify='center', font=helv)
         self.data[node]['label_id'] = lblid
         #~ print "draw %s" % self.data[node]['capabilities']
-        #~ if 'primaryController' in self.data[node]['capabilities'] or \
-                #~ 'staticUpdateController' in self.data[node]['capabilities'] or \
-                #~ 'bridgeController' in self.data[node]['capabilities'] :
+        if CAPABILITY_DYNAMIC_CONTROLLER in self.data[node]['capabilities'] or \
+                CAPABILITY_TINY_CONTROLLER in self.data[node]['capabilities'] :
             #~ print "controller"
-            #~ ctrlid = self.canvas.create_image( \
-                    #~ self.data[node]['posx'] + self.controler_dx*self.scale, \
-                    #~ self.data[node]['posy'] + self.controler_dy*self.scale, \
-                    #~ image=self.imagetk_controler)
-            #~ self.data[node]['ctrl_id'] = ctrlid
+            ctrlid = self.canvas.create_image( \
+                    self.data[node]['posx'] + self.controler_dx*self.scale, \
+                    self.data[node]['posy'] + self.controler_dy*self.scale, \
+                    image=self.imagetk_controler)
+            self.data[node]['ctrl_id'] = ctrlid
         #~ if 'sleeping' not in self.data[node] or self.data[node]['sleeping'] == None :
             #~ if 'sleep_id' in self.data[node]:
                 #~ del(self.data[node]['sleep_id'])

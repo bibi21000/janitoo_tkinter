@@ -1,10 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-janitoo-flask
---------------
+janitoo-tkinter
+---------------
 
 """
+__license__ = """
+    This file is part of Janitoo.
+
+    Janitoo is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Janitoo is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Janitoo. If not, see <http://www.gnu.org/licenses/>.
+"""
+__author__ = 'Sébastien GALLET aka bibi21000'
+__email__ = 'bibi21000@gmail.com'
+
+
 from os import name as os_name
 from setuptools import setup, find_packages
 from platform import system as platform_system
@@ -64,8 +84,8 @@ setup(
         You should have received a copy of the GNU General Public License
         along with Janitoo. If not, see <http://www.gnu.org/licenses/>.
     """,
-    description="The tkinter extension to build apps for janitoo",
-    long_description=__doc__,
+    description="The tkinter UI for janitoo",
+    long_description="The tkinter UI for janitoo",
     packages = find_packages('src', exclude=["scripts", "docs", "config"]),
     scripts=['src/scripts/jnt_tkui'],
     zip_safe=False,

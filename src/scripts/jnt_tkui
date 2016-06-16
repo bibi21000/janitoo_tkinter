@@ -21,10 +21,13 @@ __license__ = """
 __author__ = 'Sébastien GALLET aka bibi21000'
 __email__ = 'bibi21000@gmail.com'
 
-# Set default logging handler to avoid "No handler found" warnings.
 import logging
 logger = logging.getLogger(__name__)
+
 import sys, os, re, shutil, datetime
+
+from logging.config import fileConfig as logging_fileConfig
+
 from janitoo.runner import Runner, jnt_parse_args
 from janitoo.options import JNTOptions
 from janitoo_tkinter import JanitooTk
@@ -36,8 +39,8 @@ class MyTkUi(Runner):
         Runner.__init__(self, only_front=True)
         self.root = None
         self.section = 'tkinter'
+        logging_fileConfig(self.options['conf_file'])
         #~ self.scale = self.options.get_option('system', 'scale', self.scale)
-        self.section = 'tkinter'
         #print self.options
 
     def app_run(self):

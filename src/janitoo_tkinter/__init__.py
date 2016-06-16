@@ -70,7 +70,7 @@ __copyright__ = "Copyright © 2013-2014-2015-2016 Sébastien GALLET aka bibi2100
 
 import logging
 logger = logging.getLogger(__name__)
-from logging.config import fileConfig as logging_fileConfig
+
 import signal
 import threading
 import Queue
@@ -89,8 +89,6 @@ class JanitooTk(tk.Tk):
         self.options = kwargs.pop('options', None)
         self.section = kwargs.pop('section', 'tkinter')
         tk.Tk.__init__(self, **kwargs)
-        if self.options is not None:
-            logging_fileConfig(self.options.data['conf_file'])
         self._sleep = 0.25
 
         signal.signal(signal.SIGTERM, self.signal_term_handler)
