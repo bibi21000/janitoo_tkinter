@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>janitoo_tkinter.frame &mdash; janitoo_tkinter 0.0.7 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootswatch-3.3.4/united/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+    <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="janitoo_tkinter 0.0.7 documentation" href="../../index.html" />
+    <link rel="up" title="janitoo_tkinter" href="../janitoo_tkinter.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          janitoo_tkinter</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.0.7</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../tools/index.html">Tools</a></li>
+                <li><a href="../../api/index.html">Reference</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../manual.html"> Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../manual.html#the-ui">The UI</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <h1>Source code for janitoo_tkinter.frame</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;The ozwave management tools.</span>
+
+<span class="sd">What we should do :</span>
+
+<span class="sd">* show the nodes and update informations :</span>
+<span class="sd">* show value class and update them : there is many level : User, Config, ...</span>
+<span class="sd">* group associations : add a node to a group of a node</span>
+<span class="sd">* controller we launch a command on the controller and listen to a topic to get message.</span>
+<span class="sd">* reset operation : remove all nodes and reload the driver.</span>
+<span class="sd">* we may also manage the scenes.</span>
+
+<span class="sd">REQ vs SUB or REP feat PUB :</span>
+
+<span class="sd">Openzwave use notifications to prevent us from update on the zwave network.</span>
+<span class="sd">It&#39;s really easy to transform notifications in topics.</span>
+<span class="sd">But what should we publish and how :</span>
+
+<span class="sd">* Network : the state and the node count.</span>
+<span class="sd">* Nodes : informations (name, location, ...), command_classes, values, ...</span>
+
+<span class="sd">The simple way to make this data available is to publish them. Under</span>
+<span class="sd">an admin section for example. Most of the time we don&#39;t want this data</span>
+<span class="sd">to be available unless we are using the admin interface.</span>
+<span class="sd">We should implement a mechanism to make available and diasble it.</span>
+<span class="sd">One more time; the PUB/SUB seems to be the simplest way to do it.</span>
+<span class="sd">When starting the Admin interface, we publish a topic :</span>
+<span class="sd">usr.ozwave.admin.active = 1</span>
+<span class="sd">So that the WQdget will activate its admin interface. It will disable it</span>
+<span class="sd">when receiving usr.ozwave.admin.active = 0.</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="n">__license__</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">    This file is part of HABus.</span>
+
+<span class="s">    HABus is free software: you can redistribute it and/or modify</span>
+<span class="s">    it under the terms of the GNU General Public License as published by</span>
+<span class="s">    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="s">    (at your option) any later version.</span>
+
+<span class="s">    HABus is distributed in the hope that it will be useful,</span>
+<span class="s">    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="s">    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="s">    GNU General Public License for more details.</span>
+
+<span class="s">    You should have received a copy of the GNU General Public License</span>
+<span class="s">    along with HABus.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="s">&quot;&quot;&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s">&quot;2013 : (c) Sébastien GALLET aka bibi21000&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;Sébastien GALLET aka bibi21000&#39;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s">&#39;bibi21000@gmail.com&#39;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">io</span>
+
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+
+<span class="c">#import tkinter as tk</span>
+<span class="c">#import tkinter.Font as tkFont</span>
+<span class="c">#import tkinter.ttk as ttk</span>
+<span class="c">#import Tkinter</span>
+<span class="kn">import</span> <span class="nn">Tkinter</span> <span class="kn">as</span> <span class="nn">tk</span>
+<span class="kn">import</span> <span class="nn">tkFont</span> <span class="kn">as</span> <span class="nn">tkFont</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+<span class="kn">import</span> <span class="nn">ttk</span>
+<span class="c">#~ from ttk import Frame, Style, Progressbar, Separator, Notebook</span>
+<span class="c">#~ from ttk import Checkbutton, Button, LabelFrame</span>
+<span class="c">#~ from ttk import Label, Entry</span>
+
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageTk</span>
+
+<span class="kn">from</span> <span class="nn">janitoo.options</span> <span class="kn">import</span> <span class="n">JNTOptions</span>
+
+<span class="kn">from</span> <span class="nn">janitoo_tkinter.tree</span> <span class="kn">import</span> <span class="n">TreeListBox</span>
+
+<span class="c">##############################################################</span>
+<span class="c">#Check that we are in sync with the official command classes</span>
+<span class="c">#Must be implemented for non-regression</span>
+<span class="kn">from</span> <span class="nn">janitoo.classes</span> <span class="kn">import</span> <span class="n">CAPABILITY_DESC</span>
+
+<span class="n">CAPABILITY_DYNAMIC_CONTROLLER</span> <span class="o">=</span> <span class="mh">0x04</span>
+<span class="n">CAPABILITY_TINY_CONTROLLER</span> <span class="o">=</span> <span class="mh">0x05</span>
+
+<span class="k">assert</span><span class="p">(</span><span class="n">CAPABILITY_DESC</span><span class="p">[</span><span class="n">CAPABILITY_DYNAMIC_CONTROLLER</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;CAPABILITY_DYNAMIC_CONTROLLER&#39;</span><span class="p">)</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">CAPABILITY_DESC</span><span class="p">[</span><span class="n">CAPABILITY_TINY_CONTROLLER</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;CAPABILITY_TINY_CONTROLLER&#39;</span><span class="p">)</span>
+<span class="c">##############################################################</span>
+
+<div class="viewcode-block" id="JntFrame"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.JntFrame">[docs]</a><span class="k">class</span> <span class="nc">JntFrame</span><span class="p">(</span><span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;topic&#39;</span><span class="p">,</span><span class="s">&#39;value&#39;</span><span class="p">],</span> <span class="n">displaycolumns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;network&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;tkroot&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;options&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">section</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;section&#39;</span><span class="p">,</span> <span class="s">&#39;tkinter&#39;</span><span class="p">)</span>
+        <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">section</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="FrameNetwork"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameNetwork">[docs]</a><span class="k">class</span> <span class="nc">FrameNetwork</span><span class="p">(</span><span class="n">JntFrame</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;topic&#39;</span><span class="p">,</span><span class="s">&#39;value&#39;</span><span class="p">],</span> <span class="n">displaycolumns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;network&#39;</span><span class="p">)</span>
+        <span class="n">JntFrame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+        <span class="n">helv24</span> <span class="o">=</span> <span class="n">tkFont</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s">&#39;Helvetica&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s">&#39;bold&#39;</span><span class="p">)</span>
+        <span class="n">helv12</span> <span class="o">=</span> <span class="n">tkFont</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s">&#39;Helvetica&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s">&#39;bold&#39;</span><span class="p">,</span> <span class="n">slant</span><span class="o">=</span><span class="s">&#39;italic&#39;</span><span class="p">)</span>
+
+        <span class="c">#~ label_frame_network = ttk.Labelframe(self, text=&#39;Network&#39;)</span>
+        <span class="c">#~ label_frame_network.grid(row=0, column=0, sticky=&#39;nw&#39;, pady=2, padx=2, \</span>
+            <span class="c">#~ in_=self)</span>
+
+        <span class="n">network_state_label</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s">&quot;left&quot;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s">&quot;w&quot;</span><span class="p">,</span> \
+            <span class="n">text</span><span class="o">=</span><span class="s">&quot;Network : &quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">helv12</span><span class="p">)</span>
+        <span class="n">network_state_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nw&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">network_state</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s">&quot;left&quot;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s">&quot;w&quot;</span><span class="p">,</span> \
+            <span class="n">textvariable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span><span class="o">.</span><span class="n">var_state_str</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">helv12</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">40</span><span class="p">)</span>
+        <span class="n">network_state</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nw&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">network_nodes_label</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s">&quot;left&quot;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s">&quot;w&quot;</span><span class="p">,</span> \
+            <span class="n">text</span><span class="o">=</span><span class="s">&quot;Nodes : &quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">helv12</span><span class="p">)</span>
+        <span class="n">network_nodes_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nw&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">network_nodes</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s">&quot;left&quot;</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s">&quot;w&quot;</span><span class="p">,</span> \
+            <span class="n">textvariable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span><span class="o">.</span><span class="n">var_nodes_count</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">helv12</span><span class="p">)</span>
+        <span class="n">network_nodes</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nw&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">sep</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Separator</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s">&#39;vertical&#39;</span><span class="p">)</span>
+        <span class="n">sep</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rowspan</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;ns&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+<span class="c">#~</span>
+        <span class="c">#~ label_frame_mode = ttk.Labelframe(self, text=&#39;Mode&#39;)</span>
+        <span class="c">#~ label_frame_mode.grid(row=0, column=1, sticky=&#39;ne&#39;, pady=2, padx=2, \</span>
+            <span class="c">#~ in_=self)</span>
+
+        <span class="n">network_primary</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span> <span class="o">=</span> <span class="s">&quot;Primary&quot;</span><span class="p">,</span> \
+                <span class="n">onvalue</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">offvalue</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span><span class="o">.</span><span class="n">var_is_primary</span><span class="p">)</span>
+        <span class="n">network_primary</span><span class="o">.</span><span class="n">state</span><span class="p">([</span><span class="s">&quot;disabled&quot;</span><span class="p">])</span>
+        <span class="n">network_primary</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nw&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">network_secondary</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span> <span class="o">=</span> <span class="s">&quot;Secondary&quot;</span><span class="p">,</span> \
+                <span class="n">onvalue</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">offvalue</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span><span class="o">.</span><span class="n">var_is_secondary</span><span class="p">)</span>
+        <span class="n">network_secondary</span><span class="o">.</span><span class="n">state</span><span class="p">([</span><span class="s">&quot;disabled&quot;</span><span class="p">])</span>
+        <span class="n">network_secondary</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nw&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">network_failed</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span> <span class="o">=</span> <span class="s">&quot;Fail mode&quot;</span><span class="p">,</span> \
+                <span class="n">onvalue</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">offvalue</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span><span class="o">.</span><span class="n">var_is_failed</span><span class="p">)</span>
+        <span class="n">network_failed</span><span class="o">.</span><span class="n">state</span><span class="p">([</span><span class="s">&quot;disabled&quot;</span><span class="p">])</span>
+        <span class="n">network_failed</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nw&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="FrameNodes"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameNodes">[docs]</a><span class="k">class</span> <span class="nc">FrameNodes</span><span class="p">(</span><span class="n">JntFrame</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notebook</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;topic&#39;</span><span class="p">,</span><span class="s">&#39;value&#39;</span><span class="p">],</span> <span class="n">displaycolumns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;nodes&#39;</span><span class="p">)</span>
+        <span class="n">JntFrame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notebook</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span> <span class="o">=</span> <span class="n">TreeListBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;topic&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">],</span> <span class="n">displaycolumns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nsew&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c">#~ self.frame_trace.rowconfigure(0, weight=1)</span>
+        <span class="c">#~ self.frame_trace.rowconfigure(1, weight=0)</span>
+        <span class="c">#~ self.frame_trace.rowconfigure(2, weight=0)</span>
+        <span class="c">#~ self.frame_trace.columnconfigure((0), weight=1, uniform=1)</span>
+        <span class="c">#~ self.notebook.add(self.frame_trace, text=&#39;Trace&#39;, underline=0, padding=2)</span>
+
+<div class="viewcode-block" id="FrameNodes.clear"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameNodes.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">item_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c">#    def _on_topic_update(self, topic, value) :</span></div>
+<div class="viewcode-block" id="FrameNodes.add_item"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameNodes.add_item">[docs]</a>    <span class="k">def</span> <span class="nf">add_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">items</span><span class="p">)</span> <span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">item_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)</span>
+        <span class="c">#print indexes</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">current_item</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="c">#print &quot;current_item %s&quot; % current_item</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indexes</span> <span class="p">:</span>
+            <span class="c">#print &quot;index = %s&quot; % index</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="n">current_item</span><span class="p">):</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s">&#39;text&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">text</span> <span class="o">==</span> <span class="n">index</span> <span class="p">:</span>
+                    <span class="n">current_item</span> <span class="o">=</span> <span class="n">item</span>
+                    <span class="n">found</span> <span class="o">=</span> <span class="bp">True</span>
+                    <span class="c">#print &quot;current_item = %s&quot; % current_item</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">length</span> <span class="p">:</span>
+                <span class="n">ptype</span><span class="o">=</span><span class="s">&#39;node&#39;</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="n">ptype</span><span class="o">=</span><span class="s">&#39;value&#39;</span>
+            <span class="k">if</span> <span class="n">found</span> <span class="o">==</span> <span class="bp">False</span> <span class="p">:</span>
+                <span class="c">#print &quot;add %s&quot; % index</span>
+                <span class="k">if</span> <span class="n">ptype</span> <span class="o">==</span> <span class="s">&#39;node&#39;</span><span class="p">:</span>
+                    <span class="n">current_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">current_item</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+                    <span class="c">#print &quot;add new node %s&quot; % [index]</span>
+                <span class="k">elif</span> <span class="n">ptype</span> <span class="o">==</span> <span class="s">&#39;value&#39;</span><span class="p">:</span>
+                    <span class="n">iid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">current_item</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+</span> <span class="n">items</span><span class="p">)</span>
+                    <span class="c">#self.tree.insert(iid, 0, text=index, values=[index] + items)</span>
+                    <span class="c">#print &quot;add new value %s&quot; % ([index] + items)</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="k">if</span> <span class="n">ptype</span> <span class="o">==</span> <span class="s">&#39;value&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">current_item</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+</span> <span class="n">items</span><span class="p">)</span>
+                    <span class="c">#print &quot;add another value %s&quot; % ([index] + items)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</div>
+<div class="viewcode-block" id="FrameNodes.check_item_size"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameNodes.check_item_size">[docs]</a>    <span class="k">def</span> <span class="nf">check_item_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">items</span><span class="p">)</span> <span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">:</span>
+            <span class="c"># adjust the column&#39;s width to the header string</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">col</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="n">tkFont</span><span class="o">.</span><span class="n">Font</span><span class="p">()</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">title</span><span class="p">()))</span>
+</div>
+<div class="viewcode-block" id="FrameNodes.set_item"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameNodes.set_item">[docs]</a>    <span class="k">def</span> <span class="nf">set_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">items</span><span class="p">)</span> <span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">current_item</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+            <span class="c">#~ print &quot;current_item = %s&quot; % item</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s">&#39;values&#39;</span><span class="p">)</span>
+            <span class="c">#~ print value</span>
+            <span class="c">#~ print key</span>
+            <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span> <span class="p">:</span>
+                <span class="n">current_item</span> <span class="o">=</span> <span class="n">item</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="c">#break</span>
+        <span class="c">#~ print &quot;Found %s&quot; % found</span>
+        <span class="k">if</span> <span class="n">found</span> <span class="o">==</span> <span class="bp">False</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_item</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">items</span><span class="p">)</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">current_item</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</div>
+    <span class="k">def</span> <span class="nf">_build_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">car_header</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;key&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">car_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s">&#39;Hyundai&#39;</span><span class="p">,</span> <span class="s">&#39;brakes&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s">&#39;Honda&#39;</span><span class="p">,</span> <span class="s">&#39;light&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s">&#39;Lexus&#39;</span><span class="p">,</span> <span class="s">&#39;battery&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s">&#39;Benz&#39;</span><span class="p">,</span> <span class="s">&#39;wiper&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s">&#39;Ford&#39;</span><span class="p">,</span> <span class="s">&#39;tire&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s">&#39;Chevy&#39;</span><span class="p">,</span> <span class="s">&#39;air&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s">&#39;Chrysler&#39;</span><span class="p">,</span> <span class="s">&#39;piston&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s">&#39;Toyota&#39;</span><span class="p">,</span> <span class="s">&#39;brake pedal&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s">&#39;BMW&#39;</span><span class="p">,</span> <span class="s">&#39;seat&#39;</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="c">#~ print &quot;init tree&quot;</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">car_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;end&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">item</span><span class="p">)</span>
+            <span class="c"># adjust column&#39;s width if necessary to fit each value</span>
+            <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+                <span class="n">col_w</span> <span class="o">=</span> <span class="n">tkFont</span><span class="o">.</span><span class="n">Font</span><span class="p">()</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">car_header</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span><span class="n">width</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span><span class="o">&lt;</span><span class="n">col_w</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">car_header</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="n">col_w</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FrameNodes.sortby"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameNodes.sortby">[docs]</a>    <span class="k">def</span> <span class="nf">sortby</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tree</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">descending</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;sort tree contents when a column header is clicked on&quot;&quot;&quot;</span>
+        <span class="c"># grab values to sort</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="n">tree</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">col</span><span class="p">),</span> <span class="n">child</span><span class="p">)</span> \
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)]</span>
+        <span class="c"># if the data to be sorted is numeric change to float</span>
+        <span class="c">#data =  change_numeric(data)</span>
+        <span class="c"># now sort the data in place</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="n">descending</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="n">tree</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span>
+        <span class="c"># switch the heading so it will sort in the opposite direction</span>
+        <span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">col</span><span class="o">=</span><span class="n">col</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sortby</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> \
+            <span class="nb">int</span><span class="p">(</span><span class="ow">not</span> <span class="n">descending</span><span class="p">)))</span>
+</div>
+<div class="viewcode-block" id="FrameNodes.autoscroll"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameNodes.autoscroll">[docs]</a>    <span class="k">def</span> <span class="nf">autoscroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sbar</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Hide and show scrollbar as needed.&quot;&quot;&quot;</span>
+        <span class="n">first</span><span class="p">,</span> <span class="n">last</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">last</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">first</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">last</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">sbar</span><span class="o">.</span><span class="n">grid_remove</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sbar</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+        <span class="n">sbar</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="FrameMap"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameMap">[docs]</a><span class="k">class</span> <span class="nc">FrameMap</span><span class="p">(</span><span class="n">JntFrame</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notebook</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;map&#39;</span><span class="p">)</span>
+        <span class="n">JntFrame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notebook</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+        <span class="n">toolbar_frame</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relief</span><span class="o">=</span><span class="s">&#39;ridge&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/16/arrow_refresh.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network_refresh_image</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">network_refresh</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">toolbar_frame</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">network_refresh_image</span><span class="p">,</span> \
+            <span class="n">compound</span><span class="o">=</span><span class="s">&#39;image&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">action_refresh</span><span class="p">)</span>
+
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/16/magnifier_zoom_out.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network_zoom_out_image</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">network_zoom_out</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">toolbar_frame</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">network_zoom_out_image</span><span class="p">,</span> \
+            <span class="n">compound</span><span class="o">=</span><span class="s">&#39;image&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">action_zoom_out</span><span class="p">)</span>
+
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/16/magnifier_zoom_in.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network_zoom_in_image</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">network_zoom_in</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">toolbar_frame</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">network_zoom_in_image</span><span class="p">,</span> \
+            <span class="n">compound</span><span class="o">=</span><span class="s">&#39;image&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">action_zoom_in</span><span class="p">)</span>
+
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/16/magnifier.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network_zoom_none_image</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">network_zoom_none</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">toolbar_frame</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">network_zoom_none_image</span><span class="p">,</span> \
+            <span class="n">compound</span><span class="o">=</span><span class="s">&#39;image&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">action_zoom_none</span><span class="p">)</span>
+
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/16/disk.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_map_image</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">save_map</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">toolbar_frame</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">save_map_image</span><span class="p">,</span> \
+            <span class="n">compound</span><span class="o">=</span><span class="s">&#39;image&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">action_save_map</span><span class="p">)</span>
+
+        <span class="n">network_refresh</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nw&#39;</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="n">toolbar_frame</span><span class="p">)</span>
+        <span class="n">network_zoom_out</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nw&#39;</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="n">toolbar_frame</span><span class="p">)</span>
+        <span class="n">network_zoom_none</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nw&#39;</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="n">toolbar_frame</span><span class="p">)</span>
+        <span class="n">network_zoom_in</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nw&#39;</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="n">toolbar_frame</span><span class="p">)</span>
+        <span class="n">save_map</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nw&#39;</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="n">toolbar_frame</span><span class="p">)</span>
+        <span class="n">toolbar_frame</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">((</span><span class="mi">0</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">toolbar_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s">&#39;top&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">inner_frame</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relief</span><span class="o">=</span><span class="s">&#39;ridge&#39;</span><span class="p">)</span>
+
+        <span class="n">network_canevas</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Canvas</span><span class="p">(</span><span class="n">inner_frame</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s">&quot;LightSteelBlue&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+
+        <span class="n">network_vsb</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Scrollbar</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s">&quot;vertical&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">network_canevas</span><span class="o">.</span><span class="n">yview</span><span class="p">)</span>
+        <span class="n">network_hsb</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Scrollbar</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s">&quot;horizontal&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">network_canevas</span><span class="o">.</span><span class="n">xview</span><span class="p">)</span>
+        <span class="n">network_canevas</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">yscrollcommand</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">network_autoscroll</span><span class="p">(</span><span class="n">network_vsb</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">),</span>
+            <span class="n">xscrollcommand</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">network_autoscroll</span><span class="p">(</span><span class="n">network_hsb</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network_node_in_move</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">network_canevas</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">&quot;&lt;Button-1&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_push_network_left</span><span class="p">)</span>
+        <span class="n">network_canevas</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">&quot;&lt;ButtonRelease-1&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_release_network_left</span><span class="p">)</span>
+        <span class="n">network_canevas</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">&quot;&lt;Button-3&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_network_popup</span><span class="p">)</span>
+        <span class="n">network_canevas</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">&quot;&lt;Motion&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_move_network</span><span class="p">)</span>
+        <span class="c">#self.network_canevas.bind(&quot;&lt;ButtonRelease-3&gt;&quot;, relachementBoutonDroit)</span>
+
+        <span class="n">network_canevas</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nw&#39;</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="n">inner_frame</span><span class="p">)</span>
+        <span class="n">network_vsb</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;e&#39;</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="n">inner_frame</span><span class="p">)</span>
+        <span class="n">network_hsb</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;s&#39;</span><span class="p">,</span> \
+            <span class="n">in_</span><span class="o">=</span><span class="n">inner_frame</span><span class="p">)</span>
+        <span class="n">inner_frame</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">((</span><span class="mi">0</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">inner_frame</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">((</span><span class="mi">1</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">inner_frame</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">((</span><span class="mi">0</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">inner_frame</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">((</span><span class="mi">1</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">inner_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s">&quot;top&quot;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s">&quot;both&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="n">tkNodes</span><span class="p">(</span><span class="n">network_canevas</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">load_map</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span><span class="o">.</span><span class="n">register_queue_cb</span><span class="p">(</span><span class="s">&#39;nodes&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue_nodes_cb</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span><span class="o">.</span><span class="n">unregister_queue_cb</span><span class="p">(</span><span class="s">&#39;nodes&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue_nodes_cb</span><span class="p">)</span>
+            <span class="n">JntFrame</span><span class="o">.</span><span class="n">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+<div class="viewcode-block" id="FrameMap.action_zoom_none"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameMap.action_zoom_none">[docs]</a>    <span class="k">def</span> <span class="nf">action_zoom_none</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">change_scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zoom</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">redraw_all</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="FrameMap.action_refresh"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameMap.action_refresh">[docs]</a>    <span class="k">def</span> <span class="nf">action_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">redraw_all</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="FrameMap.action_save_map"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameMap.action_save_map">[docs]</a>    <span class="k">def</span> <span class="nf">action_save_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">save_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="FrameMap.action_zoom_in"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameMap.action_zoom_in">[docs]</a>    <span class="k">def</span> <span class="nf">action_zoom_in</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">change_scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zoom</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">redraw_all</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="FrameMap.action_zoom_out"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameMap.action_zoom_out">[docs]</a>    <span class="k">def</span> <span class="nf">action_zoom_out</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">change_scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zoom</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">redraw_all</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="FrameMap.network_autoscroll"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameMap.network_autoscroll">[docs]</a>    <span class="k">def</span> <span class="nf">network_autoscroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sbar</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Hide and show scrollbar as needed.&quot;&quot;&quot;</span>
+        <span class="n">first</span><span class="p">,</span> <span class="n">last</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">last</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">first</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">last</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">sbar</span><span class="o">.</span><span class="n">grid_remove</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sbar</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+        <span class="n">sbar</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_find_node_near</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">search_by_canvas</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_delete_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_move_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">#print &quot;_move_network event %s&quot; % event</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">network_node_in_move</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">network_node_in_move</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_release_network_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network_node_in_move</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">_push_network_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">#print &quot;_push_network_left event %s&quot; % event</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">unpost</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network_node_in_move</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_node_near</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="c">#print &quot;_push_network_left node_in_move %s&quot; % self.network_node_in_move</span>
+
+    <span class="k">def</span> <span class="nf">_network_popup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">unpost</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_node_near</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_popup_network</span><span class="p">(</span><span class="n">found</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x_root</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y_root</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;[ </span><span class="si">%s</span><span class="s"> ] - _network_popup for node </span><span class="si">%s</span><span class="s">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">found</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_popup_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="n">tearoff</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">node</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Refresh&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">action_refresh</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">node</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Rename&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="o">=</span><span class="n">node</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_node_name</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Change location&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="o">=</span><span class="n">node</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_node_location</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_separator</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Update neighbors&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="o">=</span><span class="n">node</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_action_controller_node_neigbhor_update</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Request informations&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="o">=</span><span class="n">node</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_action_controller_send_node_information</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_separator</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Hard reset&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">action_controller_reset_hard</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Soft reset&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">action_controller_reset_soft</span><span class="p">())</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Rename&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="o">=</span><span class="n">node</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_node_name</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Change location&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="o">=</span><span class="n">node</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_node_location</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_separator</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Command classes&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="o">=</span><span class="n">node</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_node_command_classes</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_separator</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Update neighbors&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="o">=</span><span class="n">node</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_action_controller_node_neigbhor_update</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Delete routes&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="o">=</span><span class="n">node</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_action_controller_delete_all_return_routes</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_network</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Request informations&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="o">=</span><span class="n">node</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_action_controller_send_node_information</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+
+<div class="viewcode-block" id="FrameMap.queue_nodes_cb"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameMap.queue_nodes_cb">[docs]</a>    <span class="k">def</span> <span class="nf">queue_nodes_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;[ </span><span class="si">%s</span><span class="s"> ] - queue_nodes_cb for nodes </span><span class="si">%s</span><span class="s">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
+            <span class="c">#~ print nodes</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+                <span class="c">#~ print node</span>
+                <span class="c">#~ print &#39;nodes[node][&quot;hadd&quot;]&#39;, nodes[node][&quot;hadd&quot;]</span>
+                <span class="n">hadd</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&quot;hadd&quot;</span><span class="p">]</span>
+                <span class="c">#~ print hadd</span>
+                <span class="k">if</span> <span class="s">&#39;neighbors&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
+                    <span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;neighbors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">had</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">find_neighbors</span><span class="p">(</span><span class="n">hadd</span><span class="p">):</span>
+                    <span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;neighbors&#39;</span><span class="p">][</span><span class="n">had</span><span class="p">]</span> <span class="o">=</span> <span class="n">had</span>
+                <span class="k">if</span> <span class="s">&#39;links&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
+                    <span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">hadd</span><span class="p">,</span> <span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">])</span>
+                <span class="c">#~ print nodes[node]</span>
+                <span class="c">#~ self.nodes.add(nodes[node][&quot;hadd&quot;], nodes[node])</span>
+                <span class="c">#~ print(&quot;[ %s ] - node %s : %s&quot;%(self.__class__.__name__, node, nodes[node]) )</span>
+            <span class="c">#~ print &quot;subscriber_nodes_cb %s:%s&quot; % (topic,value)</span>
+            <span class="c">#~ self.nodes_tree_view.set_item(topic, &quot;value&quot;, value)</span>
+            <span class="c">#~ self.nodes_count[&#39;text&#39;] = self.nodes_message % (self.nodes_tree_view.item_count)</span>
+            <span class="c">#~ node = topic.replace(NODES+&#39;.&#39;,&#39;&#39;)</span>
+            <span class="c">#~ node = int(node)</span>
+            <span class="c">#~ if value[0] == &#39;&#39;:</span>
+                <span class="c">#~ self.nodes.delete(node)</span>
+            <span class="c">#~ else :</span>
+                <span class="c">#~ data = json.loads(value[0], object_hook=as_python_object)</span>
+                <span class="c">#~ print &quot;data : %s&quot; % data</span>
+                <span class="c">#~ if node not in self.nodes.data :</span>
+                    <span class="c">#~ self.nodes.add(node,data)</span>
+                <span class="c">#~ else :</span>
+                    <span class="c">#~ self.nodes.update(node,data)</span>
+                    <span class="c">#~ #Update the node picture</span>
+                <span class="c">#~ print &quot;subscriber_nodes_cb self.nodes.data[node]=%s&quot; % (self.nodes.data[node])</span>
+        <span class="k">except</span> <span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s">&quot;[ </span><span class="si">%s</span><span class="s"> ] - queue_nodes_cb for nodes </span><span class="si">%s</span><span class="s">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
+            <span class="c">#~ print &#39;subscriber_last_cb : topic / value : %s /%s&#39; % (topic, value)</span>
+            <span class="c">#~ print traceback.format_exc()</span>
+            <span class="c">#~ print &quot;continue&quot;</span>
+</div></div>
+<div class="viewcode-block" id="tkNodes"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.tkNodes">[docs]</a><span class="k">class</span> <span class="nc">tkNodes</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="s">&#39;tkinter&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">canvas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="o">=</span><span class="n">scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">=</span><span class="n">options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="o">=</span><span class="n">section</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/wireless-7-128.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_node</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/48/usb_storage.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_controler</span> <span class="o">=</span>  <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_batteries</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/48/battery_horizontal_empty.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_batteries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/48/battery_horizontal_10percent.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_batteries</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/48/battery_horizontal_20percent.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_batteries</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/48/battery_horizontal_40percent.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_batteries</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/48/battery_horizontal_60percent.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_batteries</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/48/battery_horizontal_80percent.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_batteries</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/48/battery_horizontal_full.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_batteries</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/48/battery_horizontal_plugged_in.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_batteries</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_sleeps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/48/sleep_off.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_sleeps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+            <span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;images/48/sleep_on.png&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_sleeps</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_dx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_dy</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">controler_dx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">30</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">controler_dy</span> <span class="o">=</span> <span class="mi">30</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">battery_dx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">25</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">battery_dy</span> <span class="o">=</span> <span class="o">-</span><span class="mi">60</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sleep_dx</span> <span class="o">=</span> <span class="mi">35</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sleep_dy</span> <span class="o">=</span> <span class="o">-</span><span class="mi">50</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_size</span> <span class="o">=</span> <span class="mi">20</span>
+
+<div class="viewcode-block" id="tkNodes.save_map"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.tkNodes.save_map">[docs]</a>    <span class="k">def</span> <span class="nf">save_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tkroot</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">,</span> <span class="s">&#39;geometry&#39;</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">x</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">tkroot</span><span class="o">.</span><span class="n">winfo_width</span><span class="p">(),</span><span class="n">tkroot</span><span class="o">.</span><span class="n">winfo_height</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s">&#39;map&#39;</span><span class="p">,</span> <span class="s">&#39;scale&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s">&#39;map__</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="n">key</span><span class="p">,</span> <span class="s">&#39;posx&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s">&#39;posx&#39;</span><span class="p">],</span> <span class="n">create</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s">&#39;map__</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="n">key</span><span class="p">,</span> <span class="s">&#39;posy&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s">&#39;posy&#39;</span><span class="p">],</span> <span class="n">create</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="tkNodes.load_map"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.tkNodes.load_map">[docs]</a>    <span class="k">def</span> <span class="nf">load_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="s">&#39;map&#39;</span><span class="p">,</span> <span class="s">&#39;scale&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get_sections</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;map__&#39;</span><span class="p">):</span>
+                <span class="n">hadd</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span>
+                <span class="k">if</span> <span class="n">hadd</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">hadd</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">if</span> <span class="s">&#39;links&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">hadd</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">if</span> <span class="s">&#39;neighbors&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">hadd</span><span class="p">][</span><span class="s">&#39;neighbors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">hadd</span><span class="p">][</span><span class="s">&#39;posx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&#39;posx&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">hadd</span><span class="p">][</span><span class="s">&#39;posy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&#39;posy&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">change_scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="tkNodes.change_scale"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.tkNodes.change_scale">[docs]</a>    <span class="k">def</span> <span class="nf">change_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>
+        <span class="n">iw</span><span class="p">,</span> <span class="n">ih</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_node</span><span class="o">.</span><span class="n">size</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iw</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">ih</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagetk_node</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_node</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+        <span class="n">iw</span><span class="p">,</span> <span class="n">ih</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_controler</span><span class="o">.</span><span class="n">size</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iw</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">ih</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagetk_controler</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_controler</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagetk_batteries</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_batteries</span><span class="p">:</span>
+            <span class="n">iw</span><span class="p">,</span> <span class="n">ih</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_batteries</span><span class="p">[</span><span class="n">image</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iw</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">ih</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imagetk_batteries</span><span class="p">[</span><span class="n">image</span><span class="p">]</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_batteries</span><span class="p">[</span><span class="n">image</span><span class="p">]</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imagetk_sleeps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_sleeps</span><span class="p">:</span>
+            <span class="n">iw</span><span class="p">,</span> <span class="n">ih</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_sleeps</span><span class="p">[</span><span class="n">image</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iw</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">ih</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imagetk_sleeps</span><span class="p">[</span><span class="n">image</span><span class="p">]</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_sleeps</span><span class="p">[</span><span class="n">image</span><span class="p">]</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+        <span class="c">#~ for node in self.data :</span>
+            <span class="c">#~ self.clean_canvas(node)</span>
+            <span class="c">#~ self.draw(node)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">redraw_all</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="tkNodes.delete"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.tkNodes.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clean_canvas</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;neighbors&#39;</span><span class="p">]</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">link</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">]:</span>
+                    <span class="k">del</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">link</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">node</span><span class="p">])</span>
+        <span class="k">del</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="tkNodes.clean_canvas"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.tkNodes.clean_canvas">[docs]</a>    <span class="k">def</span> <span class="nf">clean_canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;image_id&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;label_id&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s">&#39;ctrl_id&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;ctrl_id&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s">&#39;battery_id&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;battery_id&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s">&#39;sleep_id&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;sleep_id&#39;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">]</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">link</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">]</span> <span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">link</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">link</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">if</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">link</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="tkNodes.move"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.tkNodes.move">[docs]</a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">]</span> <span class="p">:</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_coord</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+            <span class="c">#print &quot;links = %s&quot; % (self.data[node][&#39;links&#39;])</span>
+            <span class="c">#print &quot;linkid = %s&quot; % (self.data[node][&#39;links&#39;][link])</span>
+            <span class="c">#print &quot;x1,y1 = %s.%s&quot; % (x1, y1)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">link</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">x1</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">coords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">link</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">coords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;image_id&#39;</span><span class="p">],</span> <span class="n">x</span> <span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">coords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;label_id&#39;</span><span class="p">],</span> \
+                <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_dx</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;label_width&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">,</span> \
+                <span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_dy</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;ctrl_id&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">coords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;ctrl_id&#39;</span><span class="p">],</span> \
+                <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">controler_dx</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="p">,</span> \
+                <span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">controler_dy</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;battery_id&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">coords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;battery_id&#39;</span><span class="p">],</span> \
+                <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">battery_dx</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="p">,</span> \
+                <span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">battery_dy</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;sleep_id&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">coords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;sleep_id&#39;</span><span class="p">],</span> \
+                <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sleep_dx</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="p">,</span> \
+                <span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sleep_dy</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="tkNodes.get_coord"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.tkNodes.get_coord">[docs]</a>    <span class="k">def</span> <span class="nf">get_coord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posx&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posy&#39;</span><span class="p">]</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="tkNodes.add"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.tkNodes.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;neighbors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="tkNodes.update"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.tkNodes.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">redraw</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">data</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="o">==</span> <span class="s">&#39;name&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="n">field</span><span class="p">]</span> <span class="o">!=</span> <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]:</span>
+                <span class="n">redraw</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">elif</span> <span class="n">field</span> <span class="o">==</span> <span class="s">&#39;battery&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="n">field</span><span class="p">]</span> <span class="o">!=</span> <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]:</span>
+                <span class="n">redraw</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">elif</span> <span class="n">field</span> <span class="o">==</span> <span class="s">&#39;neighbors&#39;</span> <span class="p">:</span>
+                <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">link</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">]:</span>
+                        <span class="n">redraw</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">redraw</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clean_canvas</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="tkNodes.redraw_all"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.tkNodes.redraw_all">[docs]</a>    <span class="k">def</span> <span class="nf">redraw_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">#~ print &quot;redraw_all&quot;</span>
+        <span class="n">imgs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">find_all</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">imgs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s">&#39;links&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">link</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                    <span class="k">if</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">link</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="tkNodes.draw"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.tkNodes.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s">&#39;name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
+            <span class="c">#Not configured</span>
+            <span class="k">return</span>
+        <span class="c">#~ print &quot;draw links for node %s&quot; % node</span>
+        <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;neighbors&#39;</span><span class="p">]:</span>
+            <span class="c">#~ print &quot;neighbor %s&quot; % neighbor</span>
+            <span class="c">#~ print &quot;self.data[node][&#39;links&#39;] = %s&quot; % self.data[node][&#39;links&#39;]</span>
+            <span class="k">if</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">]</span> <span class="ow">and</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">neighbor</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="p">:</span>
+                <span class="c">#~ print &quot;link to %s already exist&quot; % neighbor</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c">#~ print &quot;link to %s does not exist&quot; % neighbor</span>
+                <span class="k">if</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                    <span class="c">#~ print &quot;The neighbor %s exist&quot; % neighbor</span>
+                    <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">neighbor</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">]</span> <span class="ow">and</span> \
+                            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">neighbor</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">node</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="c">#~ print &quot;the neighbor %s has already draw the line&quot; % neighbor</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">neighbor</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">neighbor</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">node</span><span class="p">]</span>
+                    <span class="k">else</span> <span class="p">:</span>
+                        <span class="c">#~ print &quot;we draw the line to %s&quot; % neighbor</span>
+                        <span class="n">x1</span><span class="p">,</span><span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_coord</span><span class="p">(</span><span class="n">neighbor</span><span class="p">)</span>
+                        <span class="n">x0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posx&#39;</span><span class="p">]</span>
+                        <span class="n">y0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posy&#39;</span><span class="p">]</span>
+                        <span class="n">lnkid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">create_line</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s">&#39;gray14&#39;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">tag_lower</span><span class="p">(</span><span class="n">lnkid</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">neighbor</span><span class="p">]</span> <span class="o">=</span> <span class="n">lnkid</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">neighbor</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">lnkid</span>
+                <span class="k">else</span> <span class="p">:</span>
+                    <span class="c">#~ print &quot;The neighbor %s does not exist&quot; % neighbor</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;links&#39;</span><span class="p">][</span><span class="n">neighbor</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span>
+        <span class="n">imgid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">create_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posx&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posy&#39;</span><span class="p">],</span> \
+                <span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">imagetk_node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;image_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imgid</span>
+        <span class="n">helv</span> <span class="o">=</span> <span class="n">tkFont</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s">&#39;Helvetica&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">))</span>
+        <span class="n">textw</span> <span class="o">=</span> <span class="n">helv</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;label_width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">textw</span>
+        <span class="n">lblid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">create_text</span><span class="p">(</span>\
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posx&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;label_width&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posy&#39;</span><span class="p">],</span> <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">],</span>\
+                <span class="n">anchor</span><span class="o">=</span><span class="s">&quot;w&quot;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">helv</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;label_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lblid</span>
+        <span class="c">#~ print &quot;draw %s&quot; % self.data[node][&#39;capabilities&#39;]</span>
+        <span class="k">if</span> <span class="n">CAPABILITY_DYNAMIC_CONTROLLER</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;capabilities&#39;</span><span class="p">]</span> <span class="ow">or</span> \
+                <span class="n">CAPABILITY_TINY_CONTROLLER</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;capabilities&#39;</span><span class="p">]</span> <span class="p">:</span>
+            <span class="c">#~ print &quot;controller&quot;</span>
+            <span class="n">ctrlid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">create_image</span><span class="p">(</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posx&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">controler_dx</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;posy&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">controler_dy</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> \
+                    <span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">imagetk_controler</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;ctrl_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ctrlid</span>
+        <span class="c">#~ if &#39;sleeping&#39; not in self.data[node] or self.data[node][&#39;sleeping&#39;] == None :</span>
+            <span class="c">#~ if &#39;sleep_id&#39; in self.data[node]:</span>
+                <span class="c">#~ del(self.data[node][&#39;sleep_id&#39;])</span>
+        <span class="c">#~ elif self.data[node][&#39;sleeping&#39;] == False:</span>
+            <span class="c">#~ sleepid = self.canvas.create_image( \</span>
+                    <span class="c">#~ self.data[node][&#39;posx&#39;] + self.sleep_dx*self.scale, \</span>
+                    <span class="c">#~ self.data[node][&#39;posy&#39;] + self.sleep_dy*self.scale, \</span>
+                    <span class="c">#~ image=self.imagetk_sleeps[0])</span>
+            <span class="c">#~ self.data[node][&#39;sleep_id&#39;] = sleepid</span>
+        <span class="c">#~ elif self.data[node][&#39;sleeping&#39;] == True:</span>
+            <span class="c">#~ sleepid = self.canvas.create_image( \</span>
+                    <span class="c">#~ self.data[node][&#39;posx&#39;] + self.sleep_dx*self.scale, \</span>
+                    <span class="c">#~ self.data[node][&#39;posy&#39;] + self.sleep_dy*self.scale, \</span>
+                    <span class="c">#~ image=self.imagetk_sleeps[1])</span>
+            <span class="c">#~ self.data[node][&#39;sleep_id&#39;] = sleepid</span>
+        <span class="c">#~ if &#39;battery&#39; not in self.data[node] or self.data[node][&#39;battery&#39;] == None :</span>
+            <span class="c">#~ ctrlid = self.canvas.create_image( \</span>
+                    <span class="c">#~ self.data[node][&#39;posx&#39;] + self.battery_dx*self.scale, \</span>
+                    <span class="c">#~ self.data[node][&#39;posy&#39;] + self.battery_dy*self.scale, \</span>
+                    <span class="c">#~ image=self.imagetk_batteries[7])</span>
+        <span class="c">#~ elif self.data[node][&#39;battery&#39;] &lt; 5:</span>
+            <span class="c">#~ ctrlid = self.canvas.create_image( \</span>
+                    <span class="c">#~ self.data[node][&#39;posx&#39;] + self.battery_dx*self.scale, \</span>
+                    <span class="c">#~ self.data[node][&#39;posy&#39;] + self.battery_dy*self.scale, \</span>
+                    <span class="c">#~ image=self.imagetk_batteries[0])</span>
+        <span class="c">#~ elif self.data[node][&#39;battery&#39;] &lt; 15:</span>
+            <span class="c">#~ ctrlid = self.canvas.create_image( \</span>
+                    <span class="c">#~ self.data[node][&#39;posx&#39;] + self.battery_dx*self.scale, \</span>
+                    <span class="c">#~ self.data[node][&#39;posy&#39;] + self.battery_dy*self.scale, \</span>
+                    <span class="c">#~ image=self.imagetk_batteries[1])</span>
+        <span class="c">#~ elif self.data[node][&#39;battery&#39;] &lt; 25:</span>
+            <span class="c">#~ ctrlid = self.canvas.create_image( \</span>
+                    <span class="c">#~ self.data[node][&#39;posx&#39;] + self.battery_dx*self.scale, \</span>
+                    <span class="c">#~ self.data[node][&#39;posy&#39;] + self.battery_dy*self.scale, \</span>
+                    <span class="c">#~ image=self.imagetk_batteries[2])</span>
+        <span class="c">#~ elif self.data[node][&#39;battery&#39;] &lt; 50:</span>
+            <span class="c">#~ ctrlid = self.canvas.create_image( \</span>
+                    <span class="c">#~ self.data[node][&#39;posx&#39;] + self.battery_dx*self.scale, \</span>
+                    <span class="c">#~ self.data[node][&#39;posy&#39;] + self.battery_dy*self.scale, \</span>
+                    <span class="c">#~ image=self.imagetk_batteries[3])</span>
+        <span class="c">#~ elif self.data[node][&#39;battery&#39;] &lt; 70:</span>
+            <span class="c">#~ ctrlid = self.canvas.create_image( \</span>
+                    <span class="c">#~ self.data[node][&#39;posx&#39;] + self.battery_dx*self.scale, \</span>
+                    <span class="c">#~ self.data[node][&#39;posy&#39;] + self.battery_dy*self.scale, \</span>
+                    <span class="c">#~ image=self.imagetk_batteries[4])</span>
+        <span class="c">#~ elif self.data[node][&#39;battery&#39;] &lt; 85:</span>
+            <span class="c">#~ ctrlid = self.canvas.create_image( \</span>
+                    <span class="c">#~ self.data[node][&#39;posx&#39;] + self.battery_dx*self.scale, \</span>
+                    <span class="c">#~ self.data[node][&#39;posy&#39;] + self.battery_dy*self.scale, \</span>
+                    <span class="c">#~ image=self.imagetk_batteries[5])</span>
+        <span class="c">#~ else:</span>
+            <span class="c">#~ ctrlid = self.canvas.create_image( \</span>
+                    <span class="c">#~ self.data[node][&#39;posx&#39;] + self.battery_dx*self.scale, \</span>
+                    <span class="c">#~ self.data[node][&#39;posy&#39;] + self.battery_dy*self.scale, \</span>
+                    <span class="c">#~ image=self.imagetk_batteries[6])</span>
+        <span class="c">#~ self.data[node][&#39;battery_id&#39;] = ctrlid</span>
+</div>
+<div class="viewcode-block" id="tkNodes.search_by_canvas"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.tkNodes.search_by_canvas">[docs]</a>    <span class="k">def</span> <span class="nf">search_by_canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># on recherche un objet dessiné dans le canevas près de (x, y)</span>
+        <span class="n">pres</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">objets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">find_overlapping</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">pres</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">pres</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">pres</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">pres</span><span class="p">)</span>
+        <span class="c">#print &quot;objets %s&quot; % (objets)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">objets</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>     <span class="c"># s’il y en a...</span>
+            <span class="k">for</span> <span class="n">imgid</span> <span class="ow">in</span> <span class="n">objets</span> <span class="p">:</span>
+                <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s">&#39;image_id&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="ow">and</span> \
+                       <span class="s">&#39;label_id&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="ow">and</span> \
+                        <span class="n">imgid</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;image_id&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s">&#39;label_id&#39;</span><span class="p">]):</span>
+                        <span class="k">return</span> <span class="n">node</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</div></div>
+<div class="viewcode-block" id="FrameRoot"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.frame.FrameRoot">[docs]</a><span class="k">class</span> <span class="nc">FrameRoot</span><span class="p">(</span><span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="s">&#39;tkinter&#39;</span><span class="p">):</span>
+        <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">section</span> <span class="o">=</span> <span class="n">section</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_network</span> <span class="o">=</span> <span class="n">FrameNetwork</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;state&#39;</span><span class="p">,</span> <span class="n">tkroot</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_network</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;new&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">notebook</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Notebook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;notebook&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notebook</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nsew&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_map</span> <span class="o">=</span> <span class="n">FrameMap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notebook</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;map&#39;</span><span class="p">,</span> <span class="n">tkroot</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notebook</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_map</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s">&#39;Map&#39;</span><span class="p">,</span> <span class="n">underline</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_nodes</span> <span class="o">=</span> <span class="n">FrameNodes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notebook</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;nodes&#39;</span><span class="p">,</span> <span class="n">tkroot</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tkroot</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notebook</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_nodes</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s">&#39;Nodes&#39;</span><span class="p">,</span> <span class="n">underline</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">((</span><span class="mi">0</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">((</span><span class="mi">1</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">((</span><span class="mi">0</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">uniform</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c">#~ self.columnconfigure((3,4), weight=0, uniform=1)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s">&quot;both&quot;</span><span class="p">)</span>
+
+        <span class="c">#~ self.notebook.enable_traversal()</span>
+        <span class="c">#~ self.status = tkMon(self, self.subscriber)</span>
+        <span class="c">#~ self.notebook.enable_traversal()</span>
+        <span class="c">#~ self.error.grid(row=0, column=0, columnspan=3, sticky=&#39;new&#39;, pady=5, padx=5, in_=self)</span>
+        <span class="c">#~ self.warning.grid(row=1, column=0, columnspan=3, sticky=&#39;new&#39;, pady=5, padx=5, in_=self)</span>
+        <span class="c">#~ self.notebook.grid(row=2, column=0, columnspan=3, sticky=&#39;nsew&#39;, pady=5, padx=5, in_=self)</span>
+        <span class="c">#~ self.status.grid(row=0, column=3, rowspan=3, sticky=&#39;ne&#39;, pady=5, padx=5, in_=self)</span>
+        <span class="c">#~ self.rowconfigure((0,1), weight=0)</span>
+        <span class="c">#~ self.rowconfigure(2, weight=1)</span>
+        <span class="c">#~ self.columnconfigure((0,1,2), weight=1, uniform=1)</span>
+        <span class="c">#~ self.pack(expand=1, fill=&quot;both&quot;)</span>
+
+    <span class="k">def</span> <span class="nf">_create_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="c">#        if self.isapp:</span>
+<span class="c">#            SeeDismissPanel(self)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_demo_panel</span><span class="p">()</span>
+</pre></div></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014,2015,2016 Sébastien GALLET aka bibi2100 &lt;bibi21000@gmail.com&gt;.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
