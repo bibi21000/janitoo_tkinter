@@ -81,6 +81,7 @@ from PIL import Image, ImageTk
 from janitoo.options import JNTOptions
 
 from janitoo_tkinter.tree import TreeListBox
+from janitoo_tkinter.dialog import DialogClose
 
 ##############################################################
 #Check that we are in sync with the official command classes
@@ -512,24 +513,26 @@ class FrameMap(JntFrame):
         self.menu_network = tk.Menu(self.master, tearoff=0)
         if node == None:
             self.menu_network.add_command(label="Refresh", command=self.action_refresh)
-        elif node == 1 :
-            self.menu_network.add_command(label="Rename", command=lambda n=node : self.action_node_name(n))
-            self.menu_network.add_command(label="Change location", command=lambda n=node : self.action_node_location(n))
-            self.menu_network.add_separator()
-            self.menu_network.add_command(label="Update neighbors", command=lambda n=node : self._action_controller_node_neigbhor_update(n))
-            self.menu_network.add_command(label="Request informations", command=lambda n=node : self._action_controller_send_node_information(n))
-            self.menu_network.add_separator()
-            self.menu_network.add_command(label="Hard reset", command=self.action_controller_reset_hard())
-            self.menu_network.add_command(label="Soft reset", command=self.action_controller_reset_soft())
         else :
-            self.menu_network.add_command(label="Rename", command=lambda n=node : self.action_node_name(n))
-            self.menu_network.add_command(label="Change location", command=lambda n=node : self.action_node_location(n))
+            for value in self.tkroot.network.find_node_values(node, genre="systems"):
+                self.menu_network.add_command(label=value, command=lambda n=node, v=value : self.action_systems(n, v))
             self.menu_network.add_separator()
-            self.menu_network.add_command(label="Command classes", command=lambda n=node : self.action_node_command_classes(n))
+            for value in self.tkroot.network.find_node_values(node, genre="configs"):
+                self.menu_network.add_command(label=value, command=lambda n=node, v=value : self.action_configs(n, v))
             self.menu_network.add_separator()
-            self.menu_network.add_command(label="Update neighbors", command=lambda n=node : self._action_controller_node_neigbhor_update(n))
-            self.menu_network.add_command(label="Delete routes", command=lambda n=node : self._action_controller_delete_all_return_routes(n))
-            self.menu_network.add_command(label="Request informations", command=lambda n=node : self._action_controller_send_node_information(n))
+            for value in self.tkroot.network.find_node_values(node, genre="basics"):
+                self.menu_network.add_command(label=value, command=lambda n=node, v=value : self.action_basics(n, v))
+            self.menu_network.add_separator()
+            for value in self.tkroot.network.find_node_values(node, genre="users"):
+                self.menu_network.add_command(label=value, command=lambda n=node, v=value : self.action_users(n, v))
+            self.menu_network.add_separator()
+            for value in self.tkroot.network.find_node_values(node, genre="commands"):
+                self.menu_network.add_command(label=value, command=lambda n=node, v=value : self.action_commands(n, v))
+
+    def action_systems(self, node, vuuid):
+        """
+        """
+        d = DialogCommands(self.master, title="System values", data = self.tkroot.network.find_node_value(node, genre="systems", vuuid=vuuid))
 
     def queue_nodes_cb(self, nodes):
         """
@@ -647,6 +650,28 @@ class tkNodes(object):
             'images/48/sleep_on.png',
         )
         self.image_sleeps[1] = Image.open(io.BytesIO(stream.read()))
+
+        stream = pkg_resources.resource_stream(
+            __name__,
+            'images/16/accept.png',
+        )
+        image = Image.open(io.BytesIO(stream.read()))
+        self.image_state_online = ImageTk.PhotoImage(image)
+
+        stream = pkg_resources.resource_stream(
+            __name__,
+            'images/16/help.png',
+        )
+        image = Image.open(io.BytesIO(stream.read()))
+        self.image_state_other = ImageTk.PhotoImage(image)
+
+        stream = pkg_resources.resource_stream(
+            __name__,
+            'images/16/cross.png',
+        )
+        image = Image.open(io.BytesIO(stream.read()))
+        self.image_state_offline = ImageTk.PhotoImage(image)
+
         self.label_dx = 0
         self.label_dy = 0
         self.controler_dx = -30
@@ -757,6 +782,10 @@ class tkNodes(object):
             self.canvas.coords(self.data[node]['ctrl_id'], \
                 x + self.controler_dx*self.scale , \
                 y + self.controler_dy*self.scale)
+        if 'state_id' in self.data[node] :
+            self.canvas.coords(self.data[node]['state_id'], \
+                x - self.controler_dx*self.scale , \
+                y - self.controler_dy*self.scale)
         if 'battery_id' in self.data[node] :
             self.canvas.coords(self.data[node]['battery_id'], \
                 x + self.battery_dx*self.scale , \
@@ -874,6 +903,25 @@ class tkNodes(object):
                     self.data[node]['posy'] + self.controler_dy*self.scale, \
                     image=self.imagetk_controler)
             self.data[node]['ctrl_id'] = ctrlid
+        if self.data[node]['state'] == 'ONLINE':
+            #~ print "controller"
+            stateid = self.canvas.create_image( \
+                    self.data[node]['posx'] - self.controler_dx*self.scale, \
+                    self.data[node]['posy'] - self.controler_dy*self.scale, \
+                    image=self.image_state_online)
+        elif self.data[node]['state'] == 'OFFLINE':
+            #~ print "controller"
+            stateid = self.canvas.create_image( \
+                    self.data[node]['posx'] - self.controler_dx*self.scale, \
+                    self.data[node]['posy'] - self.controler_dy*self.scale, \
+                    image=self.image_state_offline)
+        else:
+            #~ print "controller"
+            stateid = self.canvas.create_image( \
+                    self.data[node]['posx'] - self.controler_dx*self.scale, \
+                    self.data[node]['posy'] - self.controler_dy*self.scale, \
+                    image=self.image_state_other)
+        self.data[node]['state_id'] = stateid
         #~ if 'sleeping' not in self.data[node] or self.data[node]['sleeping'] == None :
             #~ if 'sleep_id' in self.data[node]:
                 #~ del(self.data[node]['sleep_id'])
@@ -990,4 +1038,79 @@ class FrameRoot(ttk.Frame):
 #        if self.isapp:
 #            SeeDismissPanel(self)
         self._create_demo_panel()
+
+class DialogNode(DialogClose):
+
+    def __init__(self, parent, title = None, network = None, node=None, vuuid=None):
+        self.data = data
+        DialogClose.__init__(self, parent, title)
+
+    def body(self, master):
+        self.commands = ['users', 'basics', 'systems', 'configs', 'commands']
+        self.frames = {}
+        for command in self.commands :
+            print "command %s" % command
+            self.frames[command] = { 'frame' : Frame(self.notebook)}
+            i = 0
+            if command in self.data :
+                for value in self.data[command] :
+                    print "value %s" % value
+                    self.frames[command][value] = {}
+                    self.frames[command][value]['value_id'] = \
+                        Label(self.frames[command]['frame'], \
+                            text="%s" % self.data[command][value]['value_id'])
+                    print "%s" % self.data[command][value]['value_id']
+                    self.frames[command][value]['label'] = \
+                        Label(self.frames[command]['frame'], \
+                            text="%s" % self.data[command][value]['label'])
+                    print "%s" % self.data[command][value]['label']
+                    self.frames[command][value]['help'] = \
+                        Label(self.frames[command]['frame'], wraplength=200, \
+                            text="%s" % self.data[command][value]['help'])
+                    print "%s" % self.data[command][value]['help']
+                    self.frames[command][value]['data'] = \
+                        Label(self.frames[command]['frame'], \
+                            text="%s" % self.data[command][value]['data'])
+                    print "%s" % self.data[command][value]['data']
+                    self.frames[command][value]['type'] = \
+                        Label(self.frames[command]['frame'], \
+                            text="%s" % self.data[command][value]['type'])
+                    print "%s" % self.data[command][value]['type']
+                    self.frames[command][value]['data_items'] = \
+                        Label(self.frames[command]['frame'], wraplength=200, \
+                            text="%s" % self.data[command][value]['data_items'])
+                    print "%s" % self.data[command][value]['data_items']
+                    self.frames[command][value]['is_read_only'] = \
+                        Label(self.frames[command]['frame'], \
+                            text="%s" % self.data[command][value]['is_read_only'])
+                    print "%s" % self.data[command][value]['is_read_only']
+                    self.frames[command][value]['is_polled'] = \
+                        Label(self.frames[command]['frame'], \
+                            text="%s" % self.data[command][value]['is_polled'])
+                    print "%s" % self.data[command][value]['is_polled']
+                    self.frames[command][value]['value_id'].grid(row=i, column=0, \
+                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
+                    self.frames[command][value]['label'].grid(row=i, column=1, \
+                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
+                    self.frames[command][value]['help'].grid(row=i, column=2, \
+                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
+                    self.frames[command][value]['data'].grid(row=i, column=3, \
+                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
+                    self.frames[command][value]['type'].grid(row=i, column=4, \
+                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
+                    self.frames[command][value]['data_items'].grid(row=i, column=5, \
+                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
+                    self.frames[command][value]['is_read_only'].grid(row=i, column=6, \
+                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
+                    self.frames[command][value]['is_polled'].grid(row=i, column=7, \
+                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
+                    self.frames[command]['frame'].rowconfigure(i, weight=0)
+                    i += 1
+                if len(self.frames[command])>0 :
+                    self.frames[command]['frame'].columnconfigure((0,1,3,4,6,7,8), weight=1, uniform=1)
+                    self.frames[command]['frame'].columnconfigure((2,5), weight=1, uniform=2)
+                    self.notebook.add(self.frames[command]['frame'], text=command, underline=0, padding=2)
+        self.notebook.grid(row=0, column=0, sticky='new', pady=2, padx=2, in_=master)
+        print 2
+        #return self.frames["User"]['frame']
 
