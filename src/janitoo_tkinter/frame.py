@@ -534,6 +534,26 @@ class FrameMap(JntFrame):
         """
         d = DialogNode(self.master, title="System values", network = self.tkroot.network, node=node, vuuid=vuuid)
 
+    def action_configs(self, node, vuuid):
+        """
+        """
+        d = DialogNode(self.master, title="Config values", network = self.tkroot.network, node=node, vuuid=vuuid)
+
+    def action_basics(self, node, vuuid):
+        """
+        """
+        d = DialogNode(self.master, title="Basic values", network = self.tkroot.network, node=node, vuuid=vuuid)
+
+    def action_users(self, node, vuuid):
+        """
+        """
+        d = DialogNode(self.master, title="User values", network = self.tkroot.network, node=node, vuuid=vuuid)
+
+    def action_commands(self, node, vuuid):
+        """
+        """
+        d = DialogNode(self.master, title="Command values", network = self.tkroot.network, node=node, vuuid=vuuid)
+
     def queue_nodes_cb(self, nodes):
         """
         """
