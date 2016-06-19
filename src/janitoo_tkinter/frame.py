@@ -58,7 +58,6 @@ __email__ = 'bibi21000@gmail.com'
 import logging
 logger = logging.getLogger(__name__)
 
-import os
 import io
 
 import pkg_resources
@@ -69,7 +68,6 @@ import pkg_resources
 #import Tkinter
 import Tkinter as tk
 import tkFont as tkFont
-import traceback
 
 import ttk
 #~ from ttk import Frame, Style, Progressbar, Separator, Notebook
@@ -77,8 +75,6 @@ import ttk
 #~ from ttk import Label, Entry
 
 from PIL import Image, ImageTk
-
-from janitoo.options import JNTOptions
 
 from janitoo_tkinter.tree import TreeListBox
 from janitoo_tkinter.dialog import DialogClose
@@ -477,7 +473,7 @@ class FrameMap(JntFrame):
         """
         """
         #print "_move_network event %s" % event
-        if self.network_node_in_move != None:
+        if self.network_node_in_move is not None:
             self.nodes.move(self.network_node_in_move, event.x, event.y)
 
     def _release_network_left(self, event):
@@ -489,7 +485,7 @@ class FrameMap(JntFrame):
         """
         """
         #print "_push_network_left event %s" % event
-        if self.menu_network != None:
+        if self.menu_network is not None:
             self.menu_network.unpost()
             self.menu_network = None
         self.network_node_in_move = self._find_node_near(event.x, event.y)
@@ -498,7 +494,7 @@ class FrameMap(JntFrame):
     def _network_popup(self, event):
         """
         """
-        if self.menu_network != None:
+        if self.menu_network is not None:
             self.menu_network.unpost()
             self.menu_network = None
         found = self._find_node_near(event.x, event.y)
@@ -511,7 +507,7 @@ class FrameMap(JntFrame):
         """
         self.menu_network = None
         self.menu_network = tk.Menu(self.master, tearoff=0)
-        if node == None:
+        if node is None:
             self.menu_network.add_command(label="Refresh", command=self.action_refresh)
         else :
             for value in self.tkroot.network.find_node_values(node, genre="systems"):
@@ -591,7 +587,7 @@ class FrameMap(JntFrame):
                     #~ self.nodes.update(node,data)
                     #~ #Update the node picture
                 #~ print "subscriber_nodes_cb self.nodes.data[node]=%s" % (self.nodes.data[node])
-        except :
+        except Exception:
             logger.exception("[ %s ] - queue_nodes_cb for nodes %s", self.__class__.__name__, nodes)
             #~ print 'subscriber_last_cb : topic / value : %s /%s' % (topic, value)
             #~ print traceback.format_exc()

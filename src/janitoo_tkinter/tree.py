@@ -133,16 +133,16 @@ class TreeListBox(ttk.Frame):
         current_item = ''
         found = False
         for item in self.tree.get_children(''):
-            print "current_item = %s" % item
+            #~ print "current_item = %s" % item
             value = self.tree.item(item, 'values')
-            print value
-            print key
+            #~ print value
+            #~ print key
             if value[0] == key :
                 current_item = item
                 found = True
                 #break
-        print "Found %s" % found
-        if found == False :
+        #~ print "Found %s" % found
+        if not found:
             self.add_item(key, items)
         else :
             self.tree.set(current_item, col, items[0])
