@@ -532,7 +532,7 @@ class FrameMap(JntFrame):
     def action_systems(self, node, vuuid):
         """
         """
-        d = DialogCommands(self.master, title="System values", data = self.tkroot.network.find_node_value(node, genre="systems", vuuid=vuuid))
+        d = DialogNode(self.master, title="System values", network = self.tkroot.network, node=node, vuuid=vuuid)
 
     def queue_nodes_cb(self, nodes):
         """
@@ -1042,75 +1042,20 @@ class FrameRoot(ttk.Frame):
 class DialogNode(DialogClose):
 
     def __init__(self, parent, title = None, network = None, node=None, vuuid=None):
-        self.data = data
+        self.network = network
+        self.node = node
+        self.vuuid = vuuid
         DialogClose.__init__(self, parent, title)
 
     def body(self, master):
-        self.commands = ['users', 'basics', 'systems', 'configs', 'commands']
-        self.frames = {}
-        for command in self.commands :
-            print "command %s" % command
-            self.frames[command] = { 'frame' : Frame(self.notebook)}
-            i = 0
-            if command in self.data :
-                for value in self.data[command] :
-                    print "value %s" % value
-                    self.frames[command][value] = {}
-                    self.frames[command][value]['value_id'] = \
-                        Label(self.frames[command]['frame'], \
-                            text="%s" % self.data[command][value]['value_id'])
-                    print "%s" % self.data[command][value]['value_id']
-                    self.frames[command][value]['label'] = \
-                        Label(self.frames[command]['frame'], \
-                            text="%s" % self.data[command][value]['label'])
-                    print "%s" % self.data[command][value]['label']
-                    self.frames[command][value]['help'] = \
-                        Label(self.frames[command]['frame'], wraplength=200, \
-                            text="%s" % self.data[command][value]['help'])
-                    print "%s" % self.data[command][value]['help']
-                    self.frames[command][value]['data'] = \
-                        Label(self.frames[command]['frame'], \
-                            text="%s" % self.data[command][value]['data'])
-                    print "%s" % self.data[command][value]['data']
-                    self.frames[command][value]['type'] = \
-                        Label(self.frames[command]['frame'], \
-                            text="%s" % self.data[command][value]['type'])
-                    print "%s" % self.data[command][value]['type']
-                    self.frames[command][value]['data_items'] = \
-                        Label(self.frames[command]['frame'], wraplength=200, \
-                            text="%s" % self.data[command][value]['data_items'])
-                    print "%s" % self.data[command][value]['data_items']
-                    self.frames[command][value]['is_read_only'] = \
-                        Label(self.frames[command]['frame'], \
-                            text="%s" % self.data[command][value]['is_read_only'])
-                    print "%s" % self.data[command][value]['is_read_only']
-                    self.frames[command][value]['is_polled'] = \
-                        Label(self.frames[command]['frame'], \
-                            text="%s" % self.data[command][value]['is_polled'])
-                    print "%s" % self.data[command][value]['is_polled']
-                    self.frames[command][value]['value_id'].grid(row=i, column=0, \
-                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
-                    self.frames[command][value]['label'].grid(row=i, column=1, \
-                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
-                    self.frames[command][value]['help'].grid(row=i, column=2, \
-                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
-                    self.frames[command][value]['data'].grid(row=i, column=3, \
-                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
-                    self.frames[command][value]['type'].grid(row=i, column=4, \
-                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
-                    self.frames[command][value]['data_items'].grid(row=i, column=5, \
-                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
-                    self.frames[command][value]['is_read_only'].grid(row=i, column=6, \
-                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
-                    self.frames[command][value]['is_polled'].grid(row=i, column=7, \
-                        sticky='nw', pady=2, padx=2, in_=self.frames[command]['frame'])
-                    self.frames[command]['frame'].rowconfigure(i, weight=0)
-                    i += 1
-                if len(self.frames[command])>0 :
-                    self.frames[command]['frame'].columnconfigure((0,1,3,4,6,7,8), weight=1, uniform=1)
-                    self.frames[command]['frame'].columnconfigure((2,5), weight=1, uniform=2)
-                    self.notebook.add(self.frames[command]['frame'], text=command, underline=0, padding=2)
-        self.notebook.grid(row=0, column=0, sticky='new', pady=2, padx=2, in_=master)
-        print 2
-        #return self.frames["User"]['frame']
+
+        node_hadd_label = ttk.Label(self, justify="left", anchor="w", \
+            text="Node HADD : %s" % self.node)
+        node_hadd_label.grid(row=0, column=0, sticky='nw', pady=2, padx=2, \
+            in_=master)
+
+        node_vuuid_label = ttk.Label(self, justify="left", anchor="w", \
+            text="Node vuuid : %s" % self.vuuid)
+        node_vuuid_label.grid(row=1, column=0, sticky='nw', pady=2, padx=2, \
+            in_=master)
 
