@@ -63,11 +63,23 @@ class DialogClose(tk.Toplevel):
         # add standard button box. override if you don't want the
         # standard buttons
         box = tk.Frame(self)
-        w = tk.Button(box, text="Close", width=10, command=self.close, default="active")
-        w.pack(side="left", padx=5, pady=5)
-        #self.bind("&lt;Return>", self.close)
-        #self.bind("&lt;Escape>", self.close)
+        sb = tk.Button(box, text="Send", width=10, command=self.send, default="active")
+        sb.pack(side="left", padx=5, pady=5)
+        sr = tk.Button(box, text="Refresh", width=10, command=self.refresh, default="active")
+        sr.pack(side="left", padx=5, pady=5)
+        sc = tk.Button(box, text="Close", width=10, command=self.close, default="active")
+        sc.pack(side="left", padx=5, pady=5)
         box.pack()
+
+    def send(self, event=None):
+        """
+        """
+        pass
+
+    def refresh(self, event=None):
+        """
+        """
+        pass
 
     def close(self, event=None):
         # put focus back to the parent window

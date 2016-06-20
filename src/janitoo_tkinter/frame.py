@@ -76,6 +76,10 @@ import ttk
 
 from PIL import Image, ImageTk
 
+import janitoo.utils as jnt_utils
+
+from janitoo.mqtt import MQTTBasic
+
 from janitoo_tkinter.tree import TreeListBox
 from janitoo_tkinter.dialog import DialogClose
 
@@ -405,6 +409,15 @@ class FrameMap(JntFrame):
         self.menu_network = None
         self.tkroot.register_queue_cb('nodes', self.queue_nodes_cb)
 
+        self.mqttc = MQTTBasic(options=self.options.data)
+        self.mqttc.on_message = self.on_message
+        self.mqttc.connect_with_options()
+
+    def on_message(self, mqttc, obj, msg):
+        """
+        """
+        pass
+
     def __del__(self):
         """
         """
@@ -528,27 +541,32 @@ class FrameMap(JntFrame):
     def action_systems(self, node, vuuid):
         """
         """
-        d = DialogNode(self.master, title="System values", network = self.tkroot.network, node=node, vuuid=vuuid)
+        dial = DialogNode(self.master, title="System values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='systems', mqttc=self.mqttc)
+        #~ dial.refresh()
 
     def action_configs(self, node, vuuid):
         """
         """
-        d = DialogNode(self.master, title="Config values", network = self.tkroot.network, node=node, vuuid=vuuid)
+        dial = DialogNode(self.master, title="Config values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='configs', mqttc=self.mqttc)
+        #~ dial.refresh()
 
     def action_basics(self, node, vuuid):
         """
         """
-        d = DialogNode(self.master, title="Basic values", network = self.tkroot.network, node=node, vuuid=vuuid)
+        dial = DialogNode(self.master, title="Basic values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='basics', mqttc=self.mqttc)
+        #~ dial.refresh()
 
     def action_users(self, node, vuuid):
         """
         """
-        d = DialogNode(self.master, title="User values", network = self.tkroot.network, node=node, vuuid=vuuid)
+        dial = DialogNode(self.master, title="User values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='users', mqttc=self.mqttc)
+        #~ dial.refresh()
 
     def action_commands(self, node, vuuid):
         """
         """
-        d = DialogNode(self.master, title="Command values", network = self.tkroot.network, node=node, vuuid=vuuid)
+        dial = DialogNode(self.master, title="Command values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='commands', mqttc=self.mqttc)
+        #~ dial.refresh()
 
     def queue_nodes_cb(self, nodes):
         """
@@ -1038,40 +1056,138 @@ class FrameRoot(ttk.Frame):
         #~ self.columnconfigure((3,4), weight=0, uniform=1)
         self.pack(expand=1, fill="both")
 
-        #~ self.notebook.enable_traversal()
-        #~ self.status = tkMon(self, self.subscriber)
-        #~ self.notebook.enable_traversal()
-        #~ self.error.grid(row=0, column=0, columnspan=3, sticky='new', pady=5, padx=5, in_=self)
-        #~ self.warning.grid(row=1, column=0, columnspan=3, sticky='new', pady=5, padx=5, in_=self)
-        #~ self.notebook.grid(row=2, column=0, columnspan=3, sticky='nsew', pady=5, padx=5, in_=self)
-        #~ self.status.grid(row=0, column=3, rowspan=3, sticky='ne', pady=5, padx=5, in_=self)
-        #~ self.rowconfigure((0,1), weight=0)
-        #~ self.rowconfigure(2, weight=1)
-        #~ self.columnconfigure((0,1,2), weight=1, uniform=1)
-        #~ self.pack(expand=1, fill="both")
-
-    def _create_widgets(self):
-#        if self.isapp:
-#            SeeDismissPanel(self)
-        self._create_demo_panel()
-
 class DialogNode(DialogClose):
 
-    def __init__(self, parent, title = None, network = None, node=None, vuuid=None):
+    def __init__(self, parent, title = None, network = None, node=None, vuuid=None, genre='systems', mqttc=None):
         self.network = network
+        self.mqttc = mqttc
         self.node = node
+        self.genre = genre
         self.vuuid = vuuid
         DialogClose.__init__(self, parent, title)
 
     def body(self, master):
 
-        node_hadd_label = ttk.Label(self, justify="left", anchor="w", \
-            text="Node HADD : %s" % self.node)
-        node_hadd_label.grid(row=0, column=0, sticky='nw', pady=2, padx=2, \
+        self.var_nhadd = tk.StringVar()
+        nhadd_label = ttk.Label(self, justify="left", anchor="w", \
+            text="Node HADD :")
+        nhadd_label.grid(row=0, column=0, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        nhadd_entry = ttk.Entry(self, justify="left", textvariable=self.var_nhadd)
+        nhadd_entry.grid(row=0, column=1, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        nhadd_entry.state(["disabled"])
+        self.var_nhadd.set(self.node)
+
+        self.var_vuuid = tk.StringVar()
+        vuuid_label = ttk.Label(self, justify="left", anchor="w", \
+            text="Value uuid :")
+        vuuid_label.grid(row=1, column=0, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        vuuid_entry = ttk.Entry(self, justify="left", textvariable=self.var_vuuid)
+        vuuid_entry.grid(row=1, column=1, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        vuuid_entry.state(["disabled"])
+        self.var_vuuid.set(self.vuuid)
+
+        self.var_value_index = tk.StringVar()
+        value_index_label = ttk.Label(self, justify="left", anchor="w", \
+            text="Index :")
+        value_index_label.grid(row=2, column=0, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        value_index_entry = ttk.Entry(self, justify="left", textvariable=self.var_value_index)
+        value_index_entry.grid(row=2, column=1, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        if self.genre == 'systems':
+            value_index_entry.state(["disabled"])
+
+        self.var_value_cmdclass = tk.StringVar()
+        value_cmdclass_label = ttk.Label(self, justify="left", anchor="w", \
+            text="Cmdclass :")
+        value_cmdclass_label.grid(row=3, column=0, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        value_cmdclass_entry = ttk.Entry(self, justify="left", textvariable=self.var_value_cmdclass)
+        value_cmdclass_entry.grid(row=3, column=1, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        value_cmdclass_entry.state(["disabled"])
+
+        self.var_value_type = tk.StringVar()
+        value_type_label = ttk.Label(self, justify="left", anchor="w", \
+            text="Type :")
+        value_type_label.grid(row=4, column=0, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        value_type_entry = ttk.Entry(self, justify="left", textvariable=self.var_value_type)
+        value_type_entry.grid(row=4, column=1, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        value_type_entry.state(["disabled"])
+
+        self.var_value_genre = tk.StringVar()
+        value_genre_label = ttk.Label(self, justify="left", anchor="w", \
+            text="Genre :")
+        value_genre_label.grid(row=5, column=0, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        value_genre_entry = ttk.Entry(self, justify="left", textvariable=self.var_value_genre)
+        value_genre_entry.grid(row=5, column=1, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        value_genre_entry.state(["disabled"])
+
+        self.var_value_data = tk.StringVar()
+        value_data_label = ttk.Label(self, justify="left", anchor="w", \
+            text="Data :")
+        value_data_label.grid(row=6, column=0, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        value_data_entry = ttk.Entry(self, justify="left", textvariable=self.var_value_data)
+        value_data_entry.grid(row=6, column=1, sticky='nw', pady=2, padx=2, \
             in_=master)
 
-        node_vuuid_label = ttk.Label(self, justify="left", anchor="w", \
-            text="Node vuuid : %s" % self.vuuid)
-        node_vuuid_label.grid(row=1, column=0, sticky='nw', pady=2, padx=2, \
+        self.var_value_help = tk.StringVar()
+        value_help_label = ttk.Label(self, justify="left", anchor="w", \
+            text="Help :")
+        value_help_label.grid(row=7, column=0, sticky='nw', pady=2, padx=2, \
             in_=master)
+        value_help_entry = ttk.Entry(self, justify="left", textvariable=self.var_value_help)
+        value_help_entry.grid(row=7, column=1, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        value_help_entry.state(["disabled"])
 
+        self.var_value_list_items = tk.StringVar()
+        value_list_items_label = ttk.Label(self, justify="left", anchor="w", \
+            text="Items (for list) :")
+        value_list_items_label.grid(row=8, column=0, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        value_list_items_entry = ttk.Entry(self, justify="left", textvariable=self.var_value_list_items)
+        value_list_items_entry.grid(row=8, column=1, sticky='nw', pady=2, padx=2, \
+            in_=master)
+        value_list_items_entry.state(["disabled"])
+
+        self.refresh()
+
+    def send(self, event=None):
+        """
+        """
+        msg = { 'cmd_class':self.var_value_cmdclass.get(),
+                'genre':self.var_value_genre.get(),
+                'uuid':self.var_vuuid.get(),
+                'reply_hadd':'8888/0000',
+                'is_writeonly':True,
+                'is_readonly':False,
+                'hadd':self.var_nhadd.get(),
+                'data':self.var_value_data.get(),
+                }
+        logger.debug('Send MQTT msg %s', msg)
+        self.mqttc.publish(jnt_utils.TOPIC_NODES_REQUEST%self.var_nhadd.get(), jnt_utils.json_dumps(msg))
+
+    def refresh(self, event=None):
+        """
+        """
+        value = self.network.find_node_value(self.node, genre=self.genre, vuuid=self.vuuid)
+        logger.debug('Get value %s', value)
+        if 'index' not in value:
+            value = value[value.keys()[0]]
+        self.var_value_index.set(value['index'])
+        self.var_value_cmdclass.set(value['cmd_class'])
+        self.var_value_type.set(value['type'])
+        self.var_value_genre.set(value['genre'])
+        self.var_value_data.set(value['data'])
+        self.var_value_help.set(value['help'])
+        self.var_value_list_items.set(value['list_items'])
