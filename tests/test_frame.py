@@ -39,6 +39,7 @@ from janitoo.options import JNTOptions
 from janitoo_tkinter import JanitooTk
 from janitoo_tkinter.frame import FrameMap
 from janitoo_tkinter.frame import tkNodes
+from janitoo_tkinter.frame import FrameRoot
 
 from janitoo_nosetests import JNTTBase
 from janitoo_nosetests.tkinter import JNTTTkinter
@@ -52,3 +53,13 @@ class TestMap(JNTTTkinter):
         nodes=tkNodes(None, 1, options=self.options, section=self.section)
         self.assertNotEqual(None, nodes)
         nodes.save_map(self.root)
+
+class TestRoot(JNTTTkinter):
+    """Test root
+    """
+    client_conf = "tests/data/janitoo_tkui.conf"
+
+    def test_frame_root(self):
+        main = FrameRoot(self.root, options=self.options, section=self.section)
+        main.master.title("Janitoo tkui")
+        main.pack(fill='both', expand=1)
