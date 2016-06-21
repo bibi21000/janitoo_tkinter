@@ -98,7 +98,7 @@ assert(CAPABILITY_DESC[CAPABILITY_TINY_CONTROLLER] == 'CAPABILITY_TINY_CONTROLLE
 class JntFrame(ttk.Frame):
     '''
     '''
-    def __init__(self, parent, columns=['topic','value'], displaycolumns = ['value'], *args, **kw):
+    def __init__(self, parent, *args, **kw):
         name = kw.pop('name', 'network')
         self.tkroot = kw.pop('tkroot', None)
         self.options = kw.pop('options', {})
@@ -118,16 +118,12 @@ class JntFrame(ttk.Frame):
 class FrameNetwork(JntFrame):
     '''
     '''
-    def __init__(self, *args, **kw):
+    def __init__(self, parent, *args, **kw):
         name = kw.pop('name', 'network')
         JntFrame.__init__(self, parent, name=name, *args, **kw)
 
         helv24 = tkFont.Font(family='Helvetica', size=24, weight='bold')
         helv12 = tkFont.Font(family='Helvetica', size=12, weight='bold', slant='italic')
-
-        #~ label_frame_network = ttk.Labelframe(self, text='Network')
-        #~ label_frame_network.grid(row=0, column=0, sticky='nw', pady=2, padx=2, \
-            #~ in_=self)
 
         network_state_label = ttk.Label(self, justify="left", anchor="w", \
             text="Network : ", font=helv12)
@@ -152,10 +148,6 @@ class FrameNetwork(JntFrame):
         sep = ttk.Separator(parent, orient='vertical')
         sep.grid(row=0, rowspan=3, column=3, sticky='ns', pady=2, padx=2, \
             in_=self)
-#~
-        #~ label_frame_mode = ttk.Labelframe(self, text='Mode')
-        #~ label_frame_mode.grid(row=0, column=1, sticky='ne', pady=2, padx=2, \
-            #~ in_=self)
 
         network_primary = ttk.Checkbutton(self, text = "Primary", \
                 onvalue = 1, offvalue = 0, variable = self.tkroot.var_is_primary)
@@ -526,32 +518,27 @@ class FrameMap(JntFrame):
     def action_systems(self, node, vuuid):
         """
         """
-        dial = DialogNode(self.master, title="System values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='systems', mqttc=self.mqttc, my_hadd=self.tkroot.listener._controller.hadd)
-        #~ dial.refresh()
+        dial = DialogNode(self.master, title="System values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='systems', mqttc=self.mqttc, my_hadd=self.tkroot.listener.controller.hadd)
 
     def action_configs(self, node, vuuid):
         """
         """
-        dial = DialogNode(self.master, title="Config values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='configs', mqttc=self.mqttc, my_hadd=self.tkroot.listener._controller.hadd)
-        #~ dial.refresh()
+        dial = DialogNode(self.master, title="Config values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='configs', mqttc=self.mqttc, my_hadd=self.tkroot.listener.controller.hadd)
 
     def action_basics(self, node, vuuid):
         """
         """
-        dial = DialogNode(self.master, title="Basic values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='basics', mqttc=self.mqttc, my_hadd=self.tkroot.listener._controller.hadd)
-        #~ dial.refresh()
+        dial = DialogNode(self.master, title="Basic values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='basics', mqttc=self.mqttc, my_hadd=self.tkroot.listener.controller.hadd)
 
     def action_users(self, node, vuuid):
         """
         """
-        dial = DialogNode(self.master, title="User values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='users', mqttc=self.mqttc, my_hadd=self.tkroot.listener._controller.hadd)
-        #~ dial.refresh()
+        dial = DialogNode(self.master, title="User values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='users', mqttc=self.mqttc, my_hadd=self.tkroot.listener.controller.hadd)
 
     def action_commands(self, node, vuuid):
         """
         """
-        dial = DialogNode(self.master, title="Command values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='commands', mqttc=self.mqttc, my_hadd=self.tkroot.listener._controller.hadd)
-        #~ dial.refresh()
+        dial = DialogNode(self.master, title="Command values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='commands', mqttc=self.mqttc, my_hadd=self.tkroot.listener.controller.hadd)
 
     def queue_nodes_cb(self, nodes):
         """
@@ -791,7 +778,7 @@ class tkNodes(object):
             #print "links = %s" % (self.data[node]['links'])
             #print "linkid = %s" % (self.data[node]['links'][link])
             #print "x1,y1 = %s.%s" % (x1, y1)
-            if self.data[node]['links'][link] != None and x1 != None:
+            if self.data[node]['links'][link] != None and x1 is not None:
                 self.canvas.coords(self.data[node]['links'][link], x, y, x1, y1)
         self.canvas.coords(self.data[node]['image_id'], x , y)
         self.canvas.coords(self.data[node]['label_id'], \

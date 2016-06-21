@@ -70,6 +70,7 @@ class ListenerThread(threading.Thread, Controller):
         self.network = None
         self.create_network(tkroot=tkroot)
         Controller.__init__(self, self.network)
+        self.controller = None
         self.loop_sleep = 0.25
         loop_sleep = self.options.get_option('system','loop_sleep', self.loop_sleep)
         if loop_sleep is not None:
@@ -112,6 +113,7 @@ class ListenerThread(threading.Thread, Controller):
         self.network.boot(self.hadds)
         Controller.start_controller(self, self.section, self.options, cmd_classes=[COMMAND_DHCPD], hadd=self.hadds[0], name="Tkinter client",
             product_name="Tkinter client")
+        self.controller = self._controller
         self._stopevent.wait(1.0)
         Controller.start_controller_timer(self)
         while not self._stopevent.isSet():

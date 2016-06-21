@@ -24,23 +24,17 @@ __copyright__ = "2013 : (c) Sébastien GALLET aka bibi21000"
 __author__ = 'Sébastien GALLET aka bibi21000'
 __email__ = 'bibi21000@gmail.com'
 
-#import tkinter as tk
-#import tkinter.Font as tkFont
-#import tkinter.ttk as ttk
-#import Tkinter
-#~ import Tkinter as tk
 import tkFont as tkFont
 import ttk as ttk
-import traceback
 
 class TreeListBox(ttk.Frame):
     '''
     '''
-    def __init__(self, master, columns=['topic','value'], displaycolumns = ['value'], *args, **kw):
+    def __init__(self, master, *args, **kw):
+        self.columns = kw.pop('columns', ['topic','value'])
+        self.displaycolumns = kw.pop('displaycolumns', ['value'])
         ttk.Frame.__init__(self, master, *args, **kw)
         self.tree = None
-        self.displaycolumns = displaycolumns
-        self.columns = columns
         self._setup_widgets(columns, displaycolumns)
         #self._build_tree()
 

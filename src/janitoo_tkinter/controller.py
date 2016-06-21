@@ -31,7 +31,6 @@ logger = logging.getLogger(__name__)
 from pkg_resources import iter_entry_points
 
 from janitoo.server import JNTControllerManager
-from janitoo.utils import HADD
 
 
 class Controller(JNTControllerManager):
