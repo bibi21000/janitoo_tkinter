@@ -541,31 +541,31 @@ class FrameMap(JntFrame):
     def action_systems(self, node, vuuid):
         """
         """
-        dial = DialogNode(self.master, title="System values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='systems', mqttc=self.mqttc)
+        dial = DialogNode(self.master, title="System values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='systems', mqttc=self.mqttc, my_hadd=self.tkroot.listener._controller.hadd)
         #~ dial.refresh()
 
     def action_configs(self, node, vuuid):
         """
         """
-        dial = DialogNode(self.master, title="Config values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='configs', mqttc=self.mqttc)
+        dial = DialogNode(self.master, title="Config values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='configs', mqttc=self.mqttc, my_hadd=self.tkroot.listener._controller.hadd)
         #~ dial.refresh()
 
     def action_basics(self, node, vuuid):
         """
         """
-        dial = DialogNode(self.master, title="Basic values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='basics', mqttc=self.mqttc)
+        dial = DialogNode(self.master, title="Basic values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='basics', mqttc=self.mqttc, my_hadd=self.tkroot.listener._controller.hadd)
         #~ dial.refresh()
 
     def action_users(self, node, vuuid):
         """
         """
-        dial = DialogNode(self.master, title="User values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='users', mqttc=self.mqttc)
+        dial = DialogNode(self.master, title="User values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='users', mqttc=self.mqttc, my_hadd=self.tkroot.listener._controller.hadd)
         #~ dial.refresh()
 
     def action_commands(self, node, vuuid):
         """
         """
-        dial = DialogNode(self.master, title="Command values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='commands', mqttc=self.mqttc)
+        dial = DialogNode(self.master, title="Command values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='commands', mqttc=self.mqttc, my_hadd=self.tkroot.listener._controller.hadd)
         #~ dial.refresh()
 
     def queue_nodes_cb(self, nodes):
@@ -916,7 +916,7 @@ class tkNodes(object):
                         self.data[neighbor]['links'][node] = lnkid
                 else :
                     #~ print "The neighbor %s does not exist" % neighbor
-                    self.data[node]['links'][neighbor] is None
+                    self.data[node]['links'][neighbor] = None
         imgid = self.canvas.create_image(self.data[node]['posx'], self.data[node]['posy'], \
                 image=self.imagetk_node)
         self.data[node]['image_id'] = imgid
@@ -1058,8 +1058,9 @@ class FrameRoot(ttk.Frame):
 
 class DialogNode(DialogClose):
 
-    def __init__(self, parent, title = None, network = None, node=None, vuuid=None, genre='systems', mqttc=None):
+    def __init__(self, parent, title = None, network = None, node=None, vuuid=None, genre='systems', mqttc=None, my_hadd=None):
         self.network = network
+        self.my_hadd = my_hadd
         self.mqttc = mqttc
         self.node = node
         self.genre = genre
@@ -1165,10 +1166,10 @@ class DialogNode(DialogClose):
     def send(self, event=None):
         """
         """
-        msg = { 'cmd_class':self.var_value_cmdclass.get(),
-                'genre':self.var_value_genre.get(),
+        msg = { 'cmd_class':int(self.var_value_cmdclass.get()),
+                'genre':int(self.var_value_genre.get()),
                 'uuid':self.var_vuuid.get(),
-                'reply_hadd':'8888/0000',
+                'reply_hadd':self.my_hadd,
                 'is_writeonly':True,
                 'is_readonly':False,
                 'hadd':self.var_nhadd.get(),
