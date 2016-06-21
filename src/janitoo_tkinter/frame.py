@@ -118,7 +118,7 @@ class JntFrame(ttk.Frame):
 class FrameNetwork(JntFrame):
     '''
     '''
-    def __init__(self, parent, columns=['topic','value'], displaycolumns = ['value'], *args, **kw):
+    def __init__(self, *args, **kw):
         name = kw.pop('name', 'network')
         JntFrame.__init__(self, parent, name=name, *args, **kw)
 
@@ -178,8 +178,12 @@ class FrameNetwork(JntFrame):
 class FrameNodes(JntFrame):
     '''
     '''
-    def __init__(self, notebook, columns=['topic','value'], displaycolumns = ['value'], *args, **kw):
+    def __init__(self, notebook, *args, **kw):
+        """
+        """
         name = kw.pop('name', 'nodes')
+        columns = kw.pop('columns', ['topic','value'])
+        displaycolumns = kw.pop('displaycolumns', ['value'])
         JntFrame.__init__(self, notebook, name=name, *args, **kw)
         self.tree_view = TreeListBox(self, columns=['topic', 'value'], displaycolumns=['value'])
         self.tree_view.grid(row=0, column=0, columnspan=3, sticky='nsew', pady=5, padx=5, in_=self)
@@ -196,8 +200,9 @@ class FrameNodes(JntFrame):
             self.tree.delete(item)
         self.item_count = 0
 
-#    def _on_topic_update(self, topic, value) :
-    def add_item(self, key, items) :
+    def add_item(self, key, items):
+        """
+        """
         self.item_count += 1
         indexes = key.split(".")
         #print indexes
@@ -218,7 +223,7 @@ class FrameNodes(JntFrame):
                 ptype='node'
             else :
                 ptype='value'
-            if found == False :
+            if not found:
                 #print "add %s" % index
                 if ptype == 'node':
                     current_item = self.tree.insert(current_item, 0, text=index, values=[index])
@@ -236,7 +241,7 @@ class FrameNodes(JntFrame):
     def check_item_size(self, key, items) :
         """
         """
-        for col in headers:
+        for col in self.tree.headers:
             # adjust the column's width to the header string
             self.tree.column(col,
                 width=tkFont.Font().measure(col.title()))
@@ -256,32 +261,10 @@ class FrameNodes(JntFrame):
                 found = True
                 #break
         #~ print "Found %s" % found
-        if found == False :
+        if not found:
             self.add_item(key, items)
-        else :
+        else:
             self.tree.set(current_item, col, items[0])
-
-    def _build_tree(self):
-        car_header = ['key', 'value']
-        car_list = [
-            ('Hyundai', 'brakes') ,
-            ('Honda', 'light') ,
-            ('Lexus', 'battery') ,
-            ('Benz', 'wiper') ,
-            ('Ford', 'tire') ,
-            ('Chevy', 'air') ,
-            ('Chrysler', 'piston') ,
-            ('Toyota', 'brake pedal') ,
-            ('BMW', 'seat')
-            ]
-        #~ print "init tree"
-        for item in car_list:
-            self.tree.insert('', 'end', values=item)
-            # adjust column's width if necessary to fit each value
-            for ix, val in enumerate(item):
-                col_w = tkFont.Font().measure(val)
-                if self.tree.column(car_header[ix],width=None)<col_w:
-                    self.tree.column(car_header[ix], width=col_w)
 
     def sortby(self, tree, col, descending):
         """sort tree contents when a column header is clicked on"""
@@ -312,6 +295,8 @@ class FrameMap(JntFrame):
     '''
     '''
     def __init__(self, notebook, *args, **kw):
+        """
+        """
         name = kw.pop('name', 'map')
         JntFrame.__init__(self, notebook, name=name, *args, **kw)
 

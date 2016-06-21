@@ -104,7 +104,7 @@ class TreeListBox(ttk.Frame):
                 ptype='node'
             else :
                 ptype='value'
-            if found == False :
+            if not found:
                 #print "add %s" % index
                 if ptype == 'node':
                     current_item = self.tree.insert(current_item, 0, text=index, values=[index])
@@ -160,7 +160,6 @@ class TreeListBox(ttk.Frame):
             ('Toyota', 'brake pedal') ,
             ('BMW', 'seat')
             ]
-        print "init tree"
         for item in car_list:
             self.tree.insert('', 'end', values=item)
             # adjust column's width if necessary to fit each value
