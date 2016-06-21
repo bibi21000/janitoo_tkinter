@@ -31,8 +31,8 @@ class TreeListBox(ttk.Frame):
     '''
     '''
     def __init__(self, master, *args, **kw):
-        self.columns = kw.pop('columns', ['topic','value'])
-        self.displaycolumns = kw.pop('displaycolumns', ['value'])
+        columns = kw.pop('columns', ['topic','value'])
+        displaycolumns = kw.pop('displaycolumns', ['value'])
         ttk.Frame.__init__(self, master, *args, **kw)
         self.tree = None
         self._setup_widgets(columns, displaycolumns)
@@ -116,7 +116,7 @@ class TreeListBox(ttk.Frame):
     def check_item_size(self, key, items) :
         """
         """
-        for col in headers:
+        for col in self.tree.headers:
             # adjust the column's width to the header string
             self.tree.column(col,
                 width=tkFont.Font().measure(col.title()))
