@@ -12,6 +12,14 @@ janitoo_tkinter.controller module
     :undoc-members:
     :show-inheritance:
 
+janitoo_tkinter.dialog module
+-----------------------------
+
+.. automodule:: janitoo_tkinter.dialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 janitoo_tkinter.frame module
 ----------------------------
 
