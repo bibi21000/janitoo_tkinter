@@ -56,6 +56,21 @@ class TestTkinter(JNTTTkinter):
         self.root.extend_listener('janitoo_test')
 
     def test_051_start_stop_listener(self):
-        self.root.start_listener()
-        time.sleep(30.0)
-        self.root.stop_listener()
+        try:
+            self.root.start_listener()
+            time.sleep(60.0)
+            print("Network nodes %s"%self.root.network.nodes)
+            self.assertEqual(len(self.root.network.nodes), 1)
+            print("Network systems %s"%self.root.network.systems)
+            self.assertEqual(len(self.root.network.systems), 1)
+            print("Network basics %s"%self.root.network.basics)
+            self.assertEqual(len(self.root.network.basics), 1)
+            print("Network users %s"%self.root.network.users)
+            self.assertEqual(len(self.root.network.users), 0)
+            print("Network configs %s"%self.root.network.configs)
+            self.assertEqual(len(self.root.network.configs), 1)
+            print("Network commands %s"%self.root.network.commands)
+            self.assertEqual(len(self.root.network.commands), 0)
+        finally:
+            self.root.stop_listener()
+        self.assertTrue(False)
