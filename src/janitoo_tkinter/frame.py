@@ -517,7 +517,13 @@ class FrameMap(JntFrame):
         mqttc = MQTTBasic(options=self.options.data)
         mqttc.on_message = self.on_message
         mqttc.connect_with_options()
-        dial = DialogNode(self.master, title="System values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='systems', mqttc=mqttc, my_hadd=self.tkroot.listener.controller.hadd)
+        dial = DialogNode(self.master,
+            title="System values",
+            network = self.tkroot.network,
+            node=node, vuuid=vuuid,
+            genre='systems',
+            mqttc=mqttc,
+            my_hadd=self.tkroot.listener.controller.hadd)
 
     def action_configs(self, node, vuuid):
         """
@@ -525,7 +531,14 @@ class FrameMap(JntFrame):
         mqttc = MQTTBasic(options=self.options.data)
         mqttc.on_message = self.on_message
         mqttc.connect_with_options()
-        dial = DialogNode(self.master, title="Config values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='configs', mqttc=mqttc, my_hadd=self.tkroot.listener.controller.hadd)
+        dial = DialogNode(self.master,
+            title="Config values",
+            network = self.tkroot.network,
+            node=node,
+            vuuid=vuuid,
+            genre='configs',
+            mqttc=mqttc,
+            my_hadd=self.tkroot.listener.controller.hadd)
 
     def action_basics(self, node, vuuid):
         """
@@ -533,7 +546,14 @@ class FrameMap(JntFrame):
         mqttc = MQTTBasic(options=self.options.data)
         mqttc.on_message = self.on_message
         mqttc.connect_with_options()
-        dial = DialogNode(self.master, title="Basic values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='basics', mqttc=mqttc, my_hadd=self.tkroot.listener.controller.hadd)
+        dial = DialogNode(self.master,
+            title="Basic values",
+            network = self.tkroot.network,
+            node=node,
+            vuuid=vuuid,
+            genre='basics',
+            mqttc=mqttc,
+            my_hadd=self.tkroot.listener.controller.hadd)
 
     def action_users(self, node, vuuid):
         """
@@ -549,7 +569,14 @@ class FrameMap(JntFrame):
         mqttc = MQTTBasic(options=self.options.data)
         mqttc.on_message = self.on_message
         mqttc.connect_with_options()
-        dial = DialogNode(self.master, title="Command values", network = self.tkroot.network, node=node, vuuid=vuuid, genre='commands', mqttc=mqttc, my_hadd=self.tkroot.listener.controller.hadd)
+        dial = DialogNode(self.master,
+            title="Command values",
+            network = self.tkroot.network,
+            node=node,
+            vuuid=vuuid,
+            genre='commands',
+            mqttc=mqttc,
+            my_hadd=self.tkroot.listener.controller.hadd)
 
     def queue_nodes_cb(self, nodes):
         """
