@@ -73,4 +73,4 @@ class TestTkinter(JNTTTkinter):
             self.assertEqual(len(self.root.network.commands), 0)
         finally:
             self.root.stop_listener()
-        self.assertTrue(False)
+        #~ self.assertTrue(False)
