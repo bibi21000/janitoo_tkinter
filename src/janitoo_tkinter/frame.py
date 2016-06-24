@@ -595,31 +595,16 @@ class FrameMap(JntFrame):
                     nodes[node]['neighbors'][had] = had
                 if 'links' not in nodes[node]:
                     nodes[node]['links'] = {}
-                self.nodes.add(hadd, nodes[node])
+                if hadd in self.tkroot.network.find_primary_controllers():
+                    nodes[node]['controller'] = 'primary'
+                elif hadd in self.tkroot.network.find_secondary_controllers():
+                    nodes[node]['controller'] = 'secondary'
+                elif hadd in self.tkroot.network.find_controllers():
+                    nodes[node]['controller'] = 'nodes'
                 #~ print nodes[node]
-                #~ self.nodes.add(nodes[node]["hadd"], nodes[node])
-                #~ print("[ %s ] - node %s : %s"%(self.__class__.__name__, node, nodes[node]) )
-            #~ print "subscriber_nodes_cb %s:%s" % (topic,value)
-            #~ self.nodes_tree_view.set_item(topic, "value", value)
-            #~ self.nodes_count['text'] = self.nodes_message % (self.nodes_tree_view.item_count)
-            #~ node = topic.replace(NODES+'.','')
-            #~ node = int(node)
-            #~ if value[0] == '':
-                #~ self.nodes.delete(node)
-            #~ else :
-                #~ data = json.loads(value[0], object_hook=as_python_object)
-                #~ print "data : %s" % data
-                #~ if node not in self.nodes.data :
-                    #~ self.nodes.add(node,data)
-                #~ else :
-                    #~ self.nodes.update(node,data)
-                    #~ #Update the node picture
-                #~ print "subscriber_nodes_cb self.nodes.data[node]=%s" % (self.nodes.data[node])
+                self.nodes.add(hadd, nodes[node])
         except Exception:
             logger.exception("[ %s ] - queue_nodes_cb for nodes %s", self.__class__.__name__, nodes)
-            #~ print 'subscriber_last_cb : topic / value : %s /%s' % (topic, value)
-            #~ print traceback.format_exc()
-            #~ print "continue"
 
 class tkNodes(object):
 
@@ -637,11 +622,6 @@ class tkNodes(object):
         )
         self.image_node = Image.open(io.BytesIO(stream.read()))
 
-        stream = pkg_resources.resource_stream(
-            __name__,
-            'images/48/usb_storage.png',
-        )
-        self.image_controler =  Image.open(io.BytesIO(stream.read()))
         self.image_batteries = {}
         stream = pkg_resources.resource_stream(
             __name__,
@@ -716,6 +696,27 @@ class tkNodes(object):
         image = Image.open(io.BytesIO(stream.read()))
         self.image_state_offline = ImageTk.PhotoImage(image)
 
+        stream = pkg_resources.resource_stream(
+            __name__,
+            'images/16/transmit_blue.png',
+        )
+        image = Image.open(io.BytesIO(stream.read()))
+        self.image_controler_node = ImageTk.PhotoImage(image)
+
+        stream = pkg_resources.resource_stream(
+            __name__,
+            'images/16/heart.png',
+        )
+        image = Image.open(io.BytesIO(stream.read()))
+        self.image_controller_primary = ImageTk.PhotoImage(image)
+
+        stream = pkg_resources.resource_stream(
+            __name__,
+            'images/16/heart_empty.png',
+        )
+        image = Image.open(io.BytesIO(stream.read()))
+        self.image_controller_secondary = ImageTk.PhotoImage(image)
+
         self.label_dx = 0
         self.label_dy = 0
         self.controler_dx = -30
@@ -759,9 +760,9 @@ class tkNodes(object):
         iw, ih = self.image_node.size
         size = int(iw * self.scale), int(ih * self.scale)
         self.imagetk_node = ImageTk.PhotoImage(self.image_node.resize(size))
-        iw, ih = self.image_controler.size
-        size = int(iw * self.scale), int(ih * self.scale)
-        self.imagetk_controler = ImageTk.PhotoImage(self.image_controler.resize(size))
+        #~ iw, ih = self.image_controler.size
+        #~ size = int(iw * self.scale), int(ih * self.scale)
+        #~ self.imagetk_controler = ImageTk.PhotoImage(self.image_controler.resize(size))
         self.imagetk_batteries = {}
         for image in self.image_batteries:
             iw, ih = self.image_batteries[image].size
@@ -922,7 +923,13 @@ class tkNodes(object):
                         x1,y1 = self.get_coord(neighbor)
                         x0 = self.data[node]['posx']
                         y0 = self.data[node]['posy']
-                        lnkid = self.canvas.create_line(x0, y0, x1, y1, fill='gray14')
+                        fill = 'gray14'
+                        width = 2
+                        if ('controller' in self.data[node] and self.data[node]['controller'] in ['primary', 'secondary']) or \
+                           ('controller' in self.data[neighbor] and self.data[neighbor]['controller'] in ['primary', 'secondary']):
+                               fill = 'red'
+                               width = 5
+                        lnkid = self.canvas.create_line(x0, y0, x1, y1, fill=fill)
                         self.canvas.tag_lower(lnkid)
                         self.data[node]['links'][neighbor] = lnkid
                         self.data[neighbor]['links'][node] = lnkid
@@ -941,14 +948,6 @@ class tkNodes(object):
                 anchor="w", justify='center', font=helv)
         self.data[node]['label_id'] = lblid
         #~ print "draw %s" % self.data[node]['capabilities']
-        if CAPABILITY_DYNAMIC_CONTROLLER in self.data[node]['capabilities'] or \
-                CAPABILITY_TINY_CONTROLLER in self.data[node]['capabilities'] :
-            #~ print "controller"
-            ctrlid = self.canvas.create_image( \
-                    self.data[node]['posx'] + self.controler_dx*self.scale, \
-                    self.data[node]['posy'] + self.controler_dy*self.scale, \
-                    image=self.imagetk_controler)
-            self.data[node]['ctrl_id'] = ctrlid
         if self.data[node]['state'] == 'ONLINE':
             #~ print "controller"
             stateid = self.canvas.create_image( \
@@ -968,62 +967,26 @@ class tkNodes(object):
                     self.data[node]['posy'] - self.controler_dy*self.scale, \
                     image=self.image_state_other)
         self.data[node]['state_id'] = stateid
-        #~ if 'sleeping' not in self.data[node] or self.data[node]['sleeping'] == None :
-            #~ if 'sleep_id' in self.data[node]:
-                #~ del(self.data[node]['sleep_id'])
-        #~ elif self.data[node]['sleeping'] == False:
-            #~ sleepid = self.canvas.create_image( \
-                    #~ self.data[node]['posx'] + self.sleep_dx*self.scale, \
-                    #~ self.data[node]['posy'] + self.sleep_dy*self.scale, \
-                    #~ image=self.imagetk_sleeps[0])
-            #~ self.data[node]['sleep_id'] = sleepid
-        #~ elif self.data[node]['sleeping'] == True:
-            #~ sleepid = self.canvas.create_image( \
-                    #~ self.data[node]['posx'] + self.sleep_dx*self.scale, \
-                    #~ self.data[node]['posy'] + self.sleep_dy*self.scale, \
-                    #~ image=self.imagetk_sleeps[1])
-            #~ self.data[node]['sleep_id'] = sleepid
-        #~ if 'battery' not in self.data[node] or self.data[node]['battery'] == None :
-            #~ ctrlid = self.canvas.create_image( \
-                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    #~ image=self.imagetk_batteries[7])
-        #~ elif self.data[node]['battery'] < 5:
-            #~ ctrlid = self.canvas.create_image( \
-                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    #~ image=self.imagetk_batteries[0])
-        #~ elif self.data[node]['battery'] < 15:
-            #~ ctrlid = self.canvas.create_image( \
-                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    #~ image=self.imagetk_batteries[1])
-        #~ elif self.data[node]['battery'] < 25:
-            #~ ctrlid = self.canvas.create_image( \
-                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    #~ image=self.imagetk_batteries[2])
-        #~ elif self.data[node]['battery'] < 50:
-            #~ ctrlid = self.canvas.create_image( \
-                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    #~ image=self.imagetk_batteries[3])
-        #~ elif self.data[node]['battery'] < 70:
-            #~ ctrlid = self.canvas.create_image( \
-                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    #~ image=self.imagetk_batteries[4])
-        #~ elif self.data[node]['battery'] < 85:
-            #~ ctrlid = self.canvas.create_image( \
-                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    #~ image=self.imagetk_batteries[5])
-        #~ else:
-            #~ ctrlid = self.canvas.create_image( \
-                    #~ self.data[node]['posx'] + self.battery_dx*self.scale, \
-                    #~ self.data[node]['posy'] + self.battery_dy*self.scale, \
-                    #~ image=self.imagetk_batteries[6])
-        #~ self.data[node]['battery_id'] = ctrlid
+
+        if 'controller' in self.data[node]:
+            if self.data[node]['controller'] == 'primary':
+                ctrlid = self.canvas.create_image( \
+                        self.data[node]['posx'] + self.controler_dx*self.scale, \
+                        self.data[node]['posy'] - self.controler_dy*self.scale, \
+                        image=self.image_controller_primary)
+                self.data[node]['ctrlid'] = ctrlid
+            elif self.data[node]['controller'] == 'secondary':
+                ctrlid = self.canvas.create_image( \
+                        self.data[node]['posx'] + self.controler_dx*self.scale, \
+                        self.data[node]['posy'] - self.controler_dy*self.scale, \
+                        image=self.image_controller_secondary)
+                self.data[node]['ctrlid'] = ctrlid
+            elif self.data[node]['controller'] == 'nodes':
+                ctrlid = self.canvas.create_image( \
+                        self.data[node]['posx'] + self.controler_dx*self.scale, \
+                        self.data[node]['posy'] + self.controler_dy*self.scale, \
+                        image=self.image_controler_node)
+                self.data[node]['ctrlid'] = ctrlid
 
     def search_by_canvas(self, x, y):
         """
