@@ -868,6 +868,8 @@ class tkNodes(object):
                 redraw = True
             elif field == 'battery' and self.data[node][field] != data[field]:
                 redraw = True
+            elif field == 'state' and self.data[node][field] != data[field]:
+                redraw = True
             elif field == 'neighbors' :
                 for link in data[field]:
                     if link not in self.data[node]['links']:

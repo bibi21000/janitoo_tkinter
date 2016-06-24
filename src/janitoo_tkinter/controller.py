@@ -49,6 +49,16 @@ class Controller(JNTControllerManager):
         for entrypoint in iter_entry_points(group = 'janitoo.values'):
             value_factory[entrypoint.name] = entrypoint.load()
 
+        uuid="network_controller"
+        value = value_factory['network_controller'](options=self._controller.options, uuid=uuid,
+            node_uuid=self._controller.uuid,
+            get_data_cb=self.get_primary_controller,
+        )
+        self._controller.add_value(uuid, value)
+        poll_value = value.create_poll_value(default=60)
+        self._controller.add_value(poll_value.uuid, poll_value)
+        self.add_poll(value, timeout=30)
+
         uuid="count_user_values"
         value = value_factory['sensor_string'](options=self._controller.options, uuid=uuid,
             node_uuid=self._controller.uuid,
@@ -59,9 +69,9 @@ class Controller(JNTControllerManager):
             get_data_cb=self.get_count_user_values,
         )
         self._controller.add_value(uuid, value)
-        poll_value = value.create_poll_value(default=15)
+        poll_value = value.create_poll_value(default=300)
         self._controller.add_value(poll_value.uuid, poll_value)
-        self.add_poll(value, timeout=10)
+        self.add_poll(value, timeout=30)
 
         uuid="count_config_values"
         value = value_factory['sensor_string'](options=self._controller.options, uuid=uuid,
@@ -73,9 +83,9 @@ class Controller(JNTControllerManager):
             get_data_cb=self.get_count_config_values,
         )
         self._controller.add_value(uuid, value)
-        poll_value = value.create_poll_value(default=15)
+        poll_value = value.create_poll_value(default=300)
         self._controller.add_value(poll_value.uuid, poll_value)
-        self.add_poll(value, timeout=10)
+        self.add_poll(value, timeout=30)
 
         uuid="count_basic_values"
         value = value_factory['sensor_string'](options=self._controller.options, uuid=uuid,
@@ -87,9 +97,14 @@ class Controller(JNTControllerManager):
             get_data_cb=self.get_count_basic_values,
         )
         self._controller.add_value(uuid, value)
-        poll_value = value.create_poll_value(default=15)
+        poll_value = value.create_poll_value(default=300)
         self._controller.add_value(poll_value.uuid, poll_value)
-        self.add_poll(value, timeout=10)
+        self.add_poll(value, timeout=30)
+
+    def get_primary_controller(self, node_uuid, index):
+        """Return role of the network controller
+        """
+        return 'secondary'
 
     def get_count_user_values(self, node_uuid, index):
         """Return the number of user values

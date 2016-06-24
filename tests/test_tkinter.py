@@ -71,6 +71,12 @@ class TestTkinter(JNTTTkinter):
             self.assertEqual(len(self.root.network.configs), 1)
             print("Network commands %s"%self.root.network.commands)
             self.assertEqual(len(self.root.network.commands), 0)
+            print("Network controllers %s"%self.root.network.find_network_controllers())
+            self.assertEqual(len(self.root.network.find_network_controllers()), 1)
+            print("Network primary controllers %s"%self.root.network.find_primary_controllers())
+            self.assertEqual(len(self.root.network.find_primary_controllers()), 0)
+            print("Network secondary controllers %s"%self.root.network.find_secondary_controllers())
+            self.assertEqual(len(self.root.network.find_secondary_controllers()), 1)
         finally:
             self.root.stop_listener()
         #~ self.assertTrue(False)
