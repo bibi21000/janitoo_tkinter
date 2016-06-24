@@ -823,10 +823,10 @@ class tkNodes(object):
         self.canvas.coords(self.data[node]['label_id'], \
                 x + self.label_dx*self.scale - self.data[node]['label_width'] / 2 , \
                 y + self.label_dy*self.scale)
-        if 'ctrl_id' in self.data[node] :
-            self.canvas.coords(self.data[node]['ctrl_id'], \
+        if 'ctrlid' in self.data[node] :
+            self.canvas.coords(self.data[node]['ctrlid'], \
                 x + self.controler_dx*self.scale , \
-                y + self.controler_dy*self.scale)
+                y - self.controler_dy*self.scale)
         if 'state_id' in self.data[node] :
             self.canvas.coords(self.data[node]['state_id'], \
                 x - self.controler_dx*self.scale , \
