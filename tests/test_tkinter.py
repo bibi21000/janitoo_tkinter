@@ -27,7 +27,7 @@ import sys, os
 import time, datetime
 import unittest
 
-from janitoo.utils import json_dumps, json_loads
+from janitoo.utils import json_dumps, json_loads, hadd_split
 from janitoo.utils import HADD_SEP, HADD
 from janitoo.utils import TOPIC_HEARTBEAT
 from janitoo.utils import TOPIC_NODES, TOPIC_NODES_REPLY, TOPIC_NODES_REQUEST
@@ -71,6 +71,11 @@ class TestTkinter(JNTTTkinter):
             self.assertEqual(len(self.root.network.configs), 1)
             print("Network commands %s"%self.root.network.commands)
             self.assertEqual(len(self.root.network.commands), 0)
+            nodes_ctrl = self.root.network.find_controllers()
+            print("Node controllers %s"%nodes_ctrl)
+            self.assertEqual(len(nodes_ctrl), 1)
+            add_ctrl, add_node = hadd_split(nodes_ctrl[0])
+            self.assertEqual(len(self.root.network.find_controller_nodes(add_ctrl)), 0)
             print("Network controllers %s"%self.root.network.find_network_controllers())
             self.assertEqual(len(self.root.network.find_network_controllers()), 1)
             print("Network primary controllers %s"%self.root.network.find_primary_controllers())
