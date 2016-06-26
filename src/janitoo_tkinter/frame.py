@@ -744,11 +744,7 @@ class tkNodes(object):
             if key.startswith('map__'):
                 hadd = key[5:]
                 if hadd not in self.data:
-                    self.data[hadd] = {}
-                if 'links' not in self.data:
-                    self.data[hadd]['links'] = {}
-                if 'neighbors' not in self.data:
-                    self.data[hadd]['neighbors'] = {}
+                    self.data[hadd] = self.default_node()
                 self.data[hadd]['posx'] = int(self.options.get_option(key, 'posx', 100))
                 self.data[hadd]['posy'] = int(self.options.get_option(key, 'posy', 100))
         self.change_scale(self.scale)
@@ -776,7 +772,7 @@ class tkNodes(object):
         #~ for node in self.data :
             #~ self.clean_canvas(node)
             #~ self.draw(node)
-        self.redraw_all()
+        #~ self.redraw_all()
 
     def delete(self, node):
         """
@@ -791,12 +787,16 @@ class tkNodes(object):
     def clean_canvas(self, node):
         """
         """
-        self.canvas.delete(self.data[node]['image_id'])
-        self.canvas.delete(self.data[node]['label_id'])
+        if 'image_id' in self.data[node] :
+            self.canvas.delete(self.data[node]['image_id'])
+        if 'label_id' in self.data[node] :
+            self.canvas.delete(self.data[node]['label_id'])
         if 'ctrl_id' in self.data[node] :
             self.canvas.delete(self.data[node]['ctrl_id'])
         if 'battery_id' in self.data[node] :
             self.canvas.delete(self.data[node]['battery_id'])
+        if 'state_id' in self.data[node] :
+            self.canvas.delete(self.data[node]['state_id'])
         if 'sleep_id' in self.data[node] :
             self.canvas.delete(self.data[node]['sleep_id'])
         for link in self.data[node]['links'] :
@@ -823,8 +823,8 @@ class tkNodes(object):
         self.canvas.coords(self.data[node]['label_id'], \
                 x + self.label_dx*self.scale - self.data[node]['label_width'] / 2 , \
                 y + self.label_dy*self.scale)
-        if 'ctrlid' in self.data[node] :
-            self.canvas.coords(self.data[node]['ctrlid'], \
+        if 'ctrl_id' in self.data[node] :
+            self.canvas.coords(self.data[node]['ctrl_id'], \
                 x + self.controler_dx*self.scale , \
                 y - self.controler_dy*self.scale)
         if 'state_id' in self.data[node] :
@@ -848,21 +848,24 @@ class tkNodes(object):
         else :
             return None, None
 
+    def default_node(self):
+        """
+        """
+        data = {}
+        data['posx'] = 100
+        data['posy'] = 100
+        data['name'] = None
+        data['battery'] = None
+        data['state'] = None
+        data['links'] = {}
+        data['neighbors'] = {}
+        return data
+
     def add(self, node, data):
         """
         """
         if node not in self.data:
-            self.data[node] = {}
-            self.data[node]['posx'] = 100
-            self.data[node]['posy'] = 100
-            self.data[node]['links'] = {}
-            self.data[node]['neighbors'] = {}
-        self.data[node].update(data)
-        self.draw(node)
-
-    def update(self, node, data):
-        """
-        """
+            self.data[node] = self.default_node()
         redraw = False
         for field in data :
             if field == 'name' and self.data[node][field] != data[field]:
@@ -876,6 +879,7 @@ class tkNodes(object):
                     if link not in self.data[node]['links']:
                         redraw = True
             self.data[node][field] = data[field]
+        self.data[node].update(data)
         if redraw:
             self.clean_canvas(node)
             self.draw(node)
@@ -970,23 +974,23 @@ class tkNodes(object):
 
         if 'controller' in self.data[node]:
             if self.data[node]['controller'] == 'primary':
-                ctrlid = self.canvas.create_image( \
+                ctrl_id = self.canvas.create_image( \
                         self.data[node]['posx'] + self.controler_dx*self.scale, \
                         self.data[node]['posy'] - self.controler_dy*self.scale, \
                         image=self.image_controller_primary)
-                self.data[node]['ctrlid'] = ctrlid
+                self.data[node]['ctrl_id'] = ctrl_id
             elif self.data[node]['controller'] == 'secondary':
-                ctrlid = self.canvas.create_image( \
+                ctrl_id = self.canvas.create_image( \
                         self.data[node]['posx'] + self.controler_dx*self.scale, \
                         self.data[node]['posy'] - self.controler_dy*self.scale, \
                         image=self.image_controller_secondary)
-                self.data[node]['ctrlid'] = ctrlid
+                self.data[node]['ctrl_id'] = ctrl_id
             elif self.data[node]['controller'] == 'nodes':
-                ctrlid = self.canvas.create_image( \
+                ctrl_id = self.canvas.create_image( \
                         self.data[node]['posx'] + self.controler_dx*self.scale, \
                         self.data[node]['posy'] + self.controler_dy*self.scale, \
                         image=self.image_controler_node)
-                self.data[node]['ctrlid'] = ctrlid
+                self.data[node]['ctrl_id'] = ctrl_id
 
     def search_by_canvas(self, x, y):
         """
