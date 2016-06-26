@@ -53,6 +53,7 @@ class TestMap(JNTTTkinter):
         nodes=tkNodes(None, 1, options=self.options, section=self.section)
         self.assertNotEqual(None, nodes)
         nodes.save_map(self.root)
+        nodes.load_map()
 
 class TestRoot(JNTTTkinter):
     """Test root

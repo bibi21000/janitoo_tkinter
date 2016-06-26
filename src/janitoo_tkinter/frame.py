@@ -59,25 +59,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 import io
-
 import pkg_resources
 
-#import tkinter as tk
-#import tkinter.Font as tkFont
-#import tkinter.ttk as ttk
-#import Tkinter
 import Tkinter as tk
 import tkFont as tkFont
-
 import ttk
-#~ from ttk import Frame, Style, Progressbar, Separator, Notebook
-#~ from ttk import Checkbutton, Button, LabelFrame
-#~ from ttk import Label, Entry
-
 from PIL import Image, ImageTk
 
 import janitoo.utils as jnt_utils
-
 from janitoo.mqtt import MQTTBasic
 
 from janitoo_tkinter.tree import TreeListBox
@@ -854,7 +843,7 @@ class tkNodes(object):
         data = {}
         data['posx'] = 100
         data['posy'] = 100
-        data['name'] = None
+        data['name'] = ''
         data['battery'] = None
         data['state'] = None
         data['links'] = {}
