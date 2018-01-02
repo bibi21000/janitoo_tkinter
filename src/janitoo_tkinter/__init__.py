@@ -76,7 +76,7 @@ import threading
 
 from pkg_resources import iter_entry_points
 
-from janitoo.compat import queue
+from janitoo.compat import Queue
 from janitoo_tkinter.compat import tk
 from janitoo_tkinter.listener import ListenerThread
 from janitoo_tkinter.frame import FrameNetwork, FrameRoot
@@ -95,9 +95,9 @@ class JanitooTk(tk.Tk):
         self._listener_lock = threading.Lock()
         self.listener = ListenerThread(self.options, section=self.section, tkroot=self)
         self.network = self.listener.network
-        self.queue_network = queue.Queue()
+        self.queue_network = Queue()
         self.queue_network_cb = []
-        self.queue_nodes = queue.Queue()
+        self.queue_nodes = Queue()
         self.queue_nodes_cb = []
 
         self.var_state = tk.StringVar()
