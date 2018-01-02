@@ -61,14 +61,12 @@ logger = logging.getLogger(__name__)
 import io
 import pkg_resources
 
-import Tkinter as tk
-import tkFont as tkFont
-import ttk
 from PIL import Image, ImageTk
 
 import janitoo.utils as jnt_utils
 from janitoo.mqtt import MQTTBasic
 
+from janitoo_tkinter.compat import tkFont, ttk, tk
 from janitoo_tkinter.tree import TreeListBox
 from janitoo_tkinter.dialog import DialogClose
 
@@ -721,7 +719,7 @@ class tkNodes(object):
         """
         self.options.set_option(self.section, 'geometry', '%sx%s'%(tkroot.winfo_width(),tkroot.winfo_height()))
         self.options.set_option('map', 'scale', self.scale, create=True)
-        for key in self.data.keys():
+        for key in list(self.data.keys()):
             self.options.set_option('map__%s'%key, 'posx', self.data[key]['posx'], create=True)
             self.options.set_option('map__%s'%key, 'posy', self.data[key]['posy'], create=True)
 
@@ -1152,7 +1150,7 @@ class DialogNode(DialogClose):
         value = self.network.find_node_value(self.node, genre=self.genre, vuuid=self.vuuid)
         logger.debug('Get value %s', value)
         if 'index' not in value:
-            value = value[value.keys()[0]]
+            value = value[list(value.keys())[0]]
         self.var_value_index.set(value['index'])
         self.var_value_cmdclass.set(value['cmd_class'])
         self.var_value_type.set(value['type'])

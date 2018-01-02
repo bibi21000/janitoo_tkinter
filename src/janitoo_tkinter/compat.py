@@ -32,8 +32,10 @@ from six import PY2, PY3, text_type, string_types
 if PY2:
     import tkFont as tkFont
     import ttk as ttk
-    
+    import Tkinter as tk
+
 else:
 
     import tkinter.font as tkFont
     import tkinter.ttk as ttk
+    import tkinter as tk

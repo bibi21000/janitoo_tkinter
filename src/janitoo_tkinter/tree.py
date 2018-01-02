@@ -24,8 +24,7 @@ __copyright__ = "2013 : (c) Sébastien GALLET aka bibi21000"
 __author__ = 'Sébastien GALLET aka bibi21000'
 __email__ = 'bibi21000@gmail.com'
 
-import tkFont as tkFont
-import ttk as ttk
+from janitoo_tkinter.compat import tkFont, ttk
 
 class TreeListBox(ttk.Frame):
     '''

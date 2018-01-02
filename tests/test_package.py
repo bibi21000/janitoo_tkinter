@@ -30,23 +30,25 @@ import threading
 import logging
 from pkg_resources import iter_entry_points
 
-from janitoo_nosetests.server import JNTTServer, JNTTServerCommon
-from janitoo_nosetests.thread import JNTTThread, JNTTThreadCommon
 SKIP = False
 try:
     from janitoo_nosetests.packaging import JNTTPackaging, JNTTPackagingCommon
 except Exception:
-    print "Skip tests"
+    print("Skip tests")
     SKIP = True
 
-from janitoo.utils import json_dumps, json_loads
-from janitoo.utils import HADD_SEP, HADD
-from janitoo.utils import TOPIC_HEARTBEAT
-from janitoo.utils import TOPIC_NODES, TOPIC_NODES_REPLY, TOPIC_NODES_REQUEST
-from janitoo.utils import TOPIC_BROADCAST_REPLY, TOPIC_BROADCAST_REQUEST
-from janitoo.utils import TOPIC_VALUES_USER, TOPIC_VALUES_CONFIG, TOPIC_VALUES_SYSTEM, TOPIC_VALUES_BASIC
-
 if not SKIP:
+
+    from janitoo_nosetests.server import JNTTServer, JNTTServerCommon
+    from janitoo_nosetests.thread import JNTTThread, JNTTThreadCommon
+
+    from janitoo.utils import json_dumps, json_loads
+    from janitoo.utils import HADD_SEP, HADD
+    from janitoo.utils import TOPIC_HEARTBEAT
+    from janitoo.utils import TOPIC_NODES, TOPIC_NODES_REPLY, TOPIC_NODES_REQUEST
+    from janitoo.utils import TOPIC_BROADCAST_REPLY, TOPIC_BROADCAST_REQUEST
+    from janitoo.utils import TOPIC_VALUES_USER, TOPIC_VALUES_CONFIG, TOPIC_VALUES_SYSTEM, TOPIC_VALUES_BASIC
+
 
     class TestPackage(JNTTPackaging, JNTTPackagingCommon):
         """Test the server

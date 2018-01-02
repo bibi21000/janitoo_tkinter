@@ -73,13 +73,11 @@ logger = logging.getLogger(__name__)
 
 import signal
 import threading
-import Queue
-
-import Tkinter as tk
-from ttk import Frame
 
 from pkg_resources import iter_entry_points
 
+from janitoo.compat import queue
+from janitoo_tkinter.compat import tk
 from janitoo_tkinter.listener import ListenerThread
 from janitoo_tkinter.frame import FrameNetwork, FrameRoot
 
@@ -97,9 +95,9 @@ class JanitooTk(tk.Tk):
         self._listener_lock = threading.Lock()
         self.listener = ListenerThread(self.options, section=self.section, tkroot=self)
         self.network = self.listener.network
-        self.queue_network = Queue.Queue()
+        self.queue_network = queue.Queue()
         self.queue_network_cb = []
-        self.queue_nodes = Queue.Queue()
+        self.queue_nodes = queue.Queue()
         self.queue_nodes_cb = []
 
         self.var_state = tk.StringVar()
@@ -190,7 +188,7 @@ class JanitooTk(tk.Tk):
                     callback(network)
                 except Exception:
                     logger.exception("[ %s ] - Exception in calback for network %s", self.__class__.__name__, network)
-        except Queue.Empty:
+        except queue.Empty:
             pass
         try:
             nodes = self.queue_nodes.get_nowait()
@@ -199,7 +197,7 @@ class JanitooTk(tk.Tk):
                     callback(nodes)
                 except Exception:
                     logger.exception("[ %s ] - Exception in calback for nodes %s", self.__class__.__name__, nodes)
-        except Queue.Empty:
+        except queue.Empty:
             pass
         # Schedule read_queue again in x second.
         self.after(int(self._sleep*1000), self.read_queues)

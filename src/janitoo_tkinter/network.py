@@ -66,7 +66,7 @@ class Network(JNTNetwork):
         #~ print "ret", ret
         #~ print(u'Nodes event : %s'%ret)
         self.tkroot.queue_nodes.put(ret)
-        logger.debug(u'Nodes event :%s', ret)
+        logger.debug('Nodes event :%s', ret)
 
     def extend_from_entry_points(self, group):
         """"Extend the network with methods found in entrypoints
