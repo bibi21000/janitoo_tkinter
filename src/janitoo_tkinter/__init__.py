@@ -77,6 +77,7 @@ import threading
 from pkg_resources import iter_entry_points
 
 from janitoo.compat import Queue
+from janitoo.compat import queue
 from janitoo_tkinter.compat import tk
 from janitoo_tkinter.listener import ListenerThread
 from janitoo_tkinter.frame import FrameNetwork, FrameRoot
