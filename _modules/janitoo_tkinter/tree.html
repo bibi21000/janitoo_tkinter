@@ -5,13 +5,11 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>janitoo_tkinter.tree &mdash; janitoo_tkinter 0.0.7 documentation</title>
+    <title>janitoo_tkinter.tree &#8212; janitoo_tkinter 0.0.7 documentation</title>
     
-    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/bootswatch-3.3.4/united/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -19,7 +17,8 @@
         VERSION:     '0.0.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
@@ -30,17 +29,17 @@
     <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="janitoo_tkinter 0.0.7 documentation" href="../../index.html" />
-    <link rel="up" title="janitoo_tkinter" href="../janitoo_tkinter.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
     <div class="container">
@@ -110,58 +109,57 @@
     <div class="col-md-12 content">
       
   <h1>Source code for janitoo_tkinter.tree</h1><div class="highlight"><pre>
-<span class="c">#!/usr/bin/python</span>
-<span class="c"># -*- coding: utf-8 -*-</span>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="n">__license__</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
-<span class="s">    This file is part of HABus.</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    This file is part of HABus.</span>
 
-<span class="s">    HABus is free software: you can redistribute it and/or modify</span>
-<span class="s">    it under the terms of the GNU General Public License as published by</span>
-<span class="s">    the Free Software Foundation, either version 3 of the License, or</span>
-<span class="s">    (at your option) any later version.</span>
+<span class="s2">    HABus is free software: you can redistribute it and/or modify</span>
+<span class="s2">    it under the terms of the GNU General Public License as published by</span>
+<span class="s2">    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="s2">    (at your option) any later version.</span>
 
-<span class="s">    HABus is distributed in the hope that it will be useful,</span>
-<span class="s">    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
-<span class="s">    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
-<span class="s">    GNU General Public License for more details.</span>
+<span class="s2">    HABus is distributed in the hope that it will be useful,</span>
+<span class="s2">    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="s2">    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="s2">    GNU General Public License for more details.</span>
 
-<span class="s">    You should have received a copy of the GNU General Public License</span>
-<span class="s">    along with HABus.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
-<span class="s">&quot;&quot;&quot;</span>
-<span class="n">__copyright__</span> <span class="o">=</span> <span class="s">&quot;2013 : (c) Sébastien GALLET aka bibi21000&quot;</span>
-<span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;Sébastien GALLET aka bibi21000&#39;</span>
-<span class="n">__email__</span> <span class="o">=</span> <span class="s">&#39;bibi21000@gmail.com&#39;</span>
+<span class="s2">    You should have received a copy of the GNU General Public License</span>
+<span class="s2">    along with HABus.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;2013 : (c) Sébastien GALLET aka bibi21000&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Sébastien GALLET aka bibi21000&#39;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s1">&#39;bibi21000@gmail.com&#39;</span>
 
-<span class="kn">import</span> <span class="nn">tkFont</span> <span class="kn">as</span> <span class="nn">tkFont</span>
-<span class="kn">import</span> <span class="nn">ttk</span> <span class="kn">as</span> <span class="nn">ttk</span>
+<span class="kn">from</span> <span class="nn">janitoo_tkinter.compat</span> <span class="k">import</span> <span class="n">tkFont</span><span class="p">,</span> <span class="n">ttk</span>
 
 <div class="viewcode-block" id="TreeListBox"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.tree.TreeListBox">[docs]</a><span class="k">class</span> <span class="nc">TreeListBox</span><span class="p">(</span><span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">master</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
-        <span class="n">columns</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;columns&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;topic&#39;</span><span class="p">,</span><span class="s">&#39;value&#39;</span><span class="p">])</span>
-        <span class="n">displaycolumns</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;displaycolumns&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">])</span>
-        <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">master</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;columns&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;topic&#39;</span><span class="p">,</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+        <span class="n">displaycolumns</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;displaycolumns&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+        <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">master</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup_widgets</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">displaycolumns</span><span class="p">)</span>
-        <span class="c">#self._build_tree()</span>
+        <span class="c1">#self._build_tree()</span>
 
     <span class="k">def</span> <span class="nf">_setup_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">displaycolumns</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tree</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Treeview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span> <span class="n">displaycolumns</span><span class="o">=</span><span class="n">displaycolumns</span><span class="p">)</span>
-        <span class="n">vsb</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Scrollbar</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s">&quot;vertical&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">yview</span><span class="p">)</span>
-        <span class="n">hsb</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Scrollbar</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s">&quot;horizontal&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">xview</span><span class="p">)</span>
+        <span class="n">vsb</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Scrollbar</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">yview</span><span class="p">)</span>
+        <span class="n">hsb</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Scrollbar</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">xview</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">yscrollcommand</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">autoscroll</span><span class="p">(</span><span class="n">vsb</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">),</span>
             <span class="n">xscrollcommand</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">autoscroll</span><span class="p">(</span><span class="n">hsb</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;nsew&#39;</span><span class="p">,</span> <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">vsb</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;ns&#39;</span><span class="p">,</span> <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">hsb</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s">&#39;ew&#39;</span><span class="p">,</span> <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;nsew&#39;</span><span class="p">,</span> <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">vsb</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span> <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">hsb</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;ew&#39;</span><span class="p">,</span> <span class="n">in_</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="c">#self.pack(fill=&#39;both&#39;, expand=1)</span>
+        <span class="c1">#self.pack(fill=&#39;both&#39;, expand=1)</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">col</span><span class="o">.</span><span class="n">title</span><span class="p">(),</span>
                 <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">c</span><span class="o">=</span><span class="n">col</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sortby</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
@@ -179,116 +177,116 @@
 <span class="sd">        :type message: paho.mqtt.client.MQTTMessage</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
-</div>
+        <span class="k">pass</span></div>
+
 <div class="viewcode-block" id="TreeListBox.clear"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.tree.TreeListBox.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">item_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">item_count</span> <span class="o">=</span> <span class="mi">0</span></div>
 
-<span class="c">#    def _on_topic_update(self, topic, value) :</span></div>
+<span class="c1">#    def _on_topic_update(self, topic, value) :</span>
 <div class="viewcode-block" id="TreeListBox.add_item"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.tree.TreeListBox.add_item">[docs]</a>    <span class="k">def</span> <span class="nf">add_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">items</span><span class="p">)</span> <span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">item_count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">indexes</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)</span>
-        <span class="c">#print indexes</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="c1">#print indexes</span>
         <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="n">current_item</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
-        <span class="c">#print &quot;current_item %s&quot; % current_item</span>
+        <span class="n">current_item</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1">#print &quot;current_item %s&quot; % current_item</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indexes</span> <span class="p">:</span>
-            <span class="c">#print &quot;index = %s&quot; % index</span>
-            <span class="n">found</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="c1">#print &quot;index = %s&quot; % index</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="n">current_item</span><span class="p">):</span>
-                <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s">&#39;text&#39;</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">text</span> <span class="o">==</span> <span class="n">index</span> <span class="p">:</span>
                     <span class="n">current_item</span> <span class="o">=</span> <span class="n">item</span>
-                    <span class="n">found</span> <span class="o">=</span> <span class="bp">True</span>
-                    <span class="c">#print &quot;current_item = %s&quot; % current_item</span>
+                    <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="c1">#print &quot;current_item = %s&quot; % current_item</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">length</span> <span class="p">:</span>
-                <span class="n">ptype</span><span class="o">=</span><span class="s">&#39;node&#39;</span>
+                <span class="n">ptype</span><span class="o">=</span><span class="s1">&#39;node&#39;</span>
             <span class="k">else</span> <span class="p">:</span>
-                <span class="n">ptype</span><span class="o">=</span><span class="s">&#39;value&#39;</span>
+                <span class="n">ptype</span><span class="o">=</span><span class="s1">&#39;value&#39;</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
-                <span class="c">#print &quot;add %s&quot; % index</span>
-                <span class="k">if</span> <span class="n">ptype</span> <span class="o">==</span> <span class="s">&#39;node&#39;</span><span class="p">:</span>
+                <span class="c1">#print &quot;add %s&quot; % index</span>
+                <span class="k">if</span> <span class="n">ptype</span> <span class="o">==</span> <span class="s1">&#39;node&#39;</span><span class="p">:</span>
                     <span class="n">current_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">current_item</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
-                    <span class="c">#print &quot;add new node %s&quot; % [index]</span>
-                <span class="k">elif</span> <span class="n">ptype</span> <span class="o">==</span> <span class="s">&#39;value&#39;</span><span class="p">:</span>
+                    <span class="c1">#print &quot;add new node %s&quot; % [index]</span>
+                <span class="k">elif</span> <span class="n">ptype</span> <span class="o">==</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span>
                     <span class="n">iid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">current_item</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+</span> <span class="n">items</span><span class="p">)</span>
-                    <span class="c">#self.tree.insert(iid, 0, text=index, values=[index] + items)</span>
-                    <span class="c">#print &quot;add new value %s&quot; % ([index] + items)</span>
+                    <span class="c1">#self.tree.insert(iid, 0, text=index, values=[index] + items)</span>
+                    <span class="c1">#print &quot;add new value %s&quot; % ([index] + items)</span>
             <span class="k">else</span> <span class="p">:</span>
-                <span class="k">if</span> <span class="n">ptype</span> <span class="o">==</span> <span class="s">&#39;value&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ptype</span> <span class="o">==</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">current_item</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+</span> <span class="n">items</span><span class="p">)</span>
-                    <span class="c">#print &quot;add another value %s&quot; % ([index] + items)</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-</div>
+                    <span class="c1">#print &quot;add another value %s&quot; % ([index] + items)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
 <div class="viewcode-block" id="TreeListBox.check_item_size"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.tree.TreeListBox.check_item_size">[docs]</a>    <span class="k">def</span> <span class="nf">check_item_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">items</span><span class="p">)</span> <span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span>
-            <span class="c"># adjust the column&#39;s width to the header string</span>
+            <span class="c1"># adjust the column&#39;s width to the header string</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">col</span><span class="p">,</span>
-                <span class="n">width</span><span class="o">=</span><span class="n">tkFont</span><span class="o">.</span><span class="n">Font</span><span class="p">()</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">title</span><span class="p">()))</span>
-</div>
+                <span class="n">width</span><span class="o">=</span><span class="n">tkFont</span><span class="o">.</span><span class="n">Font</span><span class="p">()</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">title</span><span class="p">()))</span></div>
+
 <div class="viewcode-block" id="TreeListBox.set_item"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.tree.TreeListBox.set_item">[docs]</a>    <span class="k">def</span> <span class="nf">set_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">items</span><span class="p">)</span> <span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">current_item</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
-        <span class="n">found</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">):</span>
-            <span class="c">#~ print &quot;current_item = %s&quot; % item</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s">&#39;values&#39;</span><span class="p">)</span>
-            <span class="c">#~ print value</span>
-            <span class="c">#~ print key</span>
+        <span class="n">current_item</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="c1">#~ print &quot;current_item = %s&quot; % item</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;values&#39;</span><span class="p">)</span>
+            <span class="c1">#~ print value</span>
+            <span class="c1">#~ print key</span>
             <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span> <span class="p">:</span>
                 <span class="n">current_item</span> <span class="o">=</span> <span class="n">item</span>
-                <span class="n">found</span> <span class="o">=</span> <span class="bp">True</span>
-                <span class="c">#break</span>
-        <span class="c">#~ print &quot;Found %s&quot; % found</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="c1">#break</span>
+        <span class="c1">#~ print &quot;Found %s&quot; % found</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_item</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">items</span><span class="p">)</span>
         <span class="k">else</span> <span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">current_item</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">current_item</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
     <span class="k">def</span> <span class="nf">_build_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">car_header</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;key&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">car_header</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">]</span>
         <span class="n">car_list</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s">&#39;Hyundai&#39;</span><span class="p">,</span> <span class="s">&#39;brakes&#39;</span><span class="p">)</span> <span class="p">,</span>
-            <span class="p">(</span><span class="s">&#39;Honda&#39;</span><span class="p">,</span> <span class="s">&#39;light&#39;</span><span class="p">)</span> <span class="p">,</span>
-            <span class="p">(</span><span class="s">&#39;Lexus&#39;</span><span class="p">,</span> <span class="s">&#39;battery&#39;</span><span class="p">)</span> <span class="p">,</span>
-            <span class="p">(</span><span class="s">&#39;Benz&#39;</span><span class="p">,</span> <span class="s">&#39;wiper&#39;</span><span class="p">)</span> <span class="p">,</span>
-            <span class="p">(</span><span class="s">&#39;Ford&#39;</span><span class="p">,</span> <span class="s">&#39;tire&#39;</span><span class="p">)</span> <span class="p">,</span>
-            <span class="p">(</span><span class="s">&#39;Chevy&#39;</span><span class="p">,</span> <span class="s">&#39;air&#39;</span><span class="p">)</span> <span class="p">,</span>
-            <span class="p">(</span><span class="s">&#39;Chrysler&#39;</span><span class="p">,</span> <span class="s">&#39;piston&#39;</span><span class="p">)</span> <span class="p">,</span>
-            <span class="p">(</span><span class="s">&#39;Toyota&#39;</span><span class="p">,</span> <span class="s">&#39;brake pedal&#39;</span><span class="p">)</span> <span class="p">,</span>
-            <span class="p">(</span><span class="s">&#39;BMW&#39;</span><span class="p">,</span> <span class="s">&#39;seat&#39;</span><span class="p">)</span>
+            <span class="p">(</span><span class="s1">&#39;Hyundai&#39;</span><span class="p">,</span> <span class="s1">&#39;brakes&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s1">&#39;Honda&#39;</span><span class="p">,</span> <span class="s1">&#39;light&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s1">&#39;Lexus&#39;</span><span class="p">,</span> <span class="s1">&#39;battery&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s1">&#39;Benz&#39;</span><span class="p">,</span> <span class="s1">&#39;wiper&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s1">&#39;Ford&#39;</span><span class="p">,</span> <span class="s1">&#39;tire&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s1">&#39;Chevy&#39;</span><span class="p">,</span> <span class="s1">&#39;air&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s1">&#39;Chrysler&#39;</span><span class="p">,</span> <span class="s1">&#39;piston&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s1">&#39;Toyota&#39;</span><span class="p">,</span> <span class="s1">&#39;brake pedal&#39;</span><span class="p">)</span> <span class="p">,</span>
+            <span class="p">(</span><span class="s1">&#39;BMW&#39;</span><span class="p">,</span> <span class="s1">&#39;seat&#39;</span><span class="p">)</span>
             <span class="p">]</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">car_list</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;end&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">item</span><span class="p">)</span>
-            <span class="c"># adjust column&#39;s width if necessary to fit each value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">item</span><span class="p">)</span>
+            <span class="c1"># adjust column&#39;s width if necessary to fit each value</span>
             <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
                 <span class="n">col_w</span> <span class="o">=</span> <span class="n">tkFont</span><span class="o">.</span><span class="n">Font</span><span class="p">()</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">car_header</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span><span class="n">width</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span><span class="o">&lt;</span><span class="n">col_w</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">car_header</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span><span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">&lt;</span><span class="n">col_w</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">car_header</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="n">col_w</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TreeListBox.sortby"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.tree.TreeListBox.sortby">[docs]</a>    <span class="k">def</span> <span class="nf">sortby</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tree</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">descending</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;sort tree contents when a column header is clicked on&quot;&quot;&quot;</span>
-        <span class="c"># grab values to sort</span>
+        <span class="c1"># grab values to sort</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="n">tree</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">col</span><span class="p">),</span> <span class="n">child</span><span class="p">)</span> \
-            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)]</span>
-        <span class="c"># if the data to be sorted is numeric change to float</span>
-        <span class="c">#data =  change_numeric(data)</span>
-        <span class="c"># now sort the data in place</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)]</span>
+        <span class="c1"># if the data to be sorted is numeric change to float</span>
+        <span class="c1">#data =  change_numeric(data)</span>
+        <span class="c1"># now sort the data in place</span>
         <span class="n">data</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="n">descending</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-            <span class="n">tree</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span>
-        <span class="c"># switch the heading so it will sort in the opposite direction</span>
+            <span class="n">tree</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span>
+        <span class="c1"># switch the heading so it will sort in the opposite direction</span>
         <span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">col</span><span class="o">=</span><span class="n">col</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sortby</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> \
-            <span class="nb">int</span><span class="p">(</span><span class="ow">not</span> <span class="n">descending</span><span class="p">)))</span>
-</div>
+            <span class="nb">int</span><span class="p">(</span><span class="ow">not</span> <span class="n">descending</span><span class="p">)))</span></div>
+
 <div class="viewcode-block" id="TreeListBox.autoscroll"><a class="viewcode-back" href="../../api/index.html#janitoo_tkinter.tree.TreeListBox.autoscroll">[docs]</a>    <span class="k">def</span> <span class="nf">autoscroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sbar</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Hide and show scrollbar as needed.&quot;&quot;&quot;</span>
         <span class="n">first</span><span class="p">,</span> <span class="n">last</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">last</span><span class="p">)</span>
@@ -311,7 +309,7 @@
     </p>
     <p>
         &copy; Copyright 2014,2015,2016 Sébastien GALLET aka bibi2100 &lt;bibi21000@gmail.com&gt;.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>
 </footer>

@@ -1,0 +1,70 @@
+janitoo_tkinter package
+=======================
+
+Submodules
+----------
+
+janitoo_tkinter.compat module
+-----------------------------
+
+.. automodule:: janitoo_tkinter.compat
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+janitoo_tkinter.controller module
+---------------------------------
+
+.. automodule:: janitoo_tkinter.controller
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+janitoo_tkinter.dialog module
+-----------------------------
+
+.. automodule:: janitoo_tkinter.dialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+janitoo_tkinter.frame module
+----------------------------
+
+.. automodule:: janitoo_tkinter.frame
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+janitoo_tkinter.listener module
+-------------------------------
+
+.. automodule:: janitoo_tkinter.listener
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+janitoo_tkinter.network module
+------------------------------
+
+.. automodule:: janitoo_tkinter.network
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+janitoo_tkinter.tree module
+---------------------------
+
+.. automodule:: janitoo_tkinter.tree
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: janitoo_tkinter
+    :members:
+    :undoc-members:
+    :show-inheritance:
